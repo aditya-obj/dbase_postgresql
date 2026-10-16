@@ -1,0 +1,152 @@
+# File: test/docker/compose.yml
+# Purpose: Servers for the dbase_postgresql integration tests
+# (`dart test -P integration`). Test-only: every password here is a
+# throwaway and nothing must be exposed beyond localhost.
+#
+#   docker compose -f test/docker/compose.yml up -d --wait
+#   DBASE_PG_URL='postgresql://dbase:dbase@localhost:54318/dbase?sslmode=disable' \
+#     dart test -P integration
+#   docker compose -f test/docker/compose.yml down -v
+#
+# See test/docker/README.md for every service and its URL.
+
+x-postgres: &postgres
+  environment:
+    POSTGRES_USER: dbase
+    POSTGRES_PASSWORD: dbase
+    POSTGRES_DB: dbase
+    # Remote connections use SCRAM; the socket stays trust for the image's
+    # init scripts and the healthcheck.
+    POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+    POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=trust
+  command: ["postgres", "-c", "password_encryption=scram-sha-256"]
+  healthcheck:
+    # -h 127.0.0.1: the image's temporary init server listens on the
+    # socket only, so this passes once the real server is up.
+    test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U dbase -d dbase"]
+    interval: 2s
+    timeout: 5s
+    retries: 30
+    start_period: 10s
+
+services:
+  pg13:
+    <<: *postgres
+    image: postgres:13.23
+    ports: ["127.0.0.1:54313:5432"]
+
+  pg14:
+    <<: *postgres
+    image: postgres:14.24
+    ports: ["127.0.0.1:54314:5432"]
+
+  pg15:
+    <<: *postgres
+    image: postgres:15.19
+    ports: ["127.0.0.1:54315:5432"]
+
+  pg16:
+    <<: *postgres
+    image: postgres:16.15
+    ports: ["127.0.0.1:54316:5432"]
+
+  pg17:
+    <<: *postgres
+    image: postgres:17.11
+    ports: ["127.0.0.1:54317:5432"]
+
+  pg18:
+    <<: *postgres
+    image: postgres:18.6
+    ports: ["127.0.0.1:54318:5432"]
+
+  # Creates a throwaway CA and a server certificate for pg18-tls (SAN:
+  # localhost, pg18-tls, 127.0.0.1), copies the CA certificate to
+  # test/docker/.generated/ca.crt for sslmode=verify-full tests, then
+  # idles. It stays up (instead of exiting) so `up --wait` sees a healthy
+  # service rather than an exited one.
+  tls-certs:
+    image: alpine/openssl:3.5.9
+    entrypoint: ["/bin/sh", "/scripts/generate-certs.sh"]
+    volumes:
+      - ./tls/generate-certs.sh:/scripts/generate-certs.sh:ro
+      - tls-certs:/certs
+      - ./.generated:/export
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /certs/ready"]
+      interval: 1s
+      timeout: 2s
+      retries: 30
+
+  pg18-tls:
+    <<: *postgres
+    image: postgres:18.6
+    depends_on:
+      tls-certs:
+        condition: service_healthy
+    command:
+      - postgres
+      - -c
+      - password_encryption=scram-sha-256
+      - -c
+      - ssl=on
+      - -c
+      - ssl_cert_file=/certs/server.crt
+      - -c
+      - ssl_key_file=/certs/server.key
+      - -c
+      - hba_file=/etc/dbase/pg_hba_tls.conf
+    volumes:
+      - tls-certs:/certs:ro
+      - ./tls/pg_hba_tls.conf:/etc/dbase/pg_hba_tls.conf:ro
+    ports: ["127.0.0.1:54328:5432"]
+
+  # PgBouncer in transaction pooling mode in front of pg18.
+  pgbouncer:
+    image: edoburu/pgbouncer:v1.26.0-p0
+    depends_on:
+      pg18:
+        condition: service_healthy
+    environment:
+      DB_HOST: pg18
+      DB_PORT: "5432"
+      DB_USER: dbase
+      DB_PASSWORD: dbase
+      AUTH_TYPE: scram-sha-256
+      POOL_MODE: transaction
+      LISTEN_PORT: "6432"
+      MAX_PREPARED_STATEMENTS: "100"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 6432"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    ports: ["127.0.0.1:56432:6432"]
+
+  # OpenSSH server for SSH-tunnel tests: ssh -p 2222 dbase@localhost,
+  # password "dbase", forwarding to pg18:5432 (or pg18-tls:5432).
+  openssh:
+    image: linuxserver/openssh-server:10.3_p1-r1-ls239
+    depends_on:
+      pg18:
+        condition: service_healthy
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: Etc/UTC
+      USER_NAME: dbase
+      USER_PASSWORD: dbase
+      PASSWORD_ACCESS: "true"
+      # TCP forwarding is off in this image; this official LinuxServer mod
+      # turns it on (downloaded at container start, needs network).
+      DOCKER_MODS: linuxserver/mods:openssh-server-ssh-tunnel
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 2222"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
+      start_period: 20s
+    ports: ["127.0.0.1:2222:2222"]
+
+volumes:
+  tls-certs:

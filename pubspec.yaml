@@ -18,5 +18,8 @@ environment:
   sdk: ^3.13.5
 
 dev_dependencies:
+  # Integration tests only (test/integration/, tag `integration`). The
+  # library itself has no runtime dependencies.
+  postgres: ^3.5.20
   test: ^1.33.0
   very_good_analysis: ^11.0.0

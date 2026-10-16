@@ -15,6 +15,12 @@ const _legacyLexer = SqlLexer(standardConformingStrings: false);
 const _splitter = SqlStatementSplitter();
 const _analyzer = SqlStatementAnalyzer();
 
+/// Token kinds reserved for a future `psqlMode`; never produced in v0.1.
+const Set<SqlTokenKind> reservedPsqlKinds = {
+  SqlTokenKind.psqlMetaCommand,
+  SqlTokenKind.psqlVariable,
+};
+
 /// Checks every invariant for [input]; used by the fuzz test too.
 void checkSqlInvariants(String input) {
   for (final lexer in [_lexer, _legacyLexer]) {
@@ -23,6 +29,11 @@ void checkSqlInvariants(String input) {
     for (final token in tokens) {
       expect(token.start, position, reason: 'tokens must tile the input');
       expect(token.text, isNotEmpty);
+      expect(
+        reservedPsqlKinds,
+        isNot(contains(token.kind)),
+        reason: 'psql token kinds are reserved; v0.1 never emits them',
+      );
       expect(input.substring(token.start, token.end), token.text);
       position = token.end;
     }

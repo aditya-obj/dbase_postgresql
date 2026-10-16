@@ -68,6 +68,16 @@ variable, then the OS user, then `dbname = user`. It never invents
 `postgres` as a database. `database` stays `null` when absent, so
 `toUri()` round-trips. Service and password files are not read in v0.1.
 
+The keyword-to-variable table is checked against `PQconninfoOptions[]` in
+`fe-connect.c` (see `lib/src/config/libpq_keywords.dart`). Like libpq,
+`resolveDefaults` honours the deprecated `PGREQUIRESSL=1` and raises the
+default sslmode to `verify-full` when `sslrootcert=system`. Two
+differences remain: an environment variable set to the empty string is
+treated as unset (libpq stores the empty value, which for most keywords
+then means "use the default" anyway), and `PGDATESTYLE`, `PGTZ` and
+`PGGEQO` are not applied, because libpq sends them as startup parameters
+rather than as keyword fallbacks.
+
 Corpus case 63 (`sslmode=verify-full` with `PGSSLROOTCERT=system`)
 diverges for this reason. libpq omits the sslmode because the environment
 makes it the default. We report the explicit value.

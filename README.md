@@ -17,9 +17,10 @@ client that connects from the device straight to the database. Version
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.1.0, not published (`publish_to: none`). No license has been
-> chosen yet. Material ported from PostgreSQL and libpg_query keeps its own
-> license; see `THIRD_PARTY_NOTICES`.
+> Status: 0.1.0, not published yet (`publish_to: none` until the
+> repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
+> Material ported from PostgreSQL and libpg_query keeps its own license;
+> see `THIRD_PARTY_NOTICES`.
 
 ## Connection strings
 
@@ -83,6 +84,12 @@ categories: ...)` to choose which keyword categories an editor
 highlights. Pass `SqlLexer(standardConformingStrings: false)` for servers
 with that setting off.
 
+The lexer is pure SQL: psql meta-commands (`\d`) and variables (`:var`)
+are not recognised. `SqlTokenKind.psqlMetaCommand` and
+`SqlTokenKind.psqlVariable` are reserved for a future `psqlMode` option
+and are never produced in 0.1; handle them in exhaustive switches so
+adding psql support later is not a breaking change.
+
 ## Statement splitter
 
 ```dart
@@ -116,7 +123,10 @@ result.findings.map((f) => f.code); // [dataModifyingCte, deleteWithoutWhere]
   `EXPLAIN ANALYZE`, `SELECT INTO`, `COPY` direction, and `DO`/`CALL`
   (counted as writing).
 - `cannotRunInTransactionBlock`: `VACUUM`, `CREATE/DROP DATABASE`,
-  `... CONCURRENTLY`, `ALTER SYSTEM`, tablespaces, and so on.
+  `... CONCURRENTLY`, `ALTER SYSTEM`, tablespaces, `DISCARD ALL`,
+  `COMMIT/ROLLBACK PREPARED`, and so on. Subscription commands and
+  `REINDEX`/`CLUSTER` of partitioned tables depend on server state and
+  are not detected.
 - `findings`: `SafetyFinding(code, severity, message, offset)` with
   severities `info`, `warning` and `danger`.
 - **Fails closed.** Unterminated tokens, malformed numbers, unbalanced
@@ -131,13 +141,25 @@ guaranteed.
 ## Development
 
 ```sh
+tool/check.sh             # the full local gate: format, analyze, test, fuzz
 dart format --set-exit-if-changed .
 dart analyze --fatal-infos
 dart test                 # unit, invariant and third-party corpus tests
 dart test -P fuzz         # seeded mutation fuzzing (FUZZ_SEED to replay)
+dart test -P integration  # against a real server (DBASE_PG_URL)
 dart run example/main.dart
 dart run tool/generate_keywords.dart path/to/kwlist.h   # refresh keywords
 ```
+
+The integration tests compare the keyword table with
+`pg_get_keywords()`, run every statement the splitter returns on the
+server, and check `cannotRunInTransactionBlock` against SQLSTATE 25001.
+`test/docker/compose.yml` starts PostgreSQL 13 to 18, a TLS server,
+PgBouncer and an SSH server; see `test/docker/README.md`. The `postgres`
+driver they use is a dev dependency only.
+
+See `CONTRIBUTING.md` for the contribution rules and `SECURITY.md` for
+reporting vulnerabilities.
 
 The tests include libpq's `001_uri.pl` corpus (63 cases) and
 libpg_query's split vectors, ported with their licenses under

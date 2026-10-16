@@ -91,6 +91,11 @@ RawSettings configToSettings(PgConnectionConfig config) {
 /// `PG*` variable from [environment] (empty values ignored), `user` then
 /// falls back to [defaultUser], and `dbname` falls back to the user name.
 /// No database name is ever invented.
+///
+/// When no sslmode was given and `PGSSLMODE` is unset, the deprecated
+/// `PGREQUIRESSL` (a value starting with `1`) means `require`, and
+/// otherwise `sslrootcert=system` raises the default to `verify-full`.
+/// Both rules follow conninfo_add_defaults() in libpq's fe-connect.c.
 RawSettings withDefaults(
   RawSettings settings, {
   required Map<String, String> environment,
@@ -103,6 +108,14 @@ RawSettings withDefaults(
     final value = environment[variable];
     if (value != null && value.isNotEmpty) {
       resolved[key] = RawSetting(value, 0);
+    }
+  }
+  // `ssl=true` is the JDBC-style spelling of sslmode=require.
+  if (!resolved.containsKey('sslmode') && !resolved.containsKey('ssl')) {
+    if (environment['PGREQUIRESSL']?.startsWith('1') ?? false) {
+      resolved['sslmode'] = const RawSetting('require', 0);
+    } else if (resolved['sslrootcert']?.value == 'system') {
+      resolved['sslmode'] = const RawSetting('verify-full', 0);
     }
   }
   if (!resolved.containsKey('user') && defaultUser != null) {

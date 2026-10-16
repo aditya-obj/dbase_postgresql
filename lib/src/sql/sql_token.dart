@@ -6,9 +6,15 @@ import 'package:dbase_postgresql/src/sql/sql_keywords.dart';
 
 /// The lexical category of a [SqlToken].
 ///
-/// This set mirrors the token classes of PostgreSQL's `scan.l` and is
-/// considered complete; lexical errors are reported through
-/// [SqlToken.diagnostic] rather than extra kinds.
+/// This set mirrors the token classes of PostgreSQL's `scan.l`. Lexical
+/// errors are reported through [SqlToken.diagnostic] rather than extra
+/// kinds.
+///
+/// Two kinds, [psqlMetaCommand] and [psqlVariable], are reserved for a
+/// future `psqlMode` lexer option (psql's `psqlscan.l` rules) and are never
+/// produced in v0.1. They exist now so that adding psql support later is
+/// not a breaking change for code that switches over this enum. Handle
+/// them in exhaustive switches like any other kind.
 enum SqlTokenKind {
   /// Spaces, tabs, and line breaks.
   whitespace,
@@ -59,6 +65,20 @@ enum SqlTokenKind {
   /// A character that cannot start any PostgreSQL token (e.g. a lone `$`,
   /// `\`, `{`).
   unknown,
+
+  /// Reserved: a psql backslash meta-command with its arguments, such as
+  /// `\d+ users` or `\gset`.
+  ///
+  /// Only produced when a future `psqlMode` lexer option is enabled. It is
+  /// never produced in v0.1, where `\` lexes as [unknown].
+  psqlMetaCommand,
+
+  /// Reserved: a psql variable reference `:name`, `:'name'`, `:"name"` or
+  /// `:{?name}`.
+  ///
+  /// Only produced when a future `psqlMode` lexer option is enabled. It is
+  /// never produced in v0.1, where `:` lexes as [punctuation].
+  psqlVariable,
 }
 
 /// A lexical error PostgreSQL would reject, attached to the token that

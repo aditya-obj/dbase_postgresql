@@ -78,9 +78,16 @@ StatementAnalysis analyzeTokens(TokenScan scan) {
   if (_maintenanceWords.contains(first)) return maintenanceRule(scan, i, first);
   if (first == 'prepare' && scan.isWord(i + 1, 'transaction') ||
       _transactionWords.contains(first)) {
+    // COMMIT PREPARED / ROLLBACK PREPARED: PreventInTransactionBlock in
+    // src/backend/tcop/utility.c (TRANS_STMT_COMMIT_PREPARED and
+    // TRANS_STMT_ROLLBACK_PREPARED).
+    final finishesPrepared =
+        (first == 'commit' || first == 'rollback') &&
+        scan.isWord(i + 1, 'prepared');
     return StatementAnalysis(
       kind: StatementKind.transactionControl,
       writes: false,
+      cannotRunInTransactionBlock: finishesPrepared,
     );
   }
   if (_utilityWords.contains(first)) return utilityRule(scan, i, first);

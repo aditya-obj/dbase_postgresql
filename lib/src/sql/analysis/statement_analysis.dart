@@ -35,8 +35,12 @@ final class StatementAnalysis {
 
   /// Whether PostgreSQL refuses to run the statement inside a transaction
   /// block (e.g. `VACUUM`, `CREATE DATABASE`, `CREATE INDEX CONCURRENTLY`,
-  /// `ALTER SYSTEM`). Callers that wrap statements in `BEGIN`/`COMMIT`
-  /// must run these outside a transaction.
+  /// `ALTER SYSTEM`, `DISCARD ALL`). Callers that wrap statements in
+  /// `BEGIN`/`COMMIT` must run these outside a transaction.
+  ///
+  /// The check is lexical. Rules that depend on server state are not
+  /// detected: subscription commands that create, drop or refresh a
+  /// replication slot, and `REINDEX` or `CLUSTER` of a partitioned table.
   final bool cannotRunInTransactionBlock;
 
   /// Safety findings, in source order where possible. Unmodifiable.

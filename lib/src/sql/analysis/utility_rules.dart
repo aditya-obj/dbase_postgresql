@@ -24,7 +24,14 @@ StatementAnalysis utilityRule(TokenScan scan, int start, String first) {
       findings: [_opaqueFinding(scan.offsetAt(start), first.toUpperCase())],
     );
   }
-  return StatementAnalysis(kind: StatementKind.utility, writes: false);
+  return StatementAnalysis(
+    kind: StatementKind.utility,
+    writes: false,
+    // DISCARD ALL: PreventInTransactionBlock in src/backend/commands/
+    // discard.c. DISCARD PLANS / SEQUENCES / TEMP are allowed.
+    cannotRunInTransactionBlock:
+        first == 'discard' && scan.isWord(start + 1, 'all'),
+  );
 }
 
 SafetyFinding _opaqueFinding(int offset, String what) => SafetyFinding(

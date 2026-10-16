@@ -108,4 +108,83 @@ void main() {
       ),
     );
   });
+
+  // conninfo_add_defaults() in src/interfaces/libpq/fe-connect.c.
+  group('sslmode defaults from fe-connect.c', () {
+    test('PGREQUIRESSL starting with "1" means require', () {
+      final c = PgConnectionConfig.parse('postgres://h')
+          .resolveDefaults(environment: const {'PGREQUIRESSL': '1'});
+      expect(c.sslMode, SslMode.require);
+      expect(c.sslModeWasExplicit, isTrue);
+    });
+
+    test('other PGREQUIRESSL values are ignored', () {
+      final c = PgConnectionConfig.parse('postgres://h')
+          .resolveDefaults(environment: const {'PGREQUIRESSL': '0'});
+      expect(c.sslModeWasExplicit, isFalse);
+      expect(c.sslMode, SslMode.prefer);
+    });
+
+    test('PGSSLMODE and an explicit sslmode beat PGREQUIRESSL', () {
+      const env = {'PGREQUIRESSL': '1', 'PGSSLMODE': 'verify-ca'};
+      expect(
+        PgConnectionConfig.parse('postgres://h')
+            .resolveDefaults(environment: env)
+            .sslMode,
+        SslMode.verifyCa,
+      );
+      expect(
+        PgConnectionConfig.parse('postgres://h?sslmode=disable')
+            .resolveDefaults(environment: const {'PGREQUIRESSL': '1'})
+            .sslMode,
+        SslMode.disable,
+      );
+      expect(
+        PgConnectionConfig.parse('postgres://h?ssl=true')
+            .resolveDefaults(environment: const {'PGREQUIRESSL': '1'})
+            .sslMode,
+        SslMode.require,
+      );
+    });
+
+    test('sslrootcert=system raises the default sslmode to verify-full', () {
+      final fromUri = PgConnectionConfig.parse(
+        'postgres://h?sslrootcert=system',
+      ).resolveDefaults();
+      expect(fromUri.sslMode, SslMode.verifyFull);
+      final fromEnv = PgConnectionConfig.parse('postgres://h')
+          .resolveDefaults(environment: const {'PGSSLROOTCERT': 'system'});
+      expect(fromEnv.sslMode, SslMode.verifyFull);
+    });
+
+    test('sslrootcert=system keeps an explicit sslmode', () {
+      final c = PgConnectionConfig.parse(
+        'postgres://h?sslrootcert=system&sslmode=require',
+      ).resolveDefaults();
+      expect(c.sslMode, SslMode.require);
+    });
+
+    test('PGREQUIRESSL wins over the sslrootcert=system upgrade', () {
+      final c = PgConnectionConfig.parse('postgres://h?sslrootcert=system')
+          .resolveDefaults(environment: const {'PGREQUIRESSL': '1'});
+      expect(c.sslMode, SslMode.require);
+    });
+  });
+
+  test('keywords added in PostgreSQL 18 and 19 resolve from PG* vars', () {
+    final c = PgConnectionConfig.parse('postgres://h').resolveDefaults(
+      environment: const {
+        'PGOAUTHCAFILE': '/ca.pem',
+        'PGSERVICEFILE': '/svc.conf',
+      },
+    );
+    expect(c.parameters['oauth_ca_file'], '/ca.pem');
+    expect(c.parameters['servicefile'], '/svc.conf');
+  });
+
+  test('sslkeylogfile is a known keyword with no environment variable', () {
+    final c = PgConnectionConfig.parse('postgres://h?sslkeylogfile=/k.log')
+        .resolveDefaults();
+    expect(c.parameters['sslkeylogfile'], '/k.log');
+  });
 }

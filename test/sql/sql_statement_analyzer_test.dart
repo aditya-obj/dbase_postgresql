@@ -280,6 +280,9 @@ void main() {
       'ALTER DATABASE d SET TABLESPACE ts',
       'CLUSTER',
       'CLUSTER VERBOSE',
+      'DISCARD ALL',
+      "COMMIT PREPARED 'gid'",
+      "ROLLBACK PREPARED 'gid'",
     ]) {
       test(sql, () => expect(_a(sql).cannotRunInTransactionBlock, isTrue));
     }
@@ -290,6 +293,11 @@ void main() {
       'CLUSTER t',
       'REFRESH MATERIALIZED VIEW CONCURRENTLY mv',
       'ALTER DATABASE d SET work_mem = 1',
+      'DISCARD PLANS',
+      'DISCARD TEMP',
+      "PREPARE TRANSACTION 'gid'",
+      'COMMIT',
+      'ROLLBACK',
     ]) {
       test(
         'not: $sql',
