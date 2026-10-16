@@ -1,0 +1,122 @@
+# CI for the pure-Dart dbase_postgresql library.
+# Actions are pinned to commit SHAs; the trailing comment names the release.
+name: dbase_postgresql CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze --fatal-infos
+      # TODO: add `dart pub publish --dry-run` once a LICENSE is chosen and
+      # `publish_to: none` is removed.
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.13.5 is the pubspec SDK floor; keep these in sync.
+        sdk: ['3.13.5', stable, beta]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: ${{ matrix.sdk }}
+      - run: dart pub get
+      - run: dart test -p vm
+
+  downgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: '3.13.5'
+      - run: dart pub downgrade
+      - run: dart analyze --fatal-infos
+      - run: dart test -p vm
+
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: stable
+      - run: dart pub get
+      # The fuzz preset logs its seed; a failure is reproducible from the log.
+      - run: dart test -P fuzz
+
+  integration:
+    name: integration (PostgreSQL ${{ matrix.pg }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        pg: ['13.23', '14.24', '15.19', '16.15', '17.11', '18.6']
+    services:
+      postgres:
+        image: postgres:${{ matrix.pg }}
+        env:
+          POSTGRES_USER: dbase
+          POSTGRES_PASSWORD: dbase
+          POSTGRES_DB: dbase
+          POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+          POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U dbase -d dbase"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      DBASE_PG_URL: postgresql://dbase:dbase@localhost:5432/dbase?sslmode=disable
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - run: dart test -P ci-integration
+
+  integration-compose:
+    name: integration (TLS, PgBouncer)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+        with:
+          sdk: stable
+      - name: Start servers
+        run: docker compose -f test/docker/compose.yml up -d --wait pg18-tls pgbouncer openssh
+      - run: dart pub get
+      - name: PostgreSQL 18 over TLS
+        env:
+          DBASE_PG_URL: postgresql://dbase:dbase@localhost:54328/dbase?sslmode=require
+        run: dart test -P ci-integration
+      - name: PostgreSQL 18 through PgBouncer (transaction mode)
+        env:
+          DBASE_PG_URL: postgresql://dbase:dbase@localhost:56432/dbase?sslmode=disable
+        run: dart test -P ci-integration
+      - name: Server logs
+        if: failure()
+        run: docker compose -f test/docker/compose.yml logs
+      - name: Stop servers
+        if: always()
+        run: docker compose -f test/docker/compose.yml down -v

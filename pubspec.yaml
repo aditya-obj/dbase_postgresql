@@ -4,9 +4,8 @@ description: >-
   lexer, a psql-style statement splitter, and statement safety checks.
 version: 0.1.0
 publish_to: none
-# TODO(owner): set once the repository URL is decided.
-# repository: https://github.com/OWNER/dbase_postgresql
-# issue_tracker: https://github.com/OWNER/dbase_postgresql/issues
+repository: https://github.com/aditya-obj/dbase_postgresql
+issue_tracker: https://github.com/aditya-obj/dbase_postgresql/issues
 topics:
   - postgresql
   - postgres
