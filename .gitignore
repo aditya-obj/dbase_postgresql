@@ -1,0 +1,4 @@
+# Files and directories created by pub.
+.dart_tool/
+# Libraries should not commit pubspec.lock.
+pubspec.lock

@@ -1,0 +1,26 @@
+# File: dart_test.yaml
+# Purpose: Test tags and presets. A plain `dart test` skips slow or
+# environment-dependent tags; run them with a preset, e.g.
+#   dart test -P fuzz          (FUZZ_SEED / FUZZ_ITERATIONS to replay)
+#   dart test -P integration   (needs a PostgreSQL server)
+tags:
+  integration:
+    timeout: 2x
+  fuzz:
+    timeout: 10x
+  golden:
+  mutation:
+
+exclude_tags: integration || fuzz || mutation
+
+presets:
+  fuzz:
+    include_tags: fuzz
+    exclude_tags: integration || mutation
+  integration:
+    include_tags: integration
+    exclude_tags: fuzz || mutation
+    concurrency: 1
+  mutation:
+    include_tags: mutation
+    exclude_tags: integration || fuzz

@@ -1,0 +1,22 @@
+name: dbase_postgresql
+description: >-
+  Pure-Dart PostgreSQL toolkit: libpq connection string parsing, a SQL
+  lexer, a psql-style statement splitter, and statement safety checks.
+version: 0.1.0
+publish_to: none
+# TODO(owner): set once the repository URL is decided.
+# repository: https://github.com/OWNER/dbase_postgresql
+# issue_tracker: https://github.com/OWNER/dbase_postgresql/issues
+topics:
+  - postgresql
+  - postgres
+  - sql
+  - parser
+  - database
+
+environment:
+  sdk: ^3.13.5
+
+dev_dependencies:
+  test: ^1.33.0
+  very_good_analysis: ^11.0.0
