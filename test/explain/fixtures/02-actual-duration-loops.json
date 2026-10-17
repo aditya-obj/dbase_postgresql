@@ -1,0 +1,74 @@
+// From PEV2 test src/services/__tests__/02-actual-duration-loops.spec.ts
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "Nested Loop",
+      "Parallel Aware": false,
+      "Join Type": "Inner",
+      "Startup Cost": 0.00,
+      "Total Cost": 611.27,
+      "Plan Rows": 13400,
+      "Plan Width": 8,
+      "Actual Startup Time": 0.025,
+      "Actual Total Time": 10.198,
+      "Actual Rows": 34956,
+      "Actual Loops": 1,
+      "Join Filter": "(t1.c1 > t2.c2)",
+      "Rows Removed by Join Filter": 5244,
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Relation Name": "t1",
+          "Alias": "t1",
+          "Startup Cost": 0.00,
+          "Total Cost": 6.02,
+          "Plan Rows": 402,
+          "Plan Width": 4,
+          "Actual Startup Time": 0.013,
+          "Actual Total Time": 0.058,
+          "Actual Rows": 402,
+          "Actual Loops": 1
+        },
+        {
+          "Node Type": "Materialize",
+          "Parent Relationship": "Inner",
+          "Parallel Aware": false,
+          "Startup Cost": 0.00,
+          "Total Cost": 2.50,
+          "Plan Rows": 100,
+          "Plan Width": 4,
+          "Actual Startup Time": 0.000,
+          "Actual Total Time": 0.008,
+          "Actual Rows": 100,
+          "Actual Loops": 402,
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Relation Name": "t2",
+              "Alias": "t2",
+              "Startup Cost": 0.00,
+              "Total Cost": 2.00,
+              "Plan Rows": 100,
+              "Plan Width": 4,
+              "Actual Startup Time": 0.005,
+              "Actual Total Time": 0.015,
+              "Actual Rows": 100,
+              "Actual Loops": 1
+            }
+          ]
+        }
+      ]
+    },
+    "Planning Time": 0.083,
+    "Execution Time": 12.035
+  }
+]

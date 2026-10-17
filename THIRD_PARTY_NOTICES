@@ -90,3 +90,42 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+
+------------------------------------------------------------------------
+3. PEV2 (https://github.com/dalibo/pev2)
+------------------------------------------------------------------------
+
+Material ported (commit 3cca315, v1.24.0, fetched 2026-10-17):
+
+  * src/services/plan-service.ts
+      -> lib/src/explain/plan_metrics.dart
+         (exclusive time with loops and parallel workers, children
+         duration rule, CTE scan and InitPlan fix-ups, exclusive cost,
+         planner estimate factor)
+  * src/node.ts, src/interfaces.ts
+      -> lib/src/explain/explain_plan.dart (node display names)
+      -> lib/src/explain/plan_issues.dart (severity thresholds)
+  * src/services/__tests__/*.spec.ts and cte-exclusive-time/*.plan
+      -> test/explain/pev2_metrics_test.dart and
+         test/explain/fixtures/ (text plans converted to the FORMAT JSON
+         shape)
+
+License (from the LICENSE file):
+
+Copyright (c) 2019, Dalibo
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose, without fee, and without a written agreement
+is hereby granted, provided that the above copyright notice and this
+paragraph and the following two paragraphs appear in all copies.
+
+IN NO EVENT SHALL DALIBO BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT,
+SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS,
+ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF
+DALIBO HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+DALIBO SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND DALIBO
+HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+OR MODIFICATIONS.

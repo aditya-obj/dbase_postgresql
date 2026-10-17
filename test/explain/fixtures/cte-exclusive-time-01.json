@@ -1,0 +1,141 @@
+// From PEV2 test src/services/__tests__/cte-exclusive-time/01.plan
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "Nested Loop",
+      "Parallel Aware": false,
+      "Join Type": "Inner",
+      "Startup Cost": 19202.84,
+      "Total Cost": 76099.33,
+      "Plan Rows": 53175,
+      "Plan Width": 144,
+      "Actual Startup Time": 146.530,
+      "Actual Total Time": 2999.096,
+      "Actual Rows": 4379,
+      "Actual Loops": 1,
+      "Plans": [
+        {
+          "Node Type": "Aggregate",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Strategy": "Hashed",
+          "Partial Mode": "Simple",
+          "Startup Cost": 19202.08,
+          "Total Cost": 19733.83,
+          "Plan Rows": 53175,
+          "Plan Width": 16,
+          "Actual Startup Time": 144.782,
+          "Actual Total Time": 147.879,
+          "Actual Rows": 4379,
+          "Actual Loops": 1,
+          "Group Key": ["m.principal_id"],
+          "Plans": [
+            {
+              "Node Type": "Hash Join",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Join Type": "Inner",
+              "Startup Cost": 7564.47,
+              "Total Cost": 18843.90,
+              "Plan Rows": 143269,
+              "Plan Width": 16,
+              "Actual Startup Time": 121.642,
+              "Actual Total Time": 142.157,
+              "Actual Rows": 4608,
+              "Actual Loops": 1,
+              "Hash Cond": "(se.id = m.community_id)",
+              "Plans": [
+                {
+                  "Node Type": "Function Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Function Name": "find_all_id_under_node",
+                  "Alias": "se",
+                  "Startup Cost": 0.25,
+                  "Total Cost": 10.25,
+                  "Plan Rows": 1000,
+                  "Plan Width": 16,
+                  "Actual Startup Time": 0.603,
+                  "Actual Total Time": 0.604,
+                  "Actual Rows": 6,
+                  "Actual Loops": 1
+                },
+                {
+                  "Node Type": "Hash",
+                  "Parent Relationship": "Inner",
+                  "Parallel Aware": false,
+                  "Startup Cost": 5280.54,
+                  "Total Cost": 5280.54,
+                  "Plan Rows": 118054,
+                  "Plan Width": 32,
+                  "Actual Startup Time": 121.000,
+                  "Actual Total Time": 121.000,
+                  "Actual Rows": 117942,
+                  "Actual Loops": 1,
+                  "Hash Buckets": 65536,
+                  "Hash Batches": 4,
+                  "Peak Memory Usage": 2688,
+                  "Plans": [
+                    {
+                      "Node Type": "Seq Scan",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Relation Name": "member_community_map",
+                      "Alias": "m",
+                      "Startup Cost": 0.00,
+                      "Total Cost": 5280.54,
+                      "Plan Rows": 118054,
+                      "Plan Width": 32,
+                      "Actual Startup Time": 0.010,
+                      "Actual Total Time": 54.564,
+                      "Actual Rows": 117942,
+                      "Actual Loops": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "CTE Scan",
+          "Parent Relationship": "Inner",
+          "Parallel Aware": false,
+          "CTE Name": "acl_row",
+          "Alias": "acl_row",
+          "Startup Cost": 0.76,
+          "Total Cost": 1.03,
+          "Plan Rows": 1,
+          "Plan Width": 144,
+          "Actual Startup Time": 0.649,
+          "Actual Total Time": 0.650,
+          "Actual Rows": 1,
+          "Actual Loops": 4379,
+          "Plans": [
+            {
+              "Node Type": "Result",
+              "Parent Relationship": "InitPlan",
+              "Subplan Name": "CTE acl_row",
+              "Parallel Aware": false,
+              "Startup Cost": 0.00,
+              "Total Cost": 0.76,
+              "Plan Rows": 1,
+              "Plan Width": 112,
+              "Actual Startup Time": 0.607,
+              "Actual Total Time": 0.607,
+              "Actual Rows": 1,
+              "Actual Loops": 4379
+            }
+          ]
+        }
+      ]
+    },
+    "Planning Time": 0.650,
+    "Execution Time": 2999.940
+  }
+]

@@ -1,0 +1,702 @@
+// From PEV2 test src/services/__tests__/cte-exclusive-time/03.plan
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "Subquery Scan",
+      "Parallel Aware": false,
+      "Alias": "location_state_templates",
+      "Startup Cost": 18119.01,
+      "Total Cost": 18688.60,
+      "Plan Rows": 200,
+      "Plan Width": 100,
+      "Actual Startup Time": 135738.621,
+      "Actual Total Time": 136606.664,
+      "Actual Rows": 19057,
+      "Actual Loops": 1,
+      "Plans": [
+        {
+          "Node Type": "Recursive Union",
+          "Parent Relationship": "InitPlan",
+          "Subplan Name": "CTE nested_templates",
+          "Parallel Aware": false,
+          "Startup Cost": 2657.85,
+          "Total Cost": 17981.86,
+          "Plan Rows": 1847,
+          "Plan Width": 147,
+          "Actual Startup Time": 130.693,
+          "Actual Total Time": 135231.371,
+          "Actual Rows": 56380,
+          "Actual Loops": 1,
+          "Plans": [
+            {
+              "Node Type": "Aggregate",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Strategy": "Sorted",
+              "Partial Mode": "Simple",
+              "Startup Cost": 2657.85,
+              "Total Cost": 3055.15,
+              "Plan Rows": 1827,
+              "Plan Width": 80,
+              "Actual Startup Time": 130.662,
+              "Actual Total Time": 196.354,
+              "Actual Rows": 18266,
+              "Actual Loops": 1,
+              "Plans": [
+                {
+                  "Node Type": "Sort",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Startup Cost": 2657.85,
+                  "Total Cost": 2703.51,
+                  "Plan Rows": 18266,
+                  "Plan Width": 80,
+                  "Actual Startup Time": 130.630,
+                  "Actual Total Time": 146.372,
+                  "Actual Rows": 18266,
+                  "Actual Loops": 1,
+                  "Sort Key": ["bt.componenturl", "bt.assetid", "bt.aspect", "bt.templateid"],
+                  "Sort Method": "external merge",
+                  "Sort Space Used": 1488,
+                  "Sort Space Type": "Disk",
+                  "Plans": [
+                    {
+                      "Node Type": "Hash Join",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Join Type": "Left",
+                      "Startup Cost": 59.05,
+                      "Total Cost": 552.90,
+                      "Plan Rows": 18266,
+                      "Plan Width": 80,
+                      "Actual Startup Time": 0.718,
+                      "Actual Total Time": 21.493,
+                      "Actual Rows": 18266,
+                      "Actual Loops": 1,
+                      "Hash Cond": "(bt.assetid = tal.assetid)",
+                      "Join Filter": "((bt.componenturl = tal.componenturl) AND (bt.aspect = tal.template_aspect))",
+                      "Plans": [
+                        {
+                          "Node Type": "Seq Scan",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Relation Name": "base_templates",
+                          "Alias": "bt",
+                          "Startup Cost": 0.00,
+                          "Total Cost": 411.66,
+                          "Plan Rows": 18266,
+                          "Plan Width": 72,
+                          "Actual Startup Time": 0.006,
+                          "Actual Total Time": 6.723,
+                          "Actual Rows": 18266,
+                          "Actual Loops": 1
+                        },
+                        {
+                          "Node Type": "Hash",
+                          "Parent Relationship": "Inner",
+                          "Parallel Aware": false,
+                          "Startup Cost": 58.92,
+                          "Total Cost": 58.92,
+                          "Plan Rows": 10,
+                          "Plan Width": 76,
+                          "Actual Startup Time": 0.706,
+                          "Actual Total Time": 0.706,
+                          "Actual Rows": 266,
+                          "Actual Loops": 1,
+                          "Plans": [
+                            {
+                              "Node Type": "Seq Scan",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Relation Name": "template_aspect_limits",
+                              "Alias": "tal",
+                              "Startup Cost": 0.00,
+                              "Total Cost": 58.92,
+                              "Plan Rows": 10,
+                              "Plan Width": 76,
+                              "Actual Startup Time": 0.012,
+                              "Actual Total Time": 0.548,
+                              "Actual Rows": 266,
+                              "Actual Loops": 1,
+                              "Filter": "((propertyid)::text = ''::text)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Node Type": "Append",
+              "Parent Relationship": "Inner",
+              "Parallel Aware": false,
+              "Startup Cost": 1488.92,
+              "Total Cost": 1488.98,
+              "Plan Rows": 2,
+              "Plan Width": 147,
+              "Actual Startup Time": 67454.018,
+              "Actual Total Time": 67477.691,
+              "Actual Rows": 19057,
+              "Actual Loops": 2,
+              "Plans": [
+                {
+                  "Node Type": "Aggregate",
+                  "Parent Relationship": "InitPlan",
+                  "Subplan Name": "CTE nested_level",
+                  "Parallel Aware": false,
+                  "Strategy": "Sorted",
+                  "Partial Mode": "Simple",
+                  "Startup Cost": 1488.74,
+                  "Total Cost": 1488.81,
+                  "Plan Rows": 1,
+                  "Plan Width": 187,
+                  "Actual Startup Time": 967.564,
+                  "Actual Total Time": 1029.975,
+                  "Actual Rows": 19057,
+                  "Actual Loops": 2,
+                  "Plans": [
+                    {
+                      "Node Type": "Sort",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Startup Cost": 1488.74,
+                      "Total Cost": 1488.74,
+                      "Plan Rows": 1,
+                      "Plan Width": 187,
+                      "Actual Startup Time": 966.769,
+                      "Actual Total Time": 977.630,
+                      "Actual Rows": 19076,
+                      "Actual Loops": 2,
+                      "Sort Key": ["nt.componenturl", "nt.assetid", "tp.propertyid", "(CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END)", "nt.limits", "aluatpvp.templateid", "nt.aspect"],
+                      "Sort Method": "quicksort",
+                      "Sort Space Used": 17,
+                      "Sort Space Type": "Memory",
+                      "Plans": [
+                        {
+                          "Node Type": "Nested Loop",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Join Type": "Left",
+                          "Startup Cost": 1480.41,
+                          "Total Cost": 1488.73,
+                          "Plan Rows": 1,
+                          "Plan Width": 187,
+                          "Actual Startup Time": 672.525,
+                          "Actual Total Time": 819.753,
+                          "Actual Rows": 19076,
+                          "Actual Loops": 2,
+                          "Join Filter": "((CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END) = tal.template_aspect)",
+                          "Plans": [
+                            {
+                              "Node Type": "Unique",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Startup Cost": 1480.41,
+                              "Total Cost": 1480.43,
+                              "Plan Rows": 1,
+                              "Plan Width": 152,
+                              "Actual Startup Time": 672.495,
+                              "Actual Total Time": 703.064,
+                              "Actual Rows": 19057,
+                              "Actual Loops": 2,
+                              "Plans": [
+                                {
+                                  "Node Type": "Sort",
+                                  "Parent Relationship": "Outer",
+                                  "Parallel Aware": false,
+                                  "Startup Cost": 1480.41,
+                                  "Total Cost": 1480.42,
+                                  "Plan Rows": 1,
+                                  "Plan Width": 152,
+                                  "Actual Startup Time": 671.605,
+                                  "Actual Total Time": 683.163,
+                                  "Actual Rows": 19094,
+                                  "Actual Loops": 2,
+                                  "Sort Key": ["nt.componenturl", "nt.assetid", "tp.propertyid", "(CASE WHEN (aluatpvp.aspect <@ nt.aspect) THEN nt.aspect ELSE aluatpvp.aspect END)", "ea.system_sort_number"],
+                                  "Sort Method": "quicksort",
+                                  "Sort Space Used": 17,
+                                  "Sort Space Type": "Memory",
+                                  "Plans": [
+                                    {
+                                      "Node Type": "Nested Loop",
+                                      "Parent Relationship": "Outer",
+                                      "Parallel Aware": false,
+                                      "Join Type": "Inner",
+                                      "Startup Cost": 970.03,
+                                      "Total Cost": 1480.40,
+                                      "Plan Rows": 1,
+                                      "Plan Width": 152,
+                                      "Actual Startup Time": 17.198,
+                                      "Actual Total Time": 506.362,
+                                      "Actual Rows": 19094,
+                                      "Actual Loops": 2,
+                                      "Join Filter": "(aluatpvp.aspect = ea.aspect)",
+                                      "Plans": [
+                                        {
+                                          "Node Type": "Nested Loop",
+                                          "Parent Relationship": "Outer",
+                                          "Parallel Aware": false,
+                                          "Join Type": "Anti",
+                                          "Startup Cost": 970.03,
+                                          "Total Cost": 1442.72,
+                                          "Plan Rows": 1,
+                                          "Plan Width": 148,
+                                          "Actual Startup Time": 17.187,
+                                          "Actual Total Time": 355.264,
+                                          "Actual Rows": 19094,
+                                          "Actual Loops": 2,
+                                          "Join Filter": "(tal.limit_aspect <@ aluatpvp.aspect)",
+                                          "Plans": [
+                                            {
+                                              "Node Type": "Nested Loop",
+                                              "Parent Relationship": "Outer",
+                                              "Parallel Aware": false,
+                                              "Join Type": "Inner",
+                                              "Startup Cost": 966.50,
+                                              "Total Cost": 1432.28,
+                                              "Plan Rows": 1,
+                                              "Plan Width": 148,
+                                              "Actual Startup Time": 17.164,
+                                              "Actual Total Time": 285.476,
+                                              "Actual Rows": 19197,
+                                              "Actual Loops": 2,
+                                              "Join Filter": "((nt.aspect @> aluatpvp.aspect) OR (nt.aspect <@ aluatpvp.aspect))",
+                                              "Plans": [
+                                                {
+                                                  "Node Type": "Hash Join",
+                                                  "Parent Relationship": "Outer",
+                                                  "Parallel Aware": false,
+                                                  "Join Type": "Inner",
+                                                  "Startup Cost": 966.50,
+                                                  "Total Cost": 1401.33,
+                                                  "Plan Rows": 32,
+                                                  "Plan Width": 112,
+                                                  "Actual Startup Time": 17.108,
+                                                  "Actual Total Time": 40.393,
+                                                  "Actual Rows": 18266,
+                                                  "Actual Loops": 2,
+                                                  "Hash Cond": "(nt.templateid = tp.templateid)",
+                                                  "Plans": [
+                                                    {
+                                                      "Node Type": "WorkTable Scan",
+                                                      "Parent Relationship": "Outer",
+                                                      "Parallel Aware": false,
+                                                      "CTE Name": "nested_templates",
+                                                      "Alias": "nt",
+                                                      "Startup Cost": 0.00,
+                                                      "Total Cost": 365.40,
+                                                      "Plan Rows": 18270,
+                                                      "Plan Width": 104,
+                                                      "Actual Startup Time": 0.043,
+                                                      "Actual Total Time": 15.877,
+                                                      "Actual Rows": 28190,
+                                                      "Actual Loops": 2
+                                                    },
+                                                    {
+                                                      "Node Type": "Hash",
+                                                      "Parent Relationship": "Inner",
+                                                      "Parallel Aware": false,
+                                                      "Startup Cost": 966.49,
+                                                      "Total Cost": 966.49,
+                                                      "Plan Rows": 1,
+                                                      "Plan Width": 16,
+                                                      "Actual Startup Time": 1.086,
+                                                      "Actual Total Time": 1.086,
+                                                      "Actual Rows": 6,
+                                                      "Actual Loops": 1,
+                                                      "Plans": [
+                                                        {
+                                                          "Node Type": "Nested Loop",
+                                                          "Parent Relationship": "Outer",
+                                                          "Parallel Aware": false,
+                                                          "Join Type": "Semi",
+                                                          "Startup Cost": 16.05,
+                                                          "Total Cost": 966.49,
+                                                          "Plan Rows": 1,
+                                                          "Plan Width": 16,
+                                                          "Actual Startup Time": 0.165,
+                                                          "Actual Total Time": 1.073,
+                                                          "Actual Rows": 6,
+                                                          "Actual Loops": 1,
+                                                          "Join Filter": "((((tp.propertyid)::text = (p.propertyid)::text) AND ((p.type)::text = 'templateid'::text)) OR (tp.propertyid IS NULL))",
+                                                          "Plans": [
+                                                            {
+                                                              "Node Type": "Seq Scan",
+                                                              "Parent Relationship": "Outer",
+                                                              "Parallel Aware": false,
+                                                              "Relation Name": "sq_p_template_properties",
+                                                              "Alias": "tp",
+                                                              "Startup Cost": 0.00,
+                                                              "Total Cost": 1.69,
+                                                              "Plan Rows": 69,
+                                                              "Plan Width": 16,
+                                                              "Actual Startup Time": 0.009,
+                                                              "Actual Total Time": 0.031,
+                                                              "Actual Rows": 69,
+                                                              "Actual Loops": 1
+                                                            },
+                                                            {
+                                                              "Node Type": "Materialize",
+                                                              "Parent Relationship": "Inner",
+                                                              "Parallel Aware": false,
+                                                              "Startup Cost": 16.05,
+                                                              "Total Cost": 21.55,
+                                                              "Plan Rows": 550,
+                                                              "Plan Width": 86,
+                                                              "Actual Startup Time": 0.001,
+                                                              "Actual Total Time": 0.007,
+                                                              "Actual Rows": 21,
+                                                              "Actual Loops": 69,
+                                                              "Plans": [
+                                                                {
+                                                                  "Node Type": "Seq Scan",
+                                                                  "Parent Relationship": "Outer",
+                                                                  "Parallel Aware": false,
+                                                                  "Relation Name": "sq_p_property",
+                                                                  "Alias": "p",
+                                                                  "Startup Cost": 0.00,
+                                                                  "Total Cost": 15.50,
+                                                                  "Plan Rows": 550,
+                                                                  "Plan Width": 86,
+                                                                  "Actual Startup Time": 0.035,
+                                                                  "Actual Total Time": 0.045,
+                                                                  "Actual Rows": 23,
+                                                                  "Actual Loops": 1
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "Node Type": "Index Scan",
+                                                  "Parent Relationship": "Inner",
+                                                  "Parallel Aware": false,
+                                                  "Scan Direction": "Forward",
+                                                  "Index Name": "all_loadable_url_asset_templateid_property_value_positions_pkey",
+                                                  "Relation Name": "all_loadable_url_asset_templateid_property_value_positions",
+                                                  "Alias": "aluatpvp",
+                                                  "Startup Cost": 0.00,
+                                                  "Total Cost": 0.94,
+                                                  "Plan Rows": 1,
+                                                  "Plan Width": 104,
+                                                  "Actual Startup Time": 0.010,
+                                                  "Actual Total Time": 0.011,
+                                                  "Actual Rows": 1,
+                                                  "Actual Loops": 36532,
+                                                  "Index Cond": "((aluatpvp.componenturl = nt.componenturl) AND (aluatpvp.assetid = nt.assetid) AND ((aluatpvp.propertyid)::text = (tp.propertyid)::text))"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "Node Type": "Bitmap Heap Scan",
+                                              "Parent Relationship": "Inner",
+                                              "Parallel Aware": false,
+                                              "Relation Name": "template_aspect_limits",
+                                              "Alias": "tal",
+                                              "Startup Cost": 3.53,
+                                              "Total Cost": 10.19,
+                                              "Plan Rows": 10,
+                                              "Plan Width": 40,
+                                              "Actual Startup Time": 0.001,
+                                              "Actual Total Time": 0.001,
+                                              "Actual Rows": 0,
+                                              "Actual Loops": 38394,
+                                              "Recheck Cond": "(tal.limitid = ANY (nt.limits))",
+                                              "Plans": [
+                                                {
+                                                  "Node Type": "Bitmap Index Scan",
+                                                  "Parent Relationship": "Outer",
+                                                  "Parallel Aware": false,
+                                                  "Index Name": "template_aspect_limits_pkey",
+                                                  "Startup Cost": 0.00,
+                                                  "Total Cost": 3.53,
+                                                  "Plan Rows": 10,
+                                                  "Plan Width": 0,
+                                                  "Actual Startup Time": 0.001,
+                                                  "Actual Total Time": 0.001,
+                                                  "Actual Rows": 0,
+                                                  "Actual Loops": 38394,
+                                                  "Index Cond": "(tal.limitid = ANY (nt.limits))"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Node Type": "Seq Scan",
+                                          "Parent Relationship": "Inner",
+                                          "Parallel Aware": false,
+                                          "Relation Name": "existing_aspects",
+                                          "Alias": "ea",
+                                          "Startup Cost": 0.00,
+                                          "Total Cost": 22.30,
+                                          "Plan Rows": 1230,
+                                          "Plan Width": 36,
+                                          "Actual Startup Time": 0.001,
+                                          "Actual Total Time": 0.003,
+                                          "Actual Rows": 7,
+                                          "Actual Loops": 38188
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Node Type": "Index Scan",
+                              "Parent Relationship": "Inner",
+                              "Parallel Aware": false,
+                              "Scan Direction": "Forward",
+                              "Index Name": "template_aspect_limits_idx1",
+                              "Relation Name": "template_aspect_limits",
+                              "Alias": "tal",
+                              "Startup Cost": 0.00,
+                              "Total Cost": 8.27,
+                              "Plan Rows": 1,
+                              "Plan Width": 108,
+                              "Actual Startup Time": 0.004,
+                              "Actual Total Time": 0.005,
+                              "Actual Rows": 0,
+                              "Actual Loops": 38114,
+                              "Index Cond": "((nt.componenturl = tal.componenturl) AND (nt.assetid = tal.assetid) AND ((tp.propertyid)::text = (tal.propertyid)::text))"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Node Type": "Unique",
+                  "Parent Relationship": "Member",
+                  "Parallel Aware": false,
+                  "Startup Cost": 0.11,
+                  "Total Cost": 0.12,
+                  "Plan Rows": 1,
+                  "Plan Width": 147,
+                  "Actual Startup Time": 67454.012,
+                  "Actual Total Time": 67454.012,
+                  "Actual Rows": 0,
+                  "Actual Loops": 2,
+                  "Plans": [
+                    {
+                      "Node Type": "Sort",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Startup Cost": 0.11,
+                      "Total Cost": 0.12,
+                      "Plan Rows": 1,
+                      "Plan Width": 147,
+                      "Actual Startup Time": 67454.010,
+                      "Actual Total Time": 67454.010,
+                      "Actual Rows": 0,
+                      "Actual Loops": 2,
+                      "Sort Key": ["nl1.componenturl", "nl1.assetid", "nl2.propertyid", "nl1.aspect"],
+                      "Sort Method": "quicksort",
+                      "Sort Space Used": 17,
+                      "Sort Space Type": "Memory",
+                      "Plans": [
+                        {
+                          "Node Type": "Nested Loop",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Join Type": "Anti",
+                          "Startup Cost": 0.00,
+                          "Total Cost": 0.10,
+                          "Plan Rows": 1,
+                          "Plan Width": 147,
+                          "Actual Startup Time": 67453.981,
+                          "Actual Total Time": 67453.981,
+                          "Actual Rows": 0,
+                          "Actual Loops": 2,
+                          "Join Filter": "((nl1.componenturl = nl3.componenturl) AND (nl1.assetid = nl3.assetid) AND (nl1.aspect = nl3.aspect) AND ((nl2.propertyid)::text = (nl3.propertyid)::text))",
+                          "Plans": [
+                            {
+                              "Node Type": "Nested Loop",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Join Type": "Inner",
+                              "Startup Cost": 0.00,
+                              "Total Cost": 0.06,
+                              "Plan Rows": 1,
+                              "Plan Width": 147,
+                              "Actual Startup Time": 968.533,
+                              "Actual Total Time": 35256.406,
+                              "Actual Rows": 1582,
+                              "Actual Loops": 2,
+                              "Join Filter": "((nl1.componenturl = nl2.componenturl) AND (nl1.assetid = nl2.assetid) AND (nl1.source_aspect = nl2.aspect))",
+                              "Plans": [
+                                {
+                                  "Node Type": "CTE Scan",
+                                  "Parent Relationship": "Outer",
+                                  "Parallel Aware": false,
+                                  "CTE Name": "nested_level",
+                                  "Alias": "nl1",
+                                  "Startup Cost": 0.00,
+                                  "Total Cost": 0.02,
+                                  "Plan Rows": 1,
+                                  "Plan Width": 132,
+                                  "Actual Startup Time": 967.757,
+                                  "Actual Total Time": 984.136,
+                                  "Actual Rows": 791,
+                                  "Actual Loops": 2,
+                                  "Filter": "(aspect <> source_aspect)"
+                                },
+                                {
+                                  "Node Type": "CTE Scan",
+                                  "Parent Relationship": "Inner",
+                                  "Parallel Aware": false,
+                                  "CTE Name": "nested_level",
+                                  "Alias": "nl2",
+                                  "Startup Cost": 0.00,
+                                  "Total Cost": 0.02,
+                                  "Plan Rows": 1,
+                                  "Plan Width": 115,
+                                  "Actual Startup Time": 0.005,
+                                  "Actual Total Time": 24.307,
+                                  "Actual Rows": 38114,
+                                  "Actual Loops": 1582
+                                }
+                              ]
+                            },
+                            {
+                              "Node Type": "CTE Scan",
+                              "Parent Relationship": "Inner",
+                              "Parallel Aware": false,
+                              "CTE Name": "nested_level",
+                              "Alias": "nl3",
+                              "Startup Cost": 0.00,
+                              "Total Cost": 0.02,
+                              "Plan Rows": 1,
+                              "Plan Width": 111,
+                              "Actual Startup Time": 0.006,
+                              "Actual Total Time": 11.188,
+                              "Actual Rows": 17996,
+                              "Actual Loops": 3164
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Node Type": "CTE Scan",
+                  "Parent Relationship": "Member",
+                  "Parallel Aware": false,
+                  "CTE Name": "nested_level",
+                  "Alias": "nested_level",
+                  "Startup Cost": 0.00,
+                  "Total Cost": 0.02,
+                  "Plan Rows": 1,
+                  "Plan Width": 147,
+                  "Actual Startup Time": 0.004,
+                  "Actual Total Time": 14.390,
+                  "Actual Rows": 19057,
+                  "Actual Loops": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "Aggregate",
+          "Parent Relationship": "Subquery",
+          "Parallel Aware": false,
+          "Strategy": "Sorted",
+          "Partial Mode": "Simple",
+          "Startup Cost": 137.15,
+          "Total Cost": 162.74,
+          "Plan Rows": 200,
+          "Plan Width": 72,
+          "Actual Startup Time": 135738.483,
+          "Actual Total Time": 135903.633,
+          "Actual Rows": 19057,
+          "Actual Loops": 1,
+          "Plans": [
+            {
+              "Node Type": "Sort",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Startup Cost": 137.15,
+              "Total Cost": 141.77,
+              "Plan Rows": 1847,
+              "Plan Width": 72,
+              "Actual Startup Time": 135738.428,
+              "Actual Total Time": 135812.668,
+              "Actual Rows": 56380,
+              "Actual Loops": 1,
+              "Sort Key": ["nt.componenturl", "nt.assetid", "nt.aspect"],
+              "Sort Method": "external merge",
+              "Sort Space Used": 4632,
+              "Sort Space Type": "Disk",
+              "Plans": [
+                {
+                  "Node Type": "CTE Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "CTE Name": "nested_templates",
+                  "Alias": "nt",
+                  "Startup Cost": 0.00,
+                  "Total Cost": 36.94,
+                  "Plan Rows": 1847,
+                  "Plan Width": 72,
+                  "Actual Startup Time": 130.699,
+                  "Actual Total Time": 135337.593,
+                  "Actual Rows": 56380,
+                  "Actual Loops": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "Aggregate",
+          "Parent Relationship": "SubPlan",
+          "Subplan Name": "SubPlan 3",
+          "Parallel Aware": false,
+          "Strategy": "Plain",
+          "Partial Mode": "Simple",
+          "Startup Cost": 2.70,
+          "Total Cost": 2.71,
+          "Plan Rows": 1,
+          "Plan Width": 12,
+          "Actual Startup Time": 0.034,
+          "Actual Total Time": 0.035,
+          "Actual Rows": 1,
+          "Actual Loops": 19057,
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Relation Name": "sq_p_template_properties",
+              "Alias": "sq_p_template_properties",
+              "Startup Cost": 0.00,
+              "Total Cost": 2.55,
+              "Plan Rows": 58,
+              "Plan Width": 12,
+              "Actual Startup Time": 0.003,
+              "Actual Total Time": 0.021,
+              "Actual Rows": 22,
+              "Actual Loops": 19057,
+              "Filter": "(templateid = ANY ($3))"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

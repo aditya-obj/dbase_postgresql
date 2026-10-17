@@ -15,12 +15,13 @@ contains the parts a client needs before it opens a socket:
 | SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. |
 | Statement splitter | same | Splits a script the way `psql` does, including `BEGIN ATOMIC` bodies and `COPY ... FROM STDIN` data. Also answers "which statement is under the cursor". |
 | Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE` (or with `WHERE true`), `DROP`, `TRUNCATE`, risky `MERGE`, `EXPLAIN ANALYZE` of writes, ways out of a read-only session, `LOCK` and side-effect functions. Names the affected tables. It fails closed. |
+| EXPLAIN analyzer | `package:dbase_postgresql/explain.dart` | Parses `EXPLAIN (FORMAT JSON)` output, computes self time and cost per node, ranks the top issues, and builds version-safe `EXPLAIN` options. |
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.3.0 (unreleased), not published yet (`publish_to: none` until the
+> Status: 0.4.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
-> Material ported from PostgreSQL and libpg_query keeps its own license;
+> Material ported from PostgreSQL, libpg_query and PEV2 keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
 
 ## Connection strings
@@ -217,6 +218,57 @@ a `READ ONLY` transaction (and check the server's
 `default_transaction_read_only` after each statement) when read-only must
 be guaranteed.
 
+## EXPLAIN plans
+
+```dart
+import 'package:dbase_postgresql/explain.dart';
+
+const options = ExplainOptions(analyze: true); // BUFFERS, SETTINGS on
+final sql = 'EXPLAIN ${options.toSql(serverVersionNum)} $statement';
+// ... run it (ANALYZE executes: wrap it in BEGIN/ROLLBACK or a savepoint)
+
+final plan = ExplainPlan.parse(jsonCell);    // FormatException if not a plan
+final metrics = PlanMetrics.compute(plan);
+for (final node in plan.nodes) {             // pre-order, nodes[i].id == i
+  final m = metrics[node.id];
+  print('${'  ' * node.depth}${node.displayName} ${node.target ?? ''} '
+      '${m.selfMs} ms (${m.selfPercent} %)');
+}
+for (final issue in PlanIssues.find(plan, metrics)) {  // ≤ 3, ranked
+  print('${issue.code.name} at node ${issue.nodeId}: ${issue.facts}');
+}
+```
+
+- **Parsing.** `ExplainPlan.parseAll` reads every plan of the array.
+  Nodes keep every raw key in `properties`, so new server keys still
+  show up. `displayName` is composed the way the text format and PEV2
+  show it (`Parallel Hash Left Join`, `Partial HashAggregate`, `Index
+  Scan Backward`, `Update`). `analyzed`, `timed` and `hasBuffers` say
+  which options the plan was run with. PostgreSQL 17 and 18 number
+  formats parse alike, and `disabled` covers both 18's `Disabled` key
+  and 17's `disable_cost`.
+- **Metrics.** Inclusive time is `Actual Total Time × loops ÷ (workers
+  launched + 1)`. Self time subtracts the children (not InitPlans, except
+  under `Result`), moves a CTE's time out of the `CTE Scan`s that read it
+  and an InitPlan's time out of the nodes that use its result, and is
+  clamped at 0. `selfPercent` is of `Execution Time`. `selfCost` (for
+  plan-only bars) is `Total Cost` minus the children's. `otherMs` is the
+  execution time no node or trigger accounts for, when above 5 %.
+- **Issues.** Each `PlanIssue` has a `code`, an optional `nodeId`, an
+  `impact` (share of execution time a fix could save), a 0–5 `score`
+  and `facts` (numbers and names such as `percent`, `ms`, `estimated`,
+  `actual`, `column`, `setting`). Issues below 10 % impact are dropped,
+  queries under 10 ms get none, and without `ANALYZE` only plan-only
+  checks (disabled nodes) run. The library has no wording.
+- **Options.** `ExplainOptions.toSql(serverVersionNum)` drops
+  `GENERIC_PLAN` before 16, `SERIALIZE`/`MEMORY` before 17, `WAL`,
+  `SERIALIZE` and `TIMING OFF` without `ANALYZE`, and `GENERIC_PLAN`
+  with it. It sends `BUFFERS` explicitly so 13–17 match 18.
+
+The metrics are ported from [PEV2](https://github.com/dalibo/pev2)
+(`plan-service.ts`), and PEV2's test plans run in
+`test/explain/pev2_metrics_test.dart`.
+
 ## Development
 
 ```sh
@@ -242,6 +294,6 @@ reporting vulnerabilities.
 
 The tests include libpq's `001_uri.pl` corpus (63 cases) and
 libpg_query's split vectors, ported with their licenses under
-`test/third_party/`. Each case that deliberately diverges carries a
+`test/third_party/`, and PEV2's plan tests under `test/explain/`. Each case that deliberately diverges carries a
 `diverges:` reason. Treat these corpora as the specification: change the
 code to satisfy them, never the expectations to satisfy the code.

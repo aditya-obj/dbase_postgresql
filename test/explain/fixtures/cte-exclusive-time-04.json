@@ -1,0 +1,97 @@
+// From PEV2 test src/services/__tests__/cte-exclusive-time/04.plan
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "Limit",
+      "Parallel Aware": false,
+      "Startup Cost": 3474.45,
+      "Total Cost": 3474.45,
+      "Plan Rows": 1,
+      "Plan Width": 6,
+      "Actual Startup Time": 0.078,
+      "Actual Total Time": 0.080,
+      "Actual Rows": 0,
+      "Actual Loops": 1,
+      "Plans": [
+        {
+          "Node Type": "Limit",
+          "Parent Relationship": "InitPlan",
+          "Subplan Name": "InitPlan 1 (returns $0)",
+          "Parallel Aware": false,
+          "Startup Cost": 0.56,
+          "Total Cost": 2.58,
+          "Plan Rows": 1,
+          "Plan Width": 4,
+          "Actual Startup Time": 0.060,
+          "Actual Total Time": 0.060,
+          "Actual Rows": 0,
+          "Actual Loops": 1,
+          "Plans": [
+            {
+              "Node Type": "Index Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Scan Direction": "Forward",
+              "Index Name": "pond_item_common_pkey",
+              "Relation Name": "pond_item_common",
+              "Alias": "pond_item_common_1",
+              "Startup Cost": 0.56,
+              "Total Cost": 2.58,
+              "Plan Rows": 1,
+              "Plan Width": 4,
+              "Actual Startup Time": 0.060,
+              "Actual Total Time": 0.060,
+              "Actual Rows": 0,
+              "Actual Loops": 1,
+              "Index Cond": "(objectid = 333)"
+            }
+          ]
+        },
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Startup Cost": 3471.87,
+          "Total Cost": 3471.87,
+          "Plan Rows": 1,
+          "Plan Width": 6,
+          "Actual Startup Time": 0.078,
+          "Actual Total Time": 0.078,
+          "Actual Rows": 0,
+          "Actual Loops": 1,
+          "Sort Key": ["pond_item_common.nbr_sale", "pond_item_common.objectid"],
+          "Sort Method": "quicksort",
+          "Sort Space Used": 25,
+          "Sort Space Type": "Memory",
+          "Plans": [
+            {
+              "Node Type": "Index Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Scan Direction": "Forward",
+              "Index Name": "pond_item_common_x1",
+              "Relation Name": "pond_item_common",
+              "Alias": "pond_item_common",
+              "Startup Cost": 0.56,
+              "Total Cost": 3471.86,
+              "Plan Rows": 1,
+              "Plan Width": 6,
+              "Actual Startup Time": 0.063,
+              "Actual Total Time": 0.063,
+              "Actual Rows": 0,
+              "Actual Loops": 1,
+              "Index Cond": "(pond_user = $0)",
+              "Filter": "((objectid <> 111) AND (status = 30) AND (1 = (misc_bits & 16)) AND (video_standard = ANY ('{1,2,3,4,5,6,7,8,9}'::integer[])))"
+            }
+          ]
+        }
+      ]
+    },
+    "Execution Time": 0.109
+  }
+]

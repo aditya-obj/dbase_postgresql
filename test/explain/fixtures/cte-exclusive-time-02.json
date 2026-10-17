@@ -1,0 +1,76 @@
+// From PEV2 test src/services/__tests__/cte-exclusive-time/02.plan
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "Append",
+      "Parallel Aware": false,
+      "Startup Cost": 0.07,
+      "Total Cost": 0.35,
+      "Plan Rows": 4,
+      "Plan Width": 8,
+      "Actual Startup Time": 101.225,
+      "Actual Total Time": 504.954,
+      "Actual Rows": 5,
+      "Actual Loops": 1,
+      "Plans": [
+        {
+          "Node Type": "Function Scan",
+          "Parent Relationship": "InitPlan",
+          "Subplan Name": "CTE x",
+          "Parallel Aware": false,
+          "Function Name": "generate_series",
+          "Alias": "i",
+          "Startup Cost": 0.00,
+          "Total Cost": 0.07,
+          "Plan Rows": 5,
+          "Plan Width": 8,
+          "Actual Startup Time": 101.209,
+          "Actual Total Time": 504.880,
+          "Actual Rows": 5,
+          "Actual Loops": 1
+        },
+        {
+          "Node Type": "CTE Scan",
+          "Parent Relationship": "Member",
+          "Parallel Aware": false,
+          "CTE Name": "x",
+          "Alias": "x",
+          "Startup Cost": 0.00,
+          "Total Cost": 0.11,
+          "Plan Rows": 2,
+          "Plan Width": 8,
+          "Actual Startup Time": 101.223,
+          "Actual Total Time": 504.937,
+          "Actual Rows": 2,
+          "Actual Loops": 1,
+          "Filter": "(i < 3)",
+          "Rows Removed by Filter": 3
+        },
+        {
+          "Node Type": "CTE Scan",
+          "Parent Relationship": "Member",
+          "Parallel Aware": false,
+          "CTE Name": "x",
+          "Alias": "x_1",
+          "Startup Cost": 0.00,
+          "Total Cost": 0.11,
+          "Plan Rows": 2,
+          "Plan Width": 8,
+          "Actual Startup Time": 0.005,
+          "Actual Total Time": 0.007,
+          "Actual Rows": 3,
+          "Actual Loops": 1,
+          "Filter": "(i > 2)",
+          "Rows Removed by Filter": 2
+        }
+      ]
+    },
+    "Planning Time": 0.499,
+    "Execution Time": 505.124
+  }
+]

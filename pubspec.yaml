@@ -2,8 +2,8 @@ name: dbase_postgresql
 description: >-
   Pure-Dart PostgreSQL toolkit: libpq connection string parsing, .pgpass,
   service file and pgAdmin importers, a SQL lexer, a psql-style statement
-  splitter, and statement safety checks.
-version: 0.3.0
+  splitter, statement safety checks, and an EXPLAIN (FORMAT JSON) analyzer.
+version: 0.4.0
 publish_to: none
 repository: https://github.com/aditya-obj/dbase_postgresql
 issue_tracker: https://github.com/aditya-obj/dbase_postgresql/issues

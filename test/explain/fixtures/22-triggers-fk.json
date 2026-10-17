@@ -1,0 +1,178 @@
+// From PEV2 test src/services/__tests__/22-triggers.spec.ts (third plan)
+// (https://github.com/dalibo/pev2, commit 3cca315).
+// Copyright (c) 2019, Dalibo. PostgreSQL-style license; see
+// THIRD_PARTY_NOTICES.
+// Converted from EXPLAIN text format to the FORMAT JSON shape: same
+// tree, key names as PostgreSQL prints them, numbers as printed.
+[
+  {
+    "Plan": {
+      "Node Type": "ModifyTable",
+      "Parallel Aware": false,
+      "Operation": "Delete",
+      "Relation Name": "emailmessages",
+      "Alias": "emailmessages",
+      "Startup Cost": 224.85,
+      "Total Cost": 38989.92,
+      "Plan Rows": 5000,
+      "Plan Width": 34,
+      "Actual Startup Time": 217158.570,
+      "Actual Total Time": 217158.570,
+      "Actual Rows": 0,
+      "Actual Loops": 1,
+      "Shared Hit Blocks": 2579331,
+      "Shared Read Blocks": 506594,
+      "Shared Dirtied Blocks": 503671,
+      "Plans": [
+        {
+          "Node Type": "Nested Loop",
+          "Parent Relationship": "Member",
+          "Parallel Aware": false,
+          "Join Type": "Inner",
+          "Startup Cost": 224.85,
+          "Total Cost": 38989.92,
+          "Plan Rows": 5000,
+          "Plan Width": 34,
+          "Actual Startup Time": 7.105,
+          "Actual Total Time": 4576.019,
+          "Actual Rows": 5000,
+          "Actual Loops": 1,
+          "Shared Hit Blocks": 20223,
+          "Shared Read Blocks": 395,
+          "Plans": [
+            {
+              "Node Type": "Aggregate",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Strategy": "Hashed",
+              "Partial Mode": "Simple",
+              "Startup Cost": 224.42,
+              "Total Cost": 274.42,
+              "Plan Rows": 5000,
+              "Plan Width": 32,
+              "Actual Startup Time": 7.072,
+              "Actual Total Time": 23.891,
+              "Actual Rows": 5000,
+              "Actual Loops": 1,
+              "Group Key": ["\"ANY_subquery\".emailmessageid"],
+              "Shared Hit Blocks": 583,
+              "Plans": [
+                {
+                  "Node Type": "Subquery Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Alias": "\"ANY_subquery\"",
+                  "Startup Cost": 0.43,
+                  "Total Cost": 211.92,
+                  "Plan Rows": 5000,
+                  "Plan Width": 32,
+                  "Actual Startup Time": 0.064,
+                  "Actual Total Time": 3.892,
+                  "Actual Rows": 5000,
+                  "Actual Loops": 1,
+                  "Shared Hit Blocks": 583,
+                  "Plans": [
+                    {
+                      "Node Type": "Limit",
+                      "Parent Relationship": "Subquery",
+                      "Parallel Aware": false,
+                      "Startup Cost": 0.43,
+                      "Total Cost": 161.92,
+                      "Plan Rows": 5000,
+                      "Plan Width": 4,
+                      "Actual Startup Time": 0.053,
+                      "Actual Total Time": 2.808,
+                      "Actual Rows": 5000,
+                      "Actual Loops": 1,
+                      "Shared Hit Blocks": 583,
+                      "Plans": [
+                        {
+                          "Node Type": "Index Only Scan",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Scan Direction": "Forward",
+                          "Index Name": "emailmessages_pkey",
+                          "Relation Name": "emailmessages",
+                          "Alias": "emailmessages_1",
+                          "Startup Cost": 0.43,
+                          "Total Cost": 89834.20,
+                          "Plan Rows": 2781465,
+                          "Plan Width": 4,
+                          "Actual Startup Time": 0.051,
+                          "Actual Total Time": 2.260,
+                          "Actual Rows": 5000,
+                          "Actual Loops": 1,
+                          "Heap Fetches": 609,
+                          "Shared Hit Blocks": 583
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Node Type": "Index Scan",
+              "Parent Relationship": "Inner",
+              "Parallel Aware": false,
+              "Scan Direction": "Forward",
+              "Index Name": "emailmessages_pkey",
+              "Relation Name": "emailmessages",
+              "Alias": "emailmessages",
+              "Startup Cost": 0.43,
+              "Total Cost": 7.73,
+              "Plan Rows": 1,
+              "Plan Width": 10,
+              "Actual Startup Time": 0.903,
+              "Actual Total Time": 0.905,
+              "Actual Rows": 1,
+              "Actual Loops": 5000,
+              "Index Cond": "(emailmessageid = \"ANY_subquery\".emailmessageid)",
+              "Shared Hit Blocks": 19640,
+              "Shared Read Blocks": 395
+            }
+          ]
+        }
+      ]
+    },
+    "Planning Time": 2.482,
+    "Triggers": [
+      {
+        "Constraint Name": "headeremessageref",
+        "Time": 4038.247,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "formdataemessageref",
+        "Time": 81.415,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "attachemessageref",
+        "Time": 158945.774,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "outgoingemessageref",
+        "Time": 332.316,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "incomingemessageref",
+        "Time": 125.492,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "eventemessageref",
+        "Time": 251.365,
+        "Calls": 5000
+      },
+      {
+        "Constraint Name": "filteredemessageref",
+        "Time": 125.894,
+        "Calls": 5000
+      }
+    ],
+    "Execution Time": 381072.164
+  }
+]

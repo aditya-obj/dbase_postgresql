@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.4.0 (unreleased)
+
+### Added
+
+- `package:dbase_postgresql/explain.dart`, also exported from
+  `dbase_postgresql.dart`: an `EXPLAIN (FORMAT JSON)` analyzer for
+  PostgreSQL 13–18.
+  - `ExplainPlan.parse` / `ExplainPlan.parseAll`: typed plans
+    (`PlanNode`, `NodeActuals`, `BufferCounts`, `TriggerTiming`,
+    `JitSummary`). Nodes are numbered in pre-order, get a composed
+    `displayName` (`Parallel Hash Left Join`, `Partial HashAggregate`,
+    `Index Scan Backward`, `Update`) and a `target` label, and keep every
+    raw key in `properties`. Numbers parse the same from PostgreSQL 17
+    (`1000`) and 18 (`1000.00`). Disabled nodes are detected from
+    `"Disabled": true` (18+) or `disable_cost` (17 and older). Bad input
+    throws `FormatException` without repeating it.
+  - `PlanMetrics.compute`: inclusive and self time per node (loops,
+    parallel workers, CTE and InitPlan fix-ups), self cost, row totals,
+    estimate factors, self buffers, trigger time and unattributed time.
+  - `PlanIssues.find`: up to three ranked `PlanIssue`s (15
+    `PlanIssueCode`s: slow node, row estimate, missing index, index
+    filtering, sort/hash spills, many loops, lossy bitmap, heap fetches,
+    cache misses, JIT, missing workers, planning time, trigger time,
+    disabled nodes) with the numbers the app needs in `facts`. No
+    wording: the app words issues from codes and facts. Thresholds are
+    named constants.
+  - `ExplainOptions.toSql(serverVersionNum)`: the option list, with
+    options the server or the other options don't allow left out.
+- The metrics are ported from PEV2 (PostgreSQL-style license); its test
+  plans are in `test/explain/fixtures/`. See `THIRD_PARTY_NOTICES`.
+
 ## 0.3.0 (unreleased)
 
 ### Added
