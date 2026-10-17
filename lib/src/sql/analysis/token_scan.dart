@@ -4,6 +4,8 @@
 
 import 'package:dbase_postgresql/src/sql/sql_token.dart';
 
+const _falseValues = {'false', 'off', '0', 'no'};
+
 /// The non-trivia tokens of a statement with lookup helpers. Out-of-range
 /// indexes are safe and simply do not match.
 final class TokenScan {
@@ -87,6 +89,94 @@ final class TokenScan {
   /// Whether any top-level token from [from] is one of [words].
   bool hasTopLevelWord(Set<String> words, {int from = 0}) =>
       topLevelIndexes(from: from).any((i) => words.contains(word(i)));
+
+  /// Whether the token at [index] is the operator [symbol], e.g. `=`.
+  bool isOperator(int index, String symbol) =>
+      index >= 0 &&
+      index < length &&
+      tokens[index].kind == SqlTokenKind.operator &&
+      tokens[index].text == symbol;
+
+  /// Whether the token at [index] can be a name part: an unquoted word or
+  /// a double-quoted identifier.
+  bool isName(int index) =>
+      index >= 0 &&
+      index < length &&
+      (tokens[index].isWord ||
+          tokens[index].kind == SqlTokenKind.quotedIdentifier);
+
+  /// Reads a possibly qualified name (`a`, `s."T"`, `db.s.t`) at [index].
+  /// Returns the name in server form ([SqlToken.normalized] parts joined
+  /// with `.`) and the index just past it, or `null` when [index] is not a
+  /// name.
+  ({String name, int next})? qualifiedName(int index) {
+    if (!isName(index)) return null;
+    final parts = [tokens[index].normalized];
+    var i = index + 1;
+    while (isPunctuation(i, '.') && isName(i + 1)) {
+      parts.add(tokens[i + 1].normalized);
+      i += 2;
+    }
+    return (name: parts.join('.'), next: i);
+  }
+
+  /// Reads a comma-separated list of names at [index], as in `TRUNCATE`,
+  /// `LOCK` and `DROP`. Each item may have a leading `ONLY`, a trailing
+  /// `*` and a trailing parenthesised argument list, all skipped. Stops at
+  /// the first token that doesn't continue the list.
+  ({List<String> names, int next}) nameList(int index) {
+    final names = <String>[];
+    var i = index;
+    while (true) {
+      if (isWord(i, 'only') && isName(i + 1)) i++;
+      final item = qualifiedName(i);
+      if (item == null) break;
+      names.add(item.name);
+      i = item.next;
+      if (isOperator(i, '*')) i++;
+      if (isPunctuation(i, '(')) {
+        final close = matchingClose(i);
+        if (close < 0) break;
+        i = close + 1;
+      }
+      if (!isPunctuation(i, ',')) break;
+      i++;
+    }
+    return (names: names, next: i);
+  }
+
+  /// Whether an option list like `(ANALYZE, BUFFERS true)` turns on any
+  /// option in [names]. This scan must hold only the tokens between the
+  /// parentheses. An option with a value other than `false`/`off`/`0`/`no`
+  /// (quoted or not) counts as enabled (fail closed).
+  bool optionListEnables(Set<String> names) {
+    var enabled = false;
+    var itemStart = 0;
+    for (var i = 0; i <= length; i++) {
+      if (i < length && !isPunctuation(i, ',')) continue;
+      if (names.contains(word(itemStart))) {
+        enabled =
+            itemStart + 1 >= i ||
+            !_falseValues.contains(literalValue(itemStart + 1));
+      }
+      itemStart = i + 1;
+    }
+    return enabled;
+  }
+
+  /// The lower-cased value of the token at [index]: the content of a plain
+  /// `'...'` string (with `''` unescaped), otherwise the token text.
+  String? literalValue(int index) {
+    if (index < 0 || index >= length) return null;
+    final token = tokens[index];
+    final text = token.text.toLowerCase();
+    if (token.kind == SqlTokenKind.string &&
+        text.startsWith("'") &&
+        text.length >= 2) {
+      return text.substring(1, text.length - 1).replaceAll("''", "'");
+    }
+    return text;
+  }
 
   /// A sub-scan of tokens `[from, to)`.
   TokenScan slice(int from, [int? to]) => TokenScan._(tokens.sublist(from, to));

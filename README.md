@@ -14,11 +14,11 @@ contains the parts a client needs before it opens a socket:
 | Importers | `package:dbase_postgresql/importers.dart` | Reads `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` with libpq's and pgAdmin's own rules. Reports per-line diagnostics and never echoes passwords. |
 | SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. |
 | Statement splitter | same | Splits a script the way `psql` does, including `BEGIN ATOMIC` bodies and `COPY ... FROM STDIN` data. Also answers "which statement is under the cursor". |
-| Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE`, `DROP`, `TRUNCATE`, `EXPLAIN ANALYZE` of writes and more. It fails closed. |
+| Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE` (or with `WHERE true`), `DROP`, `TRUNCATE`, risky `MERGE`, `EXPLAIN ANALYZE` of writes, ways out of a read-only session, `LOCK` and side-effect functions. Names the affected tables. It fails closed. |
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.2.0 (unreleased), not published yet (`publish_to: none` until the
+> Status: 0.3.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL and libpg_query keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
@@ -180,20 +180,42 @@ result.findings.map((f) => f.code); // [dataModifyingCte, deleteWithoutWhere]
   `EXPLAIN ANALYZE`, `SELECT INTO`, `COPY` direction, and `DO`/`CALL`
   (counted as writing).
 - `cannotRunInTransactionBlock`: `VACUUM`, `CREATE/DROP DATABASE`,
-  `... CONCURRENTLY`, `ALTER SYSTEM`, tablespaces, `DISCARD ALL`,
+  `... CONCURRENTLY` (including `REINDEX (CONCURRENTLY)`), `REINDEX
+  SCHEMA/DATABASE/SYSTEM`, `ALTER SYSTEM`, tablespaces, `DISCARD ALL`,
   `COMMIT/ROLLBACK PREPARED`, and so on. Subscription commands and
   `REINDEX`/`CLUSTER` of partitioned tables depend on server state and
   are not detected.
 - `findings`: `SafetyFinding(code, severity, message, offset)` with
-  severities `info`, `warning` and `danger`.
+  severities `info`, `warning` and `danger`. Besides missing `WHERE`,
+  `DROP`, `TRUNCATE` and the like, the codes cover:
+  - `readOnlyEscape` (danger): `SET default_transaction_read_only = off`,
+    `BEGIN READ WRITE`, `RESET ALL`, `DISCARD ALL`, `set_config(...)` on
+    those settings, and other ways to undo a read-only session. Also
+    exposed as `changesTransactionMode`.
+  - `whereAlwaysTrue` (warning): `WHERE true`, `WHERE 1 = 1`, `WHERE x = x`
+    and other literal tautologies.
+  - `mergeUnrestricted` and `mergeDeletesUnmatched` (danger), and
+    `mergeModifies` (warning) for any `MERGE`.
+  - `explicitLock` (warning) with the parsed `lockMode` (`TableLockMode`,
+    ordered by strength; a bare `LOCK t` is `ACCESS EXCLUSIVE`).
+  - `sideEffectFunction` (warning): calls such as `pg_terminate_backend`,
+    `pg_advisory_lock`, `dblink_exec`, `nextval` or `lo_import`.
+- `targets`: the tables or objects the statement changes, in the form the
+  server resolves (`Public.Orders` gives `public.orders`, `"My Table"`
+  gives `My Table`), for `UPDATE`/`DELETE`/`MERGE`, `TRUNCATE`, `DROP`,
+  `ALTER TABLE` and `LOCK`. `dropObjectType` says what a `DROP` removes,
+  and `cascades` is true for `TRUNCATE ... CASCADE` and `DROP ... CASCADE`.
 - **Fails closed.** Unterminated tokens, malformed numbers, unbalanced
   parentheses, unrecognised statements and multiple statements passed to
   `analyze` all give `unknown`, with a `danger` finding.
 
 **Limitation:** the analysis is lexical. A `SELECT` can still write
 through volatile functions (`nextval`, `pg_terminate_backend`, user
-functions). Use a `READ ONLY` transaction when read-only must be
-guaranteed.
+functions); well-known built-ins are reported as `sideEffectFunction`, but
+calls made inside user functions, views and `DO` bodies are not seen. Use
+a `READ ONLY` transaction (and check the server's
+`default_transaction_read_only` after each statement) when read-only must
+be guaranteed.
 
 ## Development
 

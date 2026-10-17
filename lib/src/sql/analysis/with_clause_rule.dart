@@ -32,6 +32,7 @@ const _mainStatementWords = {
 /// `[SEARCH ...] [CYCLE ...] [, ...] main`. Anything else fails closed.
 StatementAnalysis withClauseRule(TokenScan scan, int start) {
   final findings = <SafetyFinding>[];
+  final targets = <String>[];
   var cteWrites = false;
   var i = start + 1;
   if (scan.isWord(i, 'recursive')) i++;
@@ -65,6 +66,7 @@ StatementAnalysis withClauseRule(TokenScan scan, int start) {
     }
     cteWrites = cteWrites || body.writes;
     findings.addAll(body.findings);
+    targets.addAll(body.targets);
     i = close + 1;
 
     if (scan.isWord(i, 'search') || scan.isWord(i, 'cycle')) {
@@ -87,6 +89,7 @@ StatementAnalysis withClauseRule(TokenScan scan, int start) {
     writes: main.writes || cteWrites,
     cannotRunInTransactionBlock: main.cannotRunInTransactionBlock,
     findings: [...findings, ...main.findings],
+    targets: [...targets, ...main.targets],
   );
 }
 

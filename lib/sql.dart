@@ -10,6 +10,7 @@ export 'src/sql/analysis/safety_finding.dart'
 export 'src/sql/analysis/sql_statement_analyzer.dart' show SqlStatementAnalyzer;
 export 'src/sql/analysis/statement_analysis.dart' show StatementAnalysis;
 export 'src/sql/analysis/statement_kind.dart' show StatementKind;
+export 'src/sql/analysis/table_lock_mode.dart' show TableLockMode;
 export 'src/sql/sql_keywords.dart'
     show
         SqlKeywordCategory,

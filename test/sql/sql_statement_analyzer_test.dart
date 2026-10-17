@@ -87,8 +87,11 @@ void main() {
       ]);
     });
 
-    test('DELETE ... WHERE true is not flagged', () {
-      expect(_a('DELETE FROM t WHERE true').findings, isEmpty);
+    test('DELETE ... WHERE true is a warning, not a missing WHERE', () {
+      expect(_codes('DELETE FROM t WHERE true'), [
+        SafetyFindingCode.whereAlwaysTrue,
+      ]);
+      expect(_a('DELETE FROM t WHERE true').requiresConfirmation, isFalse);
     });
 
     test('WHERE CURRENT OF counts as a WHERE', () {

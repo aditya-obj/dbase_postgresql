@@ -1,5 +1,55 @@
 # Changelog
 
+## 0.3.0 (unreleased)
+
+### Added
+
+- New `SafetyFindingCode`s:
+  - `readOnlyEscape` (danger): statements that can turn a read-only
+    session or transaction read-write. `SET [SESSION | LOCAL]
+    default_transaction_read_only` / `transaction_read_only` to anything
+    but `on`/`true`/`yes`/`1` (including `DEFAULT`), `SET [SESSION
+    CHARACTERISTICS AS] TRANSACTION ... READ WRITE`, `BEGIN` / `START
+    TRANSACTION ... READ WRITE`, `RESET` of either setting, `RESET ALL`,
+    `DISCARD ALL`, and `set_config()` calls naming either setting or
+    whose setting name isn't a plain string literal.
+  - `explicitLock` (warning): `LOCK`, with the mode in the new
+    `StatementAnalysis.lockMode`.
+  - `sideEffectFunction` (warning): calls to built-ins with side effects
+    (`pg_terminate_backend`, `pg_cancel_backend`, `pg_reload_conf`,
+    advisory locks, `pg_notify`, `dblink*`, `set_config`,
+    `pg_stat_reset*`, large-object writers, replication-slot functions,
+    `nextval`, `setval` and more) in queries, DML, `CALL` and `EXECUTE`.
+    Best effort; `writes` is unchanged.
+  - `whereAlwaysTrue` (warning): `UPDATE`/`DELETE` whose top-level `WHERE`
+    is a literal tautology (`true`, `'t'`, `1 = 1`, `NOT false`, `x = x`).
+  - `mergeUnrestricted` (danger), `mergeDeletesUnmatched` (danger) and
+    `mergeModifies` (warning, every `MERGE`).
+- `TableLockMode`, ordered from `accessShare` to `accessExclusive`.
+- `StatementAnalysis`:
+  - `targets`: the tables or objects changed by `UPDATE`, `DELETE`,
+    `MERGE`, `TRUNCATE`, `DROP`, `ALTER [FOREIGN] TABLE` and `LOCK`
+    (also inside CTEs and `EXPLAIN ANALYZE`), in the form the server
+    resolves.
+  - `cascades`: `TRUNCATE ... CASCADE` / `DROP ... CASCADE`. Their
+    finding messages also say that other objects are affected.
+  - `lockMode` and `dropObjectType`.
+  - `changesTransactionMode`: true when `readOnlyEscape` is reported.
+
+### Changed
+
+- `UPDATE`/`DELETE ... WHERE true` (and the other literal tautologies)
+  now report `whereAlwaysTrue`; they reported no finding before.
+- `COMMIT PREPARED` and `ROLLBACK PREPARED` now report `writes: true`:
+  they finish another session's transaction and are allowed in a
+  read-only transaction.
+- `cannotRunInTransactionBlock` is now true for `REINDEX SCHEMA`, for
+  `REINDEX (options) DATABASE | SYSTEM | SCHEMA`, and for an enabled
+  `CONCURRENTLY` in the `REINDEX` option list (PostgreSQL 14+).
+- Adding enum values is source-breaking for exhaustive `switch`es over
+  `SafetyFindingCode`, and the `index` of values after the insertion
+  points changes. Match on the value or name, not the index.
+
 ## 0.2.0 (unreleased)
 
 ### Added

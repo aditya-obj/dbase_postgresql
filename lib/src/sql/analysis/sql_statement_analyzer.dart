@@ -35,10 +35,10 @@ final class SqlStatementAnalyzer {
   ///
   /// Input with only whitespace and comments is [StatementKind.empty].
   /// Input with several statements is [StatementKind.unknown] with a
-  /// [SafetyFindingCode.multipleStatements] finding plus the findings of
-  /// each statement; split scripts with [SqlStatementSplitter] and call
-  /// [analyzeStatement] for each one instead. Finding offsets are relative
-  /// to [sql].
+  /// [SafetyFindingCode.multipleStatements] finding plus the findings,
+  /// targets and `cascades` of each statement; split scripts with
+  /// [SqlStatementSplitter] and call [analyzeStatement] for each one
+  /// instead. Finding offsets are relative to [sql].
   StatementAnalysis analyze(String sql) {
     for (final token in splitter.lexer.tokenize(sql)) {
       // Catches unterminated comments that the splitter would otherwise
@@ -65,6 +65,8 @@ final class SqlStatementAnalyzer {
       'before running.',
       statements[1].start,
       extraFindings: [for (final a in analyses) ...a.findings],
+      targets: [for (final a in analyses) ...a.targets],
+      cascades: analyses.any((a) => a.cascades),
     );
   }
 

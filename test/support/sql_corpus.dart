@@ -24,6 +24,13 @@ const sqlCorpus = <String>[
   r'SELECT $x$ unterminated dollar',
   'SELECT café, \u{1F600} FROM "té"; \\d+',
   r"DO $$ BEGIN RAISE NOTICE 'x;'; END $$; VACUUM; ALTER SYSTEM SET a=1",
+  "SET default_transaction_read_only = 'off'; BEGIN READ WRITE; RESET ALL",
+  "SELECT pg_catalog.set_config('transaction_read_only', 'off', true)",
+  'LOCK TABLE ONLY a, "B" * IN SHARE ROW EXCLUSIVE MODE NOWAIT;',
+  'DELETE FROM ONLY s.t WHERE (1 = 1) RETURNING *; UPDATE t SET a=1 WHERE x=x',
+  'MERGE INTO t USING s ON true WHEN NOT MATCHED BY SOURCE THEN DELETE',
+  'TRUNCATE a, b CASCADE; DROP FUNCTION f(int), g() CASCADE;',
+  'REINDEX (CONCURRENTLY true) TABLE t; REINDEX SCHEMA s',
 ];
 
 /// Connection strings, valid and invalid, for parser fuzzing.

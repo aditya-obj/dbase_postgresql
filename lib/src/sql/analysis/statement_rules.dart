@@ -3,6 +3,8 @@
 // implements the query/DML rules (internal).
 
 import 'package:dbase_postgresql/src/sql/analysis/ddl_rules.dart';
+import 'package:dbase_postgresql/src/sql/analysis/dml_rules.dart';
+import 'package:dbase_postgresql/src/sql/analysis/function_rules.dart';
 import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
 import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
 import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
@@ -84,30 +86,35 @@ StatementAnalysis analyzeTokens(TokenScan scan) {
     final finishesPrepared =
         (first == 'commit' || first == 'rollback') &&
         scan.isWord(i + 1, 'prepared');
+    final startsBlock =
+        first == 'begin' ||
+        (first == 'start' && scan.isWord(i + 1, 'transaction'));
     return StatementAnalysis(
       kind: StatementKind.transactionControl,
-      writes: false,
+      // COMMIT PREPARED makes another transaction's writes permanent and
+      // ROLLBACK PREPARED throws them away; both are allowed in a
+      // read-only transaction, so count them as writing.
+      writes: finishesPrepared,
       cannotRunInTransactionBlock: finishesPrepared,
+      findings: [
+        if (startsBlock && hasReadWrite(scan, i))
+          SafetyFinding(
+            SafetyFindingCode.readOnlyEscape,
+            'BEGIN ... READ WRITE starts a read-write transaction, even on a '
+            'read-only connection.',
+            offset: scan.offsetAt(i),
+          ),
+      ],
     );
   }
   if (_utilityWords.contains(first)) return utilityRule(scan, i, first);
   return switch (first) {
     'with' => withClauseRule(scan, i),
-    'insert' => StatementAnalysis(kind: StatementKind.insert, writes: true),
-    'merge' => StatementAnalysis(kind: StatementKind.merge, writes: true),
-    'update' => _filteredWriteRule(scan, i, StatementKind.update),
-    'delete' => _filteredWriteRule(scan, i, StatementKind.delete),
-    'truncate' => StatementAnalysis(
-      kind: StatementKind.truncate,
-      writes: true,
-      findings: [
-        SafetyFinding(
-          SafetyFindingCode.truncate,
-          'TRUNCATE removes every row from the listed tables.',
-          offset: scan.offsetAt(i),
-        ),
-      ],
-    ),
+    'insert' => insertRule(scan),
+    'merge' => mergeRule(scan, i),
+    'update' => filteredWriteRule(scan, i, StatementKind.update),
+    'delete' => filteredWriteRule(scan, i, StatementKind.delete),
+    'truncate' => truncateRule(scan, i),
     _ => unrecognizedStatement(scan),
   };
 }
@@ -118,9 +125,13 @@ StatementAnalysis unknownAnalysis(
   String message,
   int offset, {
   List<SafetyFinding> extraFindings = const [],
+  List<String> targets = const [],
+  bool cascades = false,
 }) => StatementAnalysis(
   kind: StatementKind.unknown,
   writes: true,
+  targets: targets,
+  cascades: cascades,
   findings: [
     SafetyFinding(code, message, offset: offset),
     ...extraFindings,
@@ -163,35 +174,6 @@ StatementAnalysis _selectRule(TokenScan scan, int start) {
   return StatementAnalysis(
     kind: StatementKind.select,
     writes: writes,
-    findings: findings,
-  );
-}
-
-/// UPDATE and DELETE: flag a missing top-level WHERE. A WHERE inside a
-/// subquery does not count; `WHERE CURRENT OF cursor` does.
-StatementAnalysis _filteredWriteRule(
-  TokenScan scan,
-  int start,
-  StatementKind kind,
-) {
-  final hasWhere = scan.hasTopLevelWord(const {'where'}, from: start);
-  final isUpdate = kind == StatementKind.update;
-  return StatementAnalysis(
-    kind: kind,
-    writes: true,
-    findings: [
-      if (!hasWhere)
-        SafetyFinding(
-          isUpdate
-              ? SafetyFindingCode.updateWithoutWhere
-              : SafetyFindingCode.deleteWithoutWhere,
-          isUpdate
-              ? 'UPDATE without a WHERE clause changes every row in the '
-                    'table.'
-              : 'DELETE without a WHERE clause removes every row in the '
-                    'table.',
-          offset: scan.offsetAt(start),
-        ),
-    ],
+    findings: [...findings, ...functionCallFindings(scan)],
   );
 }

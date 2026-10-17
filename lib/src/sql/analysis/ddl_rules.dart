@@ -16,10 +16,69 @@ const _nonColumnDrops = {
   'identity',
 };
 
+/// `DROP` object types, longest phrase first where one is a prefix of
+/// another.
+final List<List<String>> _dropTypes = [
+  for (final phrase in const [
+    'access method',
+    'aggregate',
+    'cast',
+    'collation',
+    'conversion',
+    'database',
+    'domain',
+    'event trigger',
+    'extension',
+    'foreign data wrapper',
+    'foreign table',
+    'function',
+    'group',
+    'index',
+    'procedural language',
+    'language',
+    'materialized view',
+    'operator class',
+    'operator family',
+    'operator',
+    'owned',
+    'policy',
+    'procedure',
+    'publication',
+    'role',
+    'routine',
+    'rule',
+    'schema',
+    'sequence',
+    'server',
+    'statistics',
+    'subscription',
+    'tablespace',
+    'table',
+    'text search configuration',
+    'text search dictionary',
+    'text search parser',
+    'text search template',
+    'transform',
+    'trigger',
+    'type',
+    'user mapping',
+    'user',
+    'view',
+  ])
+    phrase.split(' '),
+];
+
+/// `DROP` types whose names the analyzer does not read: their syntax is
+/// not a plain name list (`DROP CAST (a AS b)`, `DROP OPERATOR + (a, b)`).
+const _unreadDropTypes = {'cast', 'operator', 'transform', 'user mapping'};
+
 /// Rule for DDL statements; [first] is the lower-cased leading keyword.
 StatementAnalysis ddlRule(TokenScan scan, int start, String first) {
   final findings = <SafetyFinding>[];
   var noTransaction = false;
+  var targets = const <String>[];
+  var cascades = false;
+  String? dropType;
   final second = scan.word(start + 1);
 
   switch (first) {
@@ -35,15 +94,24 @@ StatementAnalysis ddlRule(TokenScan scan, int start, String first) {
         );
       } else {
         noTransaction = second == 'tablespace';
+        cascades = scan.hasTopLevelWord(const {'cascade'}, from: start);
         findings.add(
           SafetyFinding(
             SafetyFindingCode.dropObject,
-            'DROP permanently removes database objects and any data in '
-            'them.',
+            cascades
+                ? 'DROP ... CASCADE permanently removes the objects, any '
+                      'data in them, and every object that depends on them, '
+                      'which can include views, constraints and columns of '
+                      'other tables.'
+                : 'DROP permanently removes database objects and any data '
+                      'in them.',
             offset: scan.offsetAt(start),
           ),
         );
       }
+      final drop = _dropTargets(scan, start);
+      dropType = drop?.type;
+      targets = drop?.names ?? const [];
     case 'create':
       noTransaction = second == 'database' || second == 'tablespace';
     case 'alter':
@@ -51,6 +119,7 @@ StatementAnalysis ddlRule(TokenScan scan, int start, String first) {
       final third = scan.word(start + 2);
       if (second == 'table' || (second == 'foreign' && third == 'table')) {
         findings.addAll(_columnDrops(scan, start));
+        targets = _alterTableTarget(scan, second == 'table' ? 2 : 3, start);
       } else if (second == 'type' && _hasAddValue(scan, start)) {
         findings.add(
           SafetyFinding(
@@ -83,18 +152,52 @@ StatementAnalysis ddlRule(TokenScan scan, int start, String first) {
     writes: true,
     cannotRunInTransactionBlock: noTransaction,
     findings: findings,
+    targets: targets,
+    cascades: cascades,
+    dropObjectType: dropType,
   );
+}
+
+/// The object type (upper case) and names of a `DROP`, or `null` for an
+/// unknown type. Grammar:
+/// `DROP type [CONCURRENTLY] [IF EXISTS] name [, ...]`.
+({String type, List<String> names})? _dropTargets(TokenScan scan, int start) {
+  final typeWords = _dropTypes
+      .where(
+        (words) => words.indexed.every(
+          (entry) => scan.isWord(start + 1 + entry.$1, entry.$2),
+        ),
+      )
+      .firstOrNull;
+  if (typeWords == null) return null;
+  final type = typeWords.join(' ');
+  if (_unreadDropTypes.contains(type)) {
+    return (type: type.toUpperCase(), names: const []);
+  }
+  var i = start + 1 + typeWords.length;
+  if (type == 'index' && scan.isWord(i, 'concurrently')) i++;
+  if (type == 'owned' && scan.isWord(i, 'by')) i++;
+  if (scan.isWord(i, 'if') && scan.isWord(i + 1, 'exists')) i += 2;
+  return (type: type.toUpperCase(), names: scan.nameList(i).names);
+}
+
+/// The table of `ALTER [FOREIGN] TABLE [IF EXISTS] [ONLY] name`, where the
+/// name starts [offset] tokens after [start]. Empty for `ALTER TABLE ALL
+/// IN TABLESPACE`.
+List<String> _alterTableTarget(TokenScan scan, int offset, int start) {
+  var i = start + offset;
+  if (scan.isWord(i, 'all') && scan.isWord(i + 1, 'in')) return const [];
+  if (scan.isWord(i, 'if') && scan.isWord(i + 1, 'exists')) i += 2;
+  if (scan.isWord(i, 'only') && scan.isName(i + 1)) i++;
+  final name = scan.qualifiedName(i)?.name;
+  return [?name];
 }
 
 /// Rule for maintenance statements; [first] is the leading keyword.
 StatementAnalysis maintenanceRule(TokenScan scan, int start, String first) {
-  final second = scan.word(start + 1);
   final noTransaction = switch (first) {
     'vacuum' => true,
-    'reindex' =>
-      second == 'database' ||
-          second == 'system' ||
-          scan.hasTopLevelWord(const {'concurrently'}, from: start),
+    'reindex' => _reindexNeedsNoTransaction(scan, start),
     // CLUSTER with no table name processes every table and cannot run in a
     // transaction block.
     'cluster' => !_hasTableArgument(scan, start + 1),
@@ -105,6 +208,27 @@ StatementAnalysis maintenanceRule(TokenScan scan, int start, String first) {
     writes: true,
     cannotRunInTransactionBlock: noTransaction,
   );
+}
+
+/// Whether `REINDEX` must run outside a transaction block. Grammar:
+/// `REINDEX [(options)] {INDEX | TABLE | SCHEMA | DATABASE | SYSTEM}`
+/// `[CONCURRENTLY] name`. SCHEMA, DATABASE and SYSTEM always refuse a
+/// transaction block (ReindexMultipleTables in
+/// src/backend/commands/indexcmds.c), and so does CONCURRENTLY, either as
+/// a word or as an enabled option (PostgreSQL 14+ option list).
+bool _reindexNeedsNoTransaction(TokenScan scan, int start) {
+  var i = start + 1;
+  var concurrently = false;
+  if (scan.isPunctuation(i, '(')) {
+    final close = scan.matchingClose(i);
+    concurrently = scan.slice(i + 1, close).optionListEnables(const {
+      'concurrently',
+    });
+    i = close + 1;
+  }
+  return concurrently ||
+      const {'schema', 'database', 'system'}.contains(scan.word(i)) ||
+      scan.hasTopLevelWord(const {'concurrently'}, from: start);
 }
 
 bool _alterNeedsNoTransaction(TokenScan scan, int start, String? second) {
