@@ -1,0 +1,71 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Production",
+            "Group": "Work",
+            "Host": "db.example.com",
+            "Port": 5432,
+            "MaintenanceDB": "postgres",
+            "Username": "alice",
+            "Role": "app_owner",
+            "Comment": "Primary cluster",
+            "DBRestriction": "shop analytics",
+            "DBRestrictionType": "databases",
+            "BGColor": "#FF0000",
+            "FGColor": "#FFFFFF",
+            "ConnectionParameters": {
+                "sslmode": "verify-full",
+                "connect_timeout": 10,
+                "sslrootcert": "/home/alice/.postgresql/root.crt",
+                "sslcert": "<STORAGE_DIR>/.postgresql/postgresql.crt",
+                "sslkey": "<STORAGE_DIR>/.postgresql/postgresql.key",
+                "application_name": "pgAdmin"
+            },
+            "Tags": [
+                {"color": "#E74C3C", "text": "prod"},
+                {"text": "eu"}
+            ],
+            "PostConnectionSQL": "SET search_path = shop, public;"
+        },
+        "2": {
+            "Name": "Behind bastion",
+            "Group": "Work",
+            "Host": "10.0.0.5",
+            "Port": 6432,
+            "MaintenanceDB": "app",
+            "Username": "bob",
+            "UseSSHTunnel": 1,
+            "TunnelHost": "bastion.example.com",
+            "TunnelPort": 2222,
+            "TunnelUsername": "ec2-user",
+            "TunnelAuthentication": 1,
+            "TunnelIdentityFile": "/Users/bob/.ssh/id_ed25519",
+            "TunnelKeepAlive": 30,
+            "TunnelPromptPassword": 0,
+            "ConnectionParameters": {
+                "sslmode": "prefer",
+                "connect_timeout": 10,
+                "hostaddr": "10.0.0.5",
+                "passfile": "/Users/bob/.pgpass",
+                "sslrootcert": "system"
+            }
+        },
+        "3": {
+            "Name": "Via service",
+            "Group": "Servers",
+            "MaintenanceDB": "postgres",
+            "Service": "reporting",
+            "Shared": true,
+            "SharedUsername": "reporter",
+            "KerberosAuthentication": true,
+            "PasswordExecCommand": "vault read -field=password secret/db",
+            "PasswordExecExpiration": 60,
+            "ConnectionParameters": {
+                "sslmode": "require",
+                "gssencmode": "require",
+                "krbsrvname": "postgres",
+                "sslnegotiation": "direct"
+            }
+        }
+    }
+}

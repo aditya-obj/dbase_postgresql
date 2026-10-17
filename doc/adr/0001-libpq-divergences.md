@@ -1,8 +1,9 @@
 # ADR 0001: Deliberate divergences from libpq
 
-- Status: Accepted (v0.1.0)
-- Date: 2026-10-16
-- Scope: `PgConnectionConfig` (connection string parsing and formatting)
+- Status: Accepted (v0.1.0; importer section added in v0.2.0)
+- Date: 2026-10-16 (importers: 2026-10-17)
+- Scope: `PgConnectionConfig` (connection string parsing and formatting);
+  the `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` importers
 
 ## Context
 
@@ -66,7 +67,8 @@ it deterministic and web-safe. `resolveDefaults(environment:,
 defaultUser:)` applies libpq's fallbacks explicitly: each keyword's `PG*`
 variable, then the OS user, then `dbname = user`. It never invents
 `postgres` as a database. `database` stays `null` when absent, so
-`toUri()` round-trips. Service and password files are not read in v0.1.
+`toUri()` round-trips. Service and password files are never read; since
+v0.2 the caller passes their text to the importers (decisions 8 to 12).
 
 The keyword-to-variable table is checked against `PQconninfoOptions[]` in
 `fe-connect.c` (see `lib/src/config/libpq_keywords.dart`). Like libpq,
@@ -96,6 +98,78 @@ pg-connection-string without `uselibpqcompat`. Instead,
 `securityWarnings` reports `sslModeNotSpecified` and
 `sslMayFallBackToPlaintext`, and the app decides on a policy. The owner
 still has to decide whether dbase should default to `verify-full`.
+
+## Importers (v0.2.0)
+
+The importers follow `passwordFromFile()`, `pwdfMatchesString()`,
+`parseServiceFile()` and `parseServiceInfo()` in libpq's `fe-connect.c`
+(REL_18_STABLE), and `validate_json_data()` / `load_database_servers()` in
+pgAdmin 4's `web/pgadmin/utils/__init__.py`. `.pgpass` lookups are checked
+against a literal port of the C matcher
+(`test/support/libpq_pgpass_reference.dart`). The importers read text that
+the app passes in, which leads to these differences:
+
+### 8. A leading byte order mark is ignored, with a warning
+
+libpq reads a BOM as part of the first line, so the first `.pgpass` host
+or the first `[service]` header silently never matches. Python's
+`json.loads` rejects a BOM. Files that reach a phone often come from
+Windows editors, and the author's intent is clear, so we drop the BOM and
+report `byteOrderMark`.
+
+### 9. NUL characters are rejected per line
+
+libpq's `fgets`/`strlen` loops silently truncate a line at NUL. We skip a
+`.pgpass` line that contains NUL, and in a service file it's an error that
+invalidates the section. This is the same reason as decision 3.
+
+### 10. `.pgpass`: no permission check, and the port is compared as a number
+
+libpq ignores a password file with group or world access. Files picked
+through Android's Storage Access Framework have no meaningful POSIX mode,
+so the caller decides (the app warns that the file holds plaintext
+passwords). `lookup` takes `port` as an `int`, as `PgHost.port` does, and
+compares its decimal form. A line written as `05432` therefore never
+matches, while libpq would match it against a connection string port of
+`05432`.
+
+### 11. Service files: every section is read and all errors are reported
+
+libpq parses only the section it is looking for and stops at the first
+error. We parse every section so the app can list them, and give each one
+the result a libpq lookup of that name would get. Errors from lines it
+would never reach (later lines in another section) don't affect it. We
+report every error in a section, not just the first. Values are validated
+on import (port range, `sslmode`, `connect_timeout`, host/port counts),
+which libpq only does at connect time. Either way, the connection fails.
+
+Edge cases:
+- A section's name runs up to the first `]`. libpq matches
+  `strncmp(line + 1, name) && line[len + 1] == ']'`, so `[a]b]` would also
+  match a lookup of `a]b`. We list it as `a` only.
+- `[]` is ignored. libpq would match it for an empty service name.
+- `ldap...` lines are skipped with `ldapNotSupported`. libpq built with
+  LDAP does a lookup; without LDAP it's a syntax error. We behave as if
+  the LDAP server were unreachable (libpq's `rc = 2`: keep reading).
+- `servicefile=` inside a section is reported as `nestedService`. That's
+  PostgreSQL 19's message; PostgreSQL 18 says "syntax error". Both are
+  errors.
+- A value with leading whitespace (`host= x`) is kept, as libpq does, and
+  flagged with a warning. Whitespace before `=` is an error, as in libpq.
+
+### 12. pgAdmin `servers.json`: invalid entries don't abort the import
+
+`validate_json_data()` returns the first error and the command-line import
+stops there. We import every valid entry and report each invalid one in
+`errors`. Servers with `Shared: true` are imported (pgAdmin skips them for
+non-admins). `PasswordExecCommand` is never run and its text is not kept,
+because it can contain a secret (pgAdmin itself won't print it in server
+mode). `ConnectionParameters` values that are JSON numbers become decimal
+strings; booleans, arrays and objects are skipped with a warning. When a
+connection parameter repeats `host`, `port`, `user` or `dbname`, the
+top-level `Host`, `Port`, `Username` or `MaintenanceDB` wins. As in
+pgAdmin, the flat legacy keys are read only when `ConnectionParameters` is
+absent.
 
 ## Other non-libpq conventions recorded here
 

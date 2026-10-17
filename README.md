@@ -5,19 +5,20 @@ use Flutter or `dart:io`, so it runs on Android, iOS, web, desktop and the
 server.
 
 It is the in-house library behind **dbase**, an Android-first PostgreSQL
-client that connects from the device straight to the database. Version
-0.1 contains the parts a client needs before it opens a socket:
+client that connects from the device straight to the database. It
+contains the parts a client needs before it opens a socket:
 
 | Area | Entry point | What it does |
 |---|---|---|
 | Connection strings | `package:dbase_postgresql/connection_string.dart` | Parses `postgres://` URIs and libpq `key=value` strings with libpq semantics. Resolves `PG*` defaults on request, reports security warnings and formats output that is safe to log. |
+| Importers | `package:dbase_postgresql/importers.dart` | Reads `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` with libpq's and pgAdmin's own rules. Reports per-line diagnostics and never echoes passwords. |
 | SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. |
 | Statement splitter | same | Splits a script the way `psql` does, including `BEGIN ATOMIC` bodies and `COPY ... FROM STDIN` data. Also answers "which statement is under the cursor". |
 | Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE`, `DROP`, `TRUNCATE`, `EXPLAIN ANALYZE` of writes and more. It fails closed. |
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.1.0, not published yet (`publish_to: none` until the
+> Status: 0.2.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL and libpg_query keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
@@ -63,6 +64,62 @@ PgConnectionConfig.tryParse('not a connection string'); // null
 Deliberate differences from libpq are listed in
 [`doc/adr/0001-libpq-divergences.md`](doc/adr/0001-libpq-divergences.md).
 
+## Importers
+
+All three importers take the file's text. They never read the file
+system or the environment, never run anything, and never put a password
+in an error, a diagnostic or `toString()`.
+
+```dart
+import 'package:dbase_postgresql/importers.dart';
+
+// .pgpass: libpq's matcher, first match wins.
+final pgpass = PgPassFile.parse(text);
+pgpass.lookup(host: 'db', port: 5432, database: 'shop', user: 'alice')
+    ?.password;
+pgpass.lookupForConfig(config);   // one result per host, like libpq
+pgpass.entries;                   // for listing; entry.toConfig() drafts one
+pgpass.diagnostics;               // PgLineDiagnostic<PgPassDiagnosticCode>
+
+// pg_service.conf: every section, each valid or not.
+final services = PgServiceFile.parse(text);
+services.lookup('prod')?.config;  // PgConnectionConfig, or null if broken
+final all = PgServiceFile.merge(user: userFile, system: systemFile);
+service.applyTo(PgConnectionConfig.parse('dbname=other')); // string wins
+
+// pgAdmin 4 servers.json, both layouts.
+final export = PgAdminServersFile.parse(json);
+for (final server in export.servers) {
+  server.name; server.group; server.config; server.sshTunnel;
+  server.warnings; // PgAdminWarning(code: PgAdminWarningCode.filePath, ...)
+}
+export.errors;     // entries pgAdmin's validation rejects
+```
+
+- **`.pgpass`** follows `passwordFromFile()`: `*` is a wildcard only as a
+  whole field, `\` escapes `:` and `\`, only a `#` in column 0 starts a
+  comment, and an empty host or the default socket directory means
+  `localhost` (`127.0.0.1` does not match it). Like libpq, an unescaped
+  `:` in the file also matches a `:` in the value looked up, so an
+  unescaped IPv6 host still matches. File permissions are not checked;
+  the caller decides.
+- **`pg_service.conf`** follows `parseServiceFile()`: no whitespace before
+  `=`, no inline comments, only libpq keywords, no nested `service=`, the
+  first value of a keyword wins, only the first section of a name counts,
+  and lines of 1023 bytes or more are an error. A section libpq would
+  reject is kept with `isValid == false` and its diagnostics.
+  `PgServiceFile.merge` lets the user file win per service name, as libpq
+  does.
+- **`servers.json`** reads the 6.20+ `ConnectionParameters` layout and the
+  older flat keys (`SSLMode`, `HostAddr`, `Timeout`, ...), with pgAdmin's
+  required-field rules. It maps `Name`, `Group`, the SSH tunnel, tags,
+  colours and comments. It warns (typed `PgAdminWarningCode`) about
+  file-path parameters, `Service`, Kerberos, `PasswordExecCommand` (never
+  run, not kept) and `PostConnectionSQL` (kept, but flagged).
+
+[`doc/adr/0001-libpq-divergences.md`](doc/adr/0001-libpq-divergences.md)
+lists where the importers deliberately differ from libpq and pgAdmin.
+
 ## SQL lexer
 
 ```dart
@@ -87,7 +144,7 @@ with that setting off.
 The lexer is pure SQL: psql meta-commands (`\d`) and variables (`:var`)
 are not recognised. `SqlTokenKind.psqlMetaCommand` and
 `SqlTokenKind.psqlVariable` are reserved for a future `psqlMode` option
-and are never produced in 0.1; handle them in exhaustive switches so
+and are never produced yet; handle them in exhaustive switches so
 adding psql support later is not a breaking change.
 
 ## Statement splitter

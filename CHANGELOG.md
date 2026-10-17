@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.2.0 (unreleased)
+
+### Added
+
+- `package:dbase_postgresql/importers.dart`, also exported from
+  `dbase_postgresql.dart`.
+- `PgPassFile` / `PgPassEntry`: parses libpq password files and looks up
+  passwords with `passwordFromFile()`'s exact rules: first match wins,
+  whole-field `*`, `\` escapes, `localhost` for an empty host or the
+  default socket directory, `hostaddr` fallback, and unescaped colons
+  matching colons in the value. Includes `lookupForConfig` (one result per
+  host) and `toConfig` for wildcard-free entries. Per-line diagnostics
+  (`PgPassDiagnosticCode`). No file-permission check.
+- `PgServiceFile` / `PgService`: parses every section of a connection
+  service file with `parseServiceFile()`'s rules and reports, per service,
+  what a libpq lookup would do (`isValid`, `diagnostics`,
+  `PgServiceDiagnosticCode`). Adds `PgServiceFile.merge` (the user file
+  wins per name) and `PgService.applyTo` (connection string wins over the
+  service).
+- `PgAdminServersFile` / `PgAdminServer`: parses pgAdmin 4 `servers.json`
+  in both the 6.20+ `ConnectionParameters` layout and the legacy flat
+  layout, with pgAdmin's validation. Maps name, group, SSH tunnel
+  (`PgAdminSshTunnel`), tags, colours, role, comment and database
+  restrictions. Typed `PgAdminWarningCode` warnings cover file paths,
+  `Service`, Kerberos, `PasswordExecCommand`, `PostConnectionSQL`,
+  `hostaddr`, `sslnegotiation=direct` and secrets in the file. Rejected
+  entries are reported in `errors` (`PgAdminErrorCode`).
+- `PgLineDiagnostic`, `PgImportSeverity` and `PgImportException` (offset
+  only, never echoes input).
+- Tests: a literal port of libpq's matcher as an oracle (20,000 generated
+  files in the unit suite, more under `-P fuzz`), libpq's edge cases
+  (escapes, wildcards, CRLF, BOM, whitespace, empty fields, long lines),
+  servers.json fixtures for both layouts, and importer mutation fuzzing.
+
+### Security
+
+- Nothing in an imported file is executed. `PasswordExecCommand` is
+  dropped, and `PostConnectionSQL` is only stored and flagged.
+- Diagnostics, warnings, exceptions and `toString()` never contain values
+  from the file. Messages quote only known libpq keywords and pgAdmin field
+  names.
+
 ## 0.1.0 (unreleased)
 
 ### Added
