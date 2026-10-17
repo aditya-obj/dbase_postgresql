@@ -19,6 +19,9 @@ environment:
 dev_dependencies:
   # Integration tests only (test/integration/, tag `integration`). The
   # library itself has no runtime dependencies.
+  # Floor for `dart pub downgrade`: 3.x looks for frontend_server.dart.snapshot,
+  # which Dart 3.13 no longer ships (test_core still allows >=3.2.0).
+  frontend_server_client: ^4.0.0
   postgres: ^3.5.20
   test: ^1.33.0
   very_good_analysis: ^11.0.0

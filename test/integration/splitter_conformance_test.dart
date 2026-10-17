@@ -1,9 +1,9 @@
 // File: splitter_conformance_test.dart
 // Purpose: Checks SqlStatementSplitter against a real server. For each
 // script in the corpus below:
-//   1. the whole script runs through the simple query protocol, where the
-//      server does its own splitting (so the script itself is valid);
-//   2. our split returns the expected number of statements;
+//   1. our split returns the expected number of statements;
+//   2. the pieces tile the script: outside them there is only whitespace,
+//      comments and `;`;
 //   3. each statement we return runs on its own through the extended query
 //      protocol, and preparable ones also pass SQL `PREPARE`.
 // The extended protocol's Parse message rejects a string holding more than
@@ -11,6 +11,10 @@
 // statement"), and a statement cut in the wrong place fails to parse. So
 // when every piece is accepted and the pieces tile the script, our
 // statement count is the server's statement count.
+//
+// The whole script is not sent as one simple query: package:postgres
+// 3.5.20 fails on a second RowDescription in one query ("Future already
+// completed") and closes the connection.
 //
 // Everything runs inside BEGIN ... ROLLBACK, so the server is left clean
 // and the test also works through PgBouncer in transaction mode.
@@ -132,6 +136,21 @@ const Set<StatementKind> _preparable = {
   StatementKind.delete,
 };
 
+/// Tokens of [sql] that lie outside every statement in [statements] and
+/// are not whitespace, a comment or `;`, as "kind text @offset".
+List<String> _tokensOutsideStatements(
+  String sql,
+  List<SqlStatement> statements,
+) => [
+  for (final token in const SqlLexer().tokenize(sql))
+    if (!statements.any((s) => token.start >= s.start && token.start < s.end) &&
+        token.kind != SqlTokenKind.whitespace &&
+        token.kind != SqlTokenKind.lineComment &&
+        token.kind != SqlTokenKind.blockComment &&
+        token.text != ';')
+      '${token.kind.name} ${token.text} @${token.start}',
+];
+
 void main() {
   const splitter = SqlStatementSplitter();
   const analyzer = SqlStatementAnalyzer();
@@ -163,18 +182,12 @@ void main() {
           return;
         }
 
-        // 1. The server accepts the whole script (simple protocol).
-        await inRolledBackTransaction(() async {
-          await connection.execute(
-            script.sql,
-            queryMode: pg.QueryMode.simple,
-            ignoreRows: true,
-          );
-        });
-
-        // 2. Our statement count.
+        // 1. Our statement count.
         final statements = splitter.split(script.sql);
         expect(statements, hasLength(script.statements));
+
+        // 2. The pieces tile the script.
+        expect(_tokensOutsideStatements(script.sql, statements), isEmpty);
 
         // 3. Each piece is exactly one statement the server accepts.
         await inRolledBackTransaction(() async {
