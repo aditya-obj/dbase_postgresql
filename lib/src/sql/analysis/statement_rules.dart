@@ -173,7 +173,8 @@ StatementAnalysis _selectRule(TokenScan scan, int start) {
   }
   return StatementAnalysis(
     kind: StatementKind.select,
-    writes: writes,
+    // `SELECT cron.schedule(...)` changes scheduled jobs.
+    writes: writes || callsWritingFunction(scan),
     findings: [...findings, ...functionCallFindings(scan)],
   );
 }

@@ -1,6 +1,7 @@
 // File: function_rules.dart
-// Purpose: Finds calls to built-in functions with side effects and
-// set_config() calls that can make the session read-write (internal).
+// Purpose: Finds calls to built-in functions with side effects, pg_cron
+// job changes (which count as writes) and set_config() calls that can make
+// the session read-write (internal).
 
 import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
 import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
@@ -55,17 +56,62 @@ const _sideEffectPrefixes = [
   'pg_stat_reset',
 ];
 
+/// pg_cron functions that create, change or remove scheduled jobs, matched
+/// only when qualified with the `cron` schema (`cron.schedule(...)`), so a
+/// user function named `schedule` is not mistaken for one.
+const _cronWritingFunctions = {
+  'schedule',
+  'schedule_in_database',
+  'unschedule',
+  'alter_job',
+};
+
+/// Whether the name at [i] (followed by `(`) is a [_cronWritingFunctions]
+/// call qualified with `cron.`.
+bool _isCronWrite(TokenScan scan, int i) =>
+    _cronWritingFunctions.contains(scan.tokens[i].normalized) &&
+    scan.isPunctuation(i - 1, '.') &&
+    scan.isName(i - 2) &&
+    scan.tokens[i - 2].normalized == 'cron';
+
+/// Whether [scan] calls a function that writes persistent state the
+/// analyzer knows of: pg_cron's `cron.schedule`, `cron.schedule_in_database`,
+/// `cron.unschedule` and `cron.alter_job`. Statements that do are counted as
+/// writing.
+bool callsWritingFunction(TokenScan scan) {
+  for (var i = 2; i < scan.length - 1; i++) {
+    if (scan.isName(i) &&
+        scan.isPunctuation(i + 1, '(') &&
+        _isCronWrite(scan, i)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// Findings for function calls anywhere in [scan] (at any paren depth):
 /// [SafetyFindingCode.readOnlyEscape] for a `set_config` call that can
 /// make the session read-write, else [SafetyFindingCode.sideEffectFunction]
-/// for a listed function. A call is a name (optionally schema-qualified)
-/// followed by `(`; strings, dollar bodies and comments are single tokens
-/// or trivia, so nothing inside them matches.
+/// for a listed function or a pg_cron job change ([callsWritingFunction]).
+/// A call is a name (optionally schema-qualified) followed by `(`; strings,
+/// dollar bodies and comments are single tokens or trivia, so nothing
+/// inside them matches.
 List<SafetyFinding> functionCallFindings(TokenScan scan) {
   final findings = <SafetyFinding>[];
   for (var i = 0; i < scan.length - 1; i++) {
     if (!scan.isName(i) || !scan.isPunctuation(i + 1, '(')) continue;
     final name = scan.tokens[i].normalized;
+    if (_isCronWrite(scan, i)) {
+      findings.add(
+        SafetyFinding(
+          SafetyFindingCode.sideEffectFunction,
+          'cron.$name() changes pg_cron scheduled jobs, which run later '
+          'with their own privileges.',
+          offset: scan.offsetAt(i - 2),
+        ),
+      );
+      continue;
+    }
     final label = _sideEffectLabel(name);
     if (label == null) continue;
     if (name == 'set_config' && _setConfigEscapes(scan, i + 1)) {

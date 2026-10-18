@@ -3,7 +3,7 @@ description: >-
   Pure-Dart PostgreSQL toolkit: libpq connection string parsing, .pgpass,
   service file and pgAdmin importers, a SQL lexer, a psql-style statement
   splitter, statement safety checks, and an EXPLAIN (FORMAT JSON) analyzer.
-version: 0.4.0
+version: 0.5.0
 publish_to: none
 repository: https://github.com/aditya-obj/dbase_postgresql
 issue_tracker: https://github.com/aditya-obj/dbase_postgresql/issues

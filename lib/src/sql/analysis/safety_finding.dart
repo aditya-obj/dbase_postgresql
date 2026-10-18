@@ -105,7 +105,10 @@ enum SafetyFindingCode {
   /// (`lo_import`, `lo_export`, `lo_unlink`, `lo_create`, `lo_creat`,
   /// `lo_open`, `lo_put`, `lo_from_bytea`, `lo_truncate`, `lo_truncate64`,
   /// `lowrite`), replication slots (`pg_*replication_slot*`), `nextval`
-  /// and `setval`.
+  /// and `setval`. Also pg_cron job changes (`cron.schedule`,
+  /// `cron.schedule_in_database`, `cron.unschedule`, `cron.alter_job`,
+  /// qualified with `cron.` only); those also set
+  /// `StatementAnalysis.writes`, because the job runs later and writes.
   ///
   /// Best effort: a name followed by `(` in a statement that runs
   /// expressions (queries, DML, `CALL`, `EXECUTE`), schema-qualified or

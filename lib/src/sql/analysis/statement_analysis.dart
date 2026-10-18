@@ -16,8 +16,10 @@ import 'package:dbase_postgresql/src/sql/analysis/table_lock_mode.dart';
 /// `SELECT` can still change data through volatile functions (`nextval`,
 /// `setval`, `pg_terminate_backend`, user functions...). Well-known
 /// built-ins are reported as [SafetyFindingCode.sideEffectFunction] but do
-/// not change [writes]. Run statements in a `READ ONLY` transaction when
-/// read-only must be guaranteed.
+/// not change [writes]; pg_cron job changes (`cron.schedule`,
+/// `cron.schedule_in_database`, `cron.unschedule`, `cron.alter_job`) are
+/// reported the same way and do count as writes. Run statements in a
+/// `READ ONLY` transaction when read-only must be guaranteed.
 final class StatementAnalysis {
   /// Creates an analysis result.
   StatementAnalysis({

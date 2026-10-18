@@ -1,6 +1,6 @@
 // File: sql.dart
 // Purpose: Narrow entrypoint for the PostgreSQL SQL lexer, keyword table,
-// statement splitter, and statement safety analyzer.
+// statement splitter, statement safety analyzer and secret redaction.
 
 /// Tokenize, split, and analyze PostgreSQL SQL without a server.
 library;
@@ -11,6 +11,12 @@ export 'src/sql/analysis/sql_statement_analyzer.dart' show SqlStatementAnalyzer;
 export 'src/sql/analysis/statement_analysis.dart' show StatementAnalysis;
 export 'src/sql/analysis/statement_kind.dart' show StatementKind;
 export 'src/sql/analysis/table_lock_mode.dart' show TableLockMode;
+export 'src/sql/redact_secrets.dart'
+    show
+        containsSecrets,
+        redactSecrets,
+        redactedSecretLiteral,
+        redactedSecretValue;
 export 'src/sql/sql_keywords.dart'
     show
         SqlKeywordCategory,

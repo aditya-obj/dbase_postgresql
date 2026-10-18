@@ -12,14 +12,17 @@ contains the parts a client needs before it opens a socket:
 |---|---|---|
 | Connection strings | `package:dbase_postgresql/connection_string.dart` | Parses `postgres://` URIs and libpq `key=value` strings with libpq semantics. Resolves `PG*` defaults on request, reports security warnings and formats output that is safe to log. |
 | Importers | `package:dbase_postgresql/importers.dart` | Reads `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` with libpq's and pgAdmin's own rules. Reports per-line diagnostics and never echoes passwords. |
-| SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. |
+| SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. `redactSecrets` masks passwords before SQL is stored. |
 | Statement splitter | same | Splits a script the way `psql` does, including `BEGIN ATOMIC` bodies and `COPY ... FROM STDIN` data. Also answers "which statement is under the cursor". |
 | Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE` (or with `WHERE true`), `DROP`, `TRUNCATE`, risky `MERGE`, `EXPLAIN ANALYZE` of writes, ways out of a read-only session, `LOCK` and side-effect functions. Names the affected tables. It fails closed. |
 | EXPLAIN analyzer | `package:dbase_postgresql/explain.dart` | Parses `EXPLAIN (FORMAT JSON)` output, computes self time and cost per node, ranks the top issues, and builds version-safe `EXPLAIN` options. |
+| Binary values | `package:dbase_postgresql/binary.dart` | Decodes `bytea` text output (hex and escape formats), detects common file formats by magic bytes and reads image sizes from headers without decoding. |
+| PostGIS geometry | `package:dbase_postgresql/geo.dart` | Decodes the hex EWKB PostGIS prints for `geometry`/`geography` (and ISO WKB) into typed geometries with SRID and Z/M, rejecting malformed input safely. |
+| CSV import | `package:dbase_postgresql/csv.dart` | Sniffs a file's encoding, delimiter and header, decodes records from a byte stream leniently, re-encodes them as canonical PostgreSQL CSV for `COPY ... FROM STDIN`, builds the `COPY` and `INSERT ... unnest` SQL, and pre-checks values against column types. |
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.4.0 (unreleased), not published yet (`publish_to: none` until the
+> Status: 0.5.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL, libpg_query and PEV2 keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
@@ -200,7 +203,10 @@ result.findings.map((f) => f.code); // [dataModifyingCte, deleteWithoutWhere]
   - `explicitLock` (warning) with the parsed `lockMode` (`TableLockMode`,
     ordered by strength; a bare `LOCK t` is `ACCESS EXCLUSIVE`).
   - `sideEffectFunction` (warning): calls such as `pg_terminate_backend`,
-    `pg_advisory_lock`, `dblink_exec`, `nextval` or `lo_import`.
+    `pg_advisory_lock`, `dblink_exec`, `nextval` or `lo_import`. pg_cron
+    job changes (`cron.schedule`, `cron.schedule_in_database`,
+    `cron.unschedule`, `cron.alter_job`) get it too and also count as
+    `writes`.
 - `targets`: the tables or objects the statement changes, in the form the
   server resolves (`Public.Orders` gives `public.orders`, `"My Table"`
   gives `My Table`), for `UPDATE`/`DELETE`/`MERGE`, `TRUNCATE`, `DROP`,
@@ -217,6 +223,19 @@ calls made inside user functions, views and `DO` bodies are not seen. Use
 a `READ ONLY` transaction (and check the server's
 `default_transaction_read_only` after each statement) when read-only must
 be guaranteed.
+
+### Redacting secrets
+
+```dart
+redactSecrets("ALTER ROLE app PASSWORD 's3cret'");
+// ALTER ROLE app PASSWORD '********'
+redactSecrets("SELECT dblink_connect('host=h password=pw')");
+// SELECT dblink_connect('host=h password=********')
+containsSecrets('SELECT 1'); // false
+```
+
+Use it before keeping SQL anywhere (history, logs). The result is for
+storage and display only: running it would set `********` as the password.
 
 ## EXPLAIN plans
 
@@ -268,6 +287,64 @@ for (final issue in PlanIssues.find(plan, metrics)) {  // ≤ 3, ranked
 The metrics are ported from [PEV2](https://github.com/dalibo/pev2)
 (`plan-service.ts`), and PEV2's test plans run in
 `test/explain/pev2_metrics_test.dart`.
+
+## CSV import
+
+```dart
+import 'package:dbase_postgresql/csv.dart';
+
+final sniff = sniffCsv(first64k);        // encoding, delimiter, header
+if (sniff.confidence < 0.6) { /* ask the user to check */ }
+
+final writer = CopyCsvWriter();
+await for (final record in file.transform(
+  CsvDecoder(sniff.dialect, encoding: sniff.encoding),
+)) {
+  if (record.isHeader) continue;         // number 0
+  writer.add([fieldValue(record, 0), fieldValue(record, 2)]);
+}
+final sql = copyFromStdinSql('public', 'orders', ['qty', 'note'],
+    serverVersionNum: 170000);
+// COPY "public"."orders" ("qty", "note") FROM STDIN (FORMAT csv)
+send(sql, writer.takeBytes());
+```
+
+- **Sniffing.** `sniffCsv` reads a byte order mark (UTF-8, UTF-16 LE/BE),
+  else spots UTF-16 by its zero bytes, else takes UTF-8 when the bytes
+  are valid and Windows-1252 when not. The delimiter is the candidate
+  (`,` `;` tab `|`) with the most consistent field count above one; an
+  Excel `sep=X` first line wins. The header is guessed from names that
+  match `knownColumns`, or a first row of distinct non-empty text above
+  typed data. `confidence` below 0.6 means "ask"; `notes` say why.
+- **Decoding.** `CsvDecoder` is a streaming transformer with lenient
+  RFC 4180 rules: CRLF, LF and CR line ends (mixed), a quote inside an
+  unquoted field is literal (`5" pipe`), text after a closing quote is
+  kept and noted, empty lines are skipped, and a BOM and `sep=` line are
+  stripped. Each `CsvRecord` has its fields, which were quoted (so `""`
+  can stay an empty string while an empty field is NULL), its record
+  number and the physical line it starts on. Malformed input throws a
+  `CsvFormatException` subtype with the line (unterminated quote, size
+  limits from `CsvLimits`, and invalid bytes in strict decoding).
+- **Values.** `fieldValue` applies PostgreSQL's rule (unquoted empty is
+  NULL, `""` is empty text) or `EmptyFieldRule.alwaysNull` /
+  `emptyString`, plus an optional NULL marker such as `\N`.
+- **Encoding for COPY.** `CopyCsvWriter` (and the `CopyCsvEncoder`
+  transformer) write UTF-8 with LF line ends, NULL as an unquoted empty
+  field, an empty string as `""`, and quotes only when needed (delimiter,
+  quote, CR, LF, leading or trailing space or tab, and a value equal to
+  `\.`). `add` returns the physical lines a record took, because the
+  server counts line breaks inside quoted values when it reports an
+  error's line.
+- **SQL.** `copyFromStdinSql` quotes every name and adds `ON_ERROR
+  ignore` (17+) and `REJECT_LIMIT` (18+) only on servers that know them.
+  `insertFromUnnestSql` and `pgArrayLiteral` build the fallback for
+  tables where COPY is refused (row-level security): one `text[]`
+  parameter per column, each element cast to its column type.
+- **Checks.** `checkPgText(type, value)` pre-checks integers (with
+  range), numeric and floats, booleans, uuid, json and ISO dates and
+  timestamps; it returns `null` when only the server can tell.
+  `inferPgType` proposes a column type for a new table that every sample
+  value fits (`007` stays text).
 
 ## Development
 

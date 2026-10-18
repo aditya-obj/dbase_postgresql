@@ -1,5 +1,69 @@
 # Changelog
 
+## 0.5.0 (unreleased)
+
+### Added
+
+- `package:dbase_postgresql/csv.dart`, also exported from
+  `dbase_postgresql.dart`: CSV import for PostgreSQL, pure Dart.
+  - `sniffCsv`: encoding (BOM, UTF-16 by zero bytes, UTF-8 validity, else
+    Windows-1252), delimiter (`,` `;` tab `|`, Excel's `sep=` line),
+    header (known column names or names above typed data), the modal
+    column count, a 0–1 `confidence` and `CsvSniffNote`s.
+  - `CsvDecoder`: a streaming bytes → `CsvRecord` transformer with
+    lenient RFC 4180 rules (mixed CRLF/LF/CR, literal quotes in unquoted
+    fields, stray text after a closing quote kept, empty lines skipped,
+    BOM and `sep=` stripped, optional escape character). Records keep
+    which fields were quoted, their number and starting line. Typed
+    `CsvFormatException`s with the line; `CsvLimits` cap field, record
+    and field-count sizes; UTF-8, UTF-16 LE/BE, Windows-1252 and Latin-1
+    (`CsvTextEncoding`), strict by default.
+  - `fieldValue` with `EmptyFieldRule` (PostgreSQL's NULL vs `""` rule,
+    always NULL, always empty) and an optional NULL marker.
+  - `CopyCsvWriter` / `CopyCsvEncoder`: canonical PostgreSQL CSV for
+    `COPY ... FROM STDIN` (UTF-8, LF, NULL unquoted empty, `""` empty
+    string, `\.` quoted, quotes only when needed), with per-record line
+    counts to map server error lines back to records.
+  - `copyFromStdinSql` (version-gated `ON_ERROR ignore` and
+    `REJECT_LIMIT`), `insertFromUnnestSql` and `pgArrayLiteral` for the
+    row-level-security fallback.
+  - `checkPgText` (client-side type pre-checks) and `inferPgType` (column
+    types for a new table).
+- `redactSecrets(sql)` and `containsSecrets(sql)` in
+  `package:dbase_postgresql/sql.dart`: mask secrets before SQL is stored
+  (query history, logs). In `CREATE`/`ALTER` statements the string after
+  `PASSWORD` (roles, users, groups; plaintext, SCRAM or MD5) and after a
+  `password`/`sslpassword` option (`CREATE|ALTER SERVER`, `USER MAPPING
+  ... OPTIONS`) becomes `'********'`; in any string constant, `password=`
+  in a libpq connection string and the password of a
+  `postgres://user:password@host` URI become `********`. Lexical, best
+  effort; everything else is returned unchanged.
+- `package:dbase_postgresql/binary.dart`, also exported from
+  `dbase_postgresql.dart`:
+  - `decodeByteaText`: `bytea` text output in hex (`\x…`) and escape
+    format to bytes; `allowTruncated` accepts values cut by a client size
+    cap. `bytesToHex` for the reverse.
+  - `detectBinaryKind`: PNG, JPEG, GIF, WebP, BMP, HEIF, AVIF, PDF, ZIP,
+    gzip, zstd and SQLite by magic bytes, with MIME type and extension.
+  - `readImageSize`: an image's declared width and height from its header
+    (PNG, GIF, JPEG, WebP, BMP, HEIF/AVIF) without decoding, so callers
+    can refuse decompression bombs.
+- `package:dbase_postgresql/geo.dart`, also exported from
+  `dbase_postgresql.dart`: `decodeEwkbHex` / `decodeEwkb` decode PostGIS
+  EWKB (as `geometry_out` and `geography_out` print it) and ISO WKB into
+  `Geometry` values (`GeoPoint`, `GeoLineString`, `GeoPolygon`, Multi*,
+  `GeoCollection`) with SRID, Z/M ordinates and `GeoBounds`. Both byte
+  orders; curved and surface types come back as `GeoUnsupported`.
+  Malformed input throws `FormatException` without echoing it; counts are
+  checked against the remaining bytes and nesting is capped at 32.
+
+### Changed
+
+- pg_cron job changes count as writes: `SELECT cron.schedule(...)`,
+  `cron.schedule_in_database`, `cron.unschedule` and `cron.alter_job`
+  (qualified with `cron.`) now set `StatementAnalysis.writes` and get a
+  `sideEffectFunction` finding, so read-only sessions refuse them.
+
 ## 0.4.0 (unreleased)
 
 ### Added
