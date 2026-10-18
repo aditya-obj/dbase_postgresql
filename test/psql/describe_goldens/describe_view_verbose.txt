@@ -1,0 +1,13 @@
+                             View "public.big_orders"
+ Column  |     Type      | Collation | Nullable | Default | Storage | Description 
+---------+---------------+-----------+----------+---------+---------+-------------
+ id      | bigint        |           |          |         | plain   | 
+ user_id | integer       |           |          |         | plain   | 
+ total   | numeric(10,2) |           |          |         | main    | 
+View definition:
+ SELECT id,
+    user_id,
+    total
+   FROM orders
+  WHERE total > 100::numeric;
+

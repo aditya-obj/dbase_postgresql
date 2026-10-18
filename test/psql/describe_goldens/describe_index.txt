@@ -1,0 +1,6 @@
+    Index "public.orders_user_idx"
+ Column  |  Type   | Key? | Definition 
+---------+---------+------+------------
+ user_id | integer | yes  | user_id
+btree, for table "public.orders", predicate (total > 0::numeric)
+

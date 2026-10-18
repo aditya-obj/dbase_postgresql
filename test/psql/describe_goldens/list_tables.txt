@@ -1,0 +1,7 @@
+         List of relations
+ Schema |  Name  | Type  |  Owner   
+--------+--------+-------+----------
+ public | orders | table | postgres
+ public | users  | table | postgres
+(2 rows)
+

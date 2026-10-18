@@ -1,0 +1,13 @@
+-[ RECORD 1 ]-----
+id     | 1
+name   | alpha
+amount | 1.5
+-[ RECORD 2 ]-----
+id     | 22
+name   | b
+amount | 
+-[ RECORD 3 ]-----
+id     | 333
+name   | gamma ray
+amount | -2.25
+

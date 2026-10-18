@@ -1,0 +1,26 @@
+1	\dt
+2	\dt+
+3	\di
+4	\dv
+5	\dm
+6	\ds
+7	\dE
+8	\d
+9	\dtS
+10	\dn
+11	\dn+
+12	\df
+14	\dfa
+15	\dfn
+16	\dT
+17	\dT+
+18	\dD
+19	\dD+
+20	\dp
+21	\l
+22	\l+
+23	\du
+24	\du+
+26	\df foo int4 -
+27	\dt public.t?st
+28	\dT int[]

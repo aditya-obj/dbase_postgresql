@@ -24,6 +24,41 @@ Material ported (fetched from the master branch on 2026-10-16):
   * src/interfaces/libpq/t/001_uri.pl
       -> test/third_party/libpq_uri_corpus_test.dart (63 test cases)
 
+Material ported from the REL_18_STABLE branch (fetched 2026-10-18):
+
+  * src/bin/psql/psqlscanslash.l
+      -> lib/src/psql/meta_command.dart (backslash command and argument
+         lexing, quoting, dequote_downcase_identifier)
+  * src/bin/psql/mainloop.c, src/fe_utils/psqlscan.l (behaviour)
+      -> lib/src/psql/psql_input.dart (query buffer, \g \p \r)
+  * src/bin/psql/command.c
+      -> lib/src/psql/psql_console.dart, lib/src/psql/psql_conninfo.dart,
+         lib/src/psql/describe/describer.dart (exec_command_*, do_pset,
+         printPsetInfo, ParseVariableBool)
+  * src/bin/psql/describe.c
+      -> lib/src/psql/describe/ (listTables, describeTableDetails,
+         describeOneTableDetails, describeFunctions, describeRoles,
+         listSchemas, listExtensions, listAllDbs, describeTypes,
+         listDomains, permissionsList, validateSQLNamePattern)
+  * src/bin/psql/help.c (wording)
+      -> lib/src/psql/psql_help.dart
+  * src/bin/psql/common.c (PrintTiming)
+      -> lib/src/psql/psql_messages.dart
+  * src/fe_utils/string_utils.c
+      -> lib/src/psql/name_pattern.dart, lib/src/psql/sql_literal.dart
+         (patternToSQLRegex, processSQLNamePattern,
+         appendStringLiteralConn)
+  * src/fe_utils/print.c, src/fe_utils/mbprint.c, src/common/wchar.c
+      -> lib/src/psql/print/ (print_aligned_text, print_aligned_vertical,
+         unaligned and CSV output, pg_wcssize, pg_wcsformat,
+         strlen_max_width, ucs_wcwidth)
+  * src/include/common/unicode_nonspacing_table.h,
+    src/include/common/unicode_east_asian_fw_table.h
+      -> lib/src/psql/print/unicode_width_tables.dart (generated)
+  * src/interfaces/libpq/fe-protocol3.c (pqBuildErrorMessage3,
+    reportErrorPosition)
+      -> lib/src/psql/psql_messages.dart
+
 License (PostgreSQL License, from the COPYRIGHT file):
 
 PostgreSQL Database Management System

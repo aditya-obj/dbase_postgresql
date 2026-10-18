@@ -19,10 +19,14 @@ contains the parts a client needs before it opens a socket:
 | Binary values | `package:dbase_postgresql/binary.dart` | Decodes `bytea` text output (hex and escape formats), detects common file formats by magic bytes and reads image sizes from headers without decoding. |
 | PostGIS geometry | `package:dbase_postgresql/geo.dart` | Decodes the hex EWKB PostGIS prints for `geometry`/`geography` (and ISO WKB) into typed geometries with SRID and Z/M, rejecting malformed input safely. |
 | CSV import | `package:dbase_postgresql/csv.dart` | Sniffs a file's encoding, delimiter and header, decodes records from a byte stream leniently, re-encodes them as canonical PostgreSQL CSV for `COPY ... FROM STDIN`, builds the `COPY` and `INSERT ... unnest` SQL, and pre-checks values against column types. |
+| psql console | `package:dbase_postgresql/psql.dart` | psql's backslash-command parser and line handling, `\d`-style name patterns, the `describe.c` queries behind `\d`, `\dt`, `\df`, `\du`, `\l` and friends (PostgreSQL 13–18), and psql's aligned, wrapped, expanded, unaligned and CSV table printer. |
+| Catalog | `package:dbase_postgresql/catalog.dart` | Reads a schema or table scope of the catalog in bulk (about 25 statements, PostgreSQL 13–18) into an immutable `SchemaModel` with `pg_depend` edges, through a `CatalogQuery` callback. |
+| DDL | `package:dbase_postgresql/ddl.dart` | pg_dump-like DDL from catalog rows: tables, views, materialized views, routines, aggregates, sequences, indexes, types, domains, schemas, extensions, grants. |
+| SQL export | `package:dbase_postgresql/dump.dart` | A pg_dump-style plain-SQL export over any connection (one snapshot, locks, dependency order, data as COPY text through a cursor) and a streaming reader for restoring plain-SQL files. |
 
 `package:dbase_postgresql/dbase_postgresql.dart` exports everything.
 
-> Status: 0.5.0 (unreleased), not published yet (`publish_to: none` until the
+> Status: 0.6.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL, libpg_query and PEV2 keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
@@ -345,6 +349,112 @@ send(sql, writer.takeBytes());
   timestamps; it returns `null` when only the server can tell.
   `inferPgType` proposes a column type for a new table that every sample
   value fits (`007` stays text).
+
+## psql console
+
+```dart
+import 'package:dbase_postgresql/psql.dart';
+
+final console = PsqlConsole();
+for (final item in console.feedLine(r'select 1 as x; \d users')) {
+  switch (item) {
+    case PsqlQueryItem(:final sql):
+      final result = await run(sql); // your connection
+      print(printTable(
+        PrintTable.fromResult(
+          columns: result.columns,
+          typeOids: result.typeOids,
+          rows: result.rows,
+          nullDisplay: console.options.nullDisplay,
+        ),
+        console.options,
+      ));
+    case PsqlMetaItem(:final command):
+      if (console.run(command) case PsqlDescribeRequest()) {
+        final outputs = await runDescribe(
+          DescribeContext(version: 170002, query: catalogQuery),
+          command,
+        );
+        // PsqlTableOutput -> printTable, PsqlMessageOutput -> text
+      }
+    case PsqlTextItem(:final text):
+      print(text);
+  }
+}
+```
+
+- **Input.** `PsqlInputScanner` (inside `PsqlConsole`) follows psql's main
+  loop: SQL collects in a buffer until a top-level `;` (not inside
+  strings, comments, dollar quotes or parentheses), and a backslash
+  outside those starts a command anywhere on the line. `\g`/`\gx` send
+  or repeat the buffer, `\p` shows it, `\r` clears it, and
+  `promptState` is psql's `%R` (`=`, `-`, `'`, `"`, `$`, `*`, `(`).
+- **Commands.** `parseMetaCommand` reads names and arguments like
+  `psqlscanslash.l`, including `'…'` escapes, kept `"…"` for patterns,
+  `\\` terminators and trailing-semicolon stripping; backquotes (shell)
+  are refused. `PsqlConsole.run` applies `\x`, `\timing`, `\pset`, `\a`,
+  `\t`, `\echo` and `\?`, and hands describe commands, `\conninfo` and
+  `\q` back to the caller. Commands that need a shell, files or
+  variables are refused with a reason.
+- **Describe.** `runDescribe` runs psql 18's `describe.c` queries through
+  a `PsqlQuery` callback, as single read-only SELECTs, version-gated for
+  PostgreSQL 13–18. Name patterns translate exactly as
+  `processSQLNamePattern` does, with user text always quoted as SQL
+  literals. Tests compare the generated SQL with what `psql -E` sends and
+  the printed text with psql's own output.
+- **Printing.** `printTable` reproduces psql's aligned format byte for
+  byte (golden-tested against psql), plus wrapped (fit to
+  `PrintOptions.columns`), expanded (`\x on`/`auto`), unaligned and CSV.
+  Widths use psql's Unicode tables, so CJK and emoji line up.
+- **Messages.** `formatServerMessage` prints errors and notices like psql,
+  with the `LINE n:` excerpt and caret under the error position;
+  `formatTiming` prints `\timing` lines.
+
+## SQL export
+
+`SqlDumper` writes a plain-SQL file that `psql -X -v ON_ERROR_STOP=1 -f`
+restores, like `pg_dump --format=plain --no-owner`:
+
+```dart
+final result = await SqlDumper(
+  connection: myConnection, // implements DumpConnection
+  options: const DumpOptions(
+    scope: CatalogScope.schemas([2200]), // or CatalogScope.tables([...])
+    content: DumpContent.schemaAndData,
+  ),
+  write: (chunk) async => sink.write(chunk),
+).run();
+print('${result.rows} rows, failed: ${result.failedTables.length}');
+```
+
+- **Snapshot.** One `REPEATABLE READ, READ ONLY` transaction with
+  pg_dump's settings; every dumped table gets an `ACCESS SHARE` lock
+  before its definition is read, so schema changes wait for the export.
+- **Catalog.** `CatalogReader` reads each kind of object with one
+  statement (not one per object) into a `SchemaModel`; the DDL is
+  assembled by the same code as the dbase object viewer.
+- **Order.** Pre-data follows `pg_depend` (with type priority and name
+  as tie-breakers); keys, foreign keys, indexes and triggers come after
+  the data, so circular foreign keys need nothing special. A default
+  that calls a function in a cycle with its table is split out; other
+  cycles are reported (`DumpWarningCode.dependencyCycle`).
+- **Data.** A `SCROLL` cursor is read in batches of about 4 MB and each
+  row is re-encoded as COPY text (`encodeCopyTextRow`). The connection
+  must never cut a value: `DumpConnection.fetch` throws instead, or
+  reports a batch it could not hold (`FetchedRows.serverRows`) so the
+  dump steps back and reads it again in smaller batches.
+- **Row-level security.** With `row_security = off`, a table whose
+  policies apply to the exporting role is left out and reported, unless
+  `DumpOptions.visibleRowsOnly` asks for the rows that role can see.
+- **Not covered:** ownership, roles, tablespaces, large objects,
+  publications, subscriptions, event triggers, foreign servers and
+  tables, C-language types and operators, collations, text search
+  configurations; their counts are in `DumpResult.skipped` and the file
+  header.
+
+`SqlScriptReader` streams such a file (or pg_dump's plain format) back
+as statements, COPY data in whole-line chunks and backslash commands,
+with line numbers and the TOC entry each item belongs to.
 
 ## Development
 

@@ -1,0 +1,7 @@
+ id  |   name    | amount 
+-----+-----------+--------
+   1 | alpha     |    1.5
+  22 | b         | (null)
+ 333 | gamma ray |  -2.25
+(3 rows)
+

@@ -1,5 +1,117 @@
 # Changelog
 
+## 0.6.0 (unreleased)
+
+### Added
+
+- `package:dbase_postgresql/psql.dart`, also exported from
+  `dbase_postgresql.dart`: psql's console logic, pure Dart, ported from
+  psql 18 (PostgreSQL License).
+  - `parseMetaCommand`: backslash commands as `psqlscanslash.l` reads
+    them: the name runs to whitespace or the next `\`, arguments split on
+    unquoted whitespace, `'…'` with `''` and backslash escapes, `"…"`
+    kept for name patterns, `\\` ends the command, backquotes refused.
+    `MetaArg.value(semicolon: true)` strips unquoted trailing `;`;
+    `sqlIdentifier()` dequotes and lower-cases.
+  - `PsqlInputScanner`: psql's line handling. SQL collects in a query
+    buffer until a top-level `;`; a `\` outside quotes and comments
+    starts a command anywhere on a line; `\g` / `\gx` send (or repeat)
+    the buffer, `\p` shows it, `\r` clears it; `promptState` gives the
+    `%R` continuation character.
+  - `patternToRegex` / `processNamePattern`: `\d` name patterns (`*`,
+    `?`, `"Exact"`, `schema.name`, `db.schema.name`) to the same
+    `OPERATOR(pg_catalog.~) '^(…)$' COLLATE pg_catalog.default` clauses
+    and errors as psql's `processSQLNamePattern`.
+  - `runDescribe` with `DescribeContext`: `\d[S+] [pattern]` (relation
+    lists, and full table/view/index/sequence descriptions with indexes,
+    constraints, references, policies, statistics, rules, publications,
+    triggers, partitions and inheritance), `\dt \di \dv \dm \ds \dE`,
+    `\df[anptw]` with argument-type patterns, `\dn`, `\du`/`\dg`, `\dx`,
+    `\dT`, `\dD`, `\dp`/`\z` and `\l`, with `S`, `+` and `x`. Single
+    read-only catalog SELECTs through a `PsqlQuery` callback,
+    version-gated for PostgreSQL 13–18. The list builders
+    (`listTablesSql`, …) are public and produce psql's SQL text.
+  - `printTable` / `PrintTable` / `PrintOptions`: psql's aligned output
+    (centred headers, `-+-` rules, numeric columns right-aligned by type
+    OID, `(N rows)`, multi-line `+` marks, border 0/1/2, title, footer,
+    tuples only), the wrapped format to a target width, expanded
+    (`\x on|auto`) records, unaligned and CSV; `\pset null`. Display
+    width follows psql's `ucs_wcwidth` tables (CJK and emoji take two
+    columns, combining marks none, control characters escaped).
+  - `PsqlConsole`: `\x`, `\timing`, `\pset` (format, border, columns,
+    expanded, footer, null, title, tuples_only, fieldsep,
+    csv_fieldsep), `\a`, `\t`, `\echo`, `\?`, `\conninfo`, `\q`, psql's
+    `extra argument ignored` warnings and `invalid command` errors;
+    `\copy`, `\!`, `\gexec`, `\i`, `\o`, `\e`, `\set` and friends are
+    refused with a reason (`unsupportedCommands`).
+  - `formatServerMessage`: errors and notices as psql prints them
+    (`ERROR:  …`, `LINE n:` with the excerpt cut to about 60 columns
+    and a `^` under the position, DETAIL, HINT); `formatTiming` for
+    `\timing`; `formatConnInfo` (no password); `serverVersionNumber`.
+- `package:dbase_postgresql/dump.dart`, also exported from
+  `dbase_postgresql.dart`: plain-SQL export and restore helpers, pure
+  Dart.
+  - `SqlDumper` runs a pg_dump-like export over any `DumpConnection`:
+    one `REPEATABLE READ, READ ONLY` transaction with pg_dump's settings
+    (empty search_path, ISO dates, `extra_float_digits 3`, hex bytea,
+    UTC, `row_security off`, 5 s lock wait, 2 min per statement),
+    `ACCESS SHARE` locks on every dumped table before definitions are
+    read, then pre-data, table data and post-data. Data is read through
+    a `SCROLL` cursor in batches sized to about 4 MB and re-encoded as
+    COPY text; a batch cut by the connection's memory cap is stepped
+    back (`MOVE BACKWARD`) and read again in smaller batches, and a cut
+    value fails the dump (`DumpRowTooLargeException`), never a silently
+    corrupted file. Progress, per-table status, `checkpoint` and
+    `isCancelled` hooks; errors roll back.
+  - `DumpPlanner`: pg_dump's sections. Pre-data (schemas, extensions,
+    types, routines, aggregates, sequences, tables, views, materialized
+    views `WITH NO DATA`, sequence OWNED BY) in `pg_depend` order with
+    object-type priority and name as tie-breakers; a column DEFAULT
+    that calls a function caught in a cycle with its table becomes an
+    `ALTER TABLE ... SET DEFAULT` after both; other cycles are written in
+    priority order and reported. Data in foreign-key order plus
+    `setval` (identity sequences through `pg_get_serial_sequence`).
+    Post-data: indexes (partitioned ones recursing), keys, other
+    constraints, foreign keys, triggers, rules, statistics, row-level
+    security and policies, materialized view refreshes, comments and,
+    optionally, grants and default privileges. No ownership. Schema
+    only, data only, or both; `visibleRowsOnly` for tables whose
+    row-level security applies to the exporting role (otherwise their
+    data is left out and reported). Warnings as codes
+    (`DumpWarningCode`).
+  - `DumpWriter`: header comment (no host, user or connection string),
+    pg_dump's SET preamble, `-- Name: …; Type: …; Schema: …` TOC
+    comments, COPY blocks.
+  - `encodeCopyTextRow` / `CopyTextEncoder` (COPY text format, as
+    `CopyAttributeOutText` escapes) and `decodeCopyTextRow`.
+  - `dependencyOrder`: deterministic topological sort with a
+    comparator, cycles cut and reported (iterative Tarjan).
+  - `SqlScriptReader`: streams a plain-SQL file (ours or pg_dump's) into
+    statements, COPY data chunks of whole lines and backslash commands
+    (`\restrict`/`\unrestrict` marked ignorable), with line numbers and
+    the last TOC entry; any chunking gives the same items.
+- `package:dbase_postgresql/catalog.dart`: `CatalogQuery` / `CatalogRow`,
+  the catalog text parsers (`pgBool`, `pgInt`, `pgDouble`,
+  `pgTextArray`, `requireText`, `oidArrayLiteral`) and `CatalogReader`,
+  which reads a schema or table scope in bulk (one statement per kind,
+  about 25 in all, version-gated for PostgreSQL 13–18) into an
+  immutable `SchemaModel` with normalized `pg_depend` edges and counts
+  of what a dump skips (large objects, publications, subscriptions,
+  event triggers, foreign servers and tables, base types, collations,
+  operators, text search configurations, extension configuration data).
+- `package:dbase_postgresql/ddl.dart`: the DDL recipe queries, row
+  parsers and assemblers of the dbase app's object viewer, moved here
+  (tables, views, materialized views, routines, sequences, indexes).
+  Recipe queries take one OID or an OID array (`OidFilter`) and return a
+  `relid` column; `TableDdlAssembler.parts` and `ViewDdlAssembler.parts`
+  split the same statements by dump section. New: enum, composite, range
+  and domain types (`TypeDdlAssembler`), `createAggregateStatement`,
+  `createSchemaStatement`, `createExtensionStatement`,
+  `defaultPrivilegeStatements`.
+- `quoteIdent`, `qualifiedName`, `quoteLiteral`, `reloptionEntry`,
+  `fdwOptionEntry` and `dollarQuote` in `package:dbase_postgresql/sql.dart`
+  (moved from the dbase app).
+
 ## 0.5.0 (unreleased)
 
 ### Added

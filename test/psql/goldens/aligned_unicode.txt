@@ -1,0 +1,5 @@
+ name  |  cjk   | emoji | combining 
+-------+--------+-------+-----------
+ héllo | 日本語 | 👍x   | é
+(1 row)
+

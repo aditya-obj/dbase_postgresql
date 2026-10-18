@@ -1,0 +1,6 @@
+-[ RECORD 1 ]-----
+name      | héllo
+cjk       | 日本語
+emoji     | 👍x
+combining | é
+

@@ -25,6 +25,14 @@ export 'src/sql/sql_keywords.dart'
         sqlKeywordCategories,
         sqlKeywordCategory;
 export 'src/sql/sql_lexer.dart' show SqlLexer;
+export 'src/sql/sql_quoting.dart'
+    show
+        dollarQuote,
+        fdwOptionEntry,
+        qualifiedName,
+        quoteIdent,
+        quoteLiteral,
+        reloptionEntry;
 export 'src/sql/sql_statement.dart' show SqlStatement;
 export 'src/sql/sql_statement_splitter.dart' show SqlStatementSplitter;
 export 'src/sql/sql_token.dart' show SqlToken, SqlTokenDiagnostic, SqlTokenKind;

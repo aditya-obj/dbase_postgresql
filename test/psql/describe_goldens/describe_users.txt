@@ -1,0 +1,13 @@
+                                   Table "public.users"
+ Column  |           Type           | Collation | Nullable |           Default            
+---------+--------------------------+-----------+----------+------------------------------
+ id      | integer                  |           | not null | generated always as identity
+ email   | text                     |           | not null | 
+ created | timestamp with time zone |           |          | now()
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+Check constraints:
+    "users_email_check" CHECK (email <> ''::text)
+Referenced by:
+    TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+
