@@ -4,7 +4,7 @@ A pure-Dart PostgreSQL toolkit with no runtime dependencies. It doesn't
 use Flutter or `dart:io`, so it runs on Android, iOS, web, desktop and the
 server.
 
-It is the in-house library behind **dabase**, an Android-first PostgreSQL
+It is the in-house library behind **DaBase**, an Android-first PostgreSQL
 client that connects from the device straight to the database. It
 contains the parts a client needs before it opens a socket:
 
@@ -26,8 +26,8 @@ contains the parts a client needs before it opens a socket:
 
 `package:dabase_postgresql/dabase_postgresql.dart` exports everything.
 
-> Status: 0.7.0 (unreleased), not published yet (`publish_to: none` until the
-> repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
+> Status: 0.7.0 (unreleased; renamed from `dbase_postgresql` on 2026-10-19),
+> not published yet (`publish_to: none` until the first pub.dev release). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL, libpg_query and PEV2 keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
 

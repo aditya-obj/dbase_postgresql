@@ -110,7 +110,7 @@
   event triggers, foreign servers and tables, base types, collations,
   operators, text search configurations, extension configuration data).
 - `package:dabase_postgresql/ddl.dart`: the DDL recipe queries, row
-  parsers and assemblers of the dabase app's object viewer, moved here
+  parsers and assemblers of the DaBase app's object viewer, moved here
   (tables, views, materialized views, routines, sequences, indexes).
   Recipe queries take one OID or an OID array (`OidFilter`) and return a
   `relid` column; `TableDdlAssembler.parts` and `ViewDdlAssembler.parts`
@@ -120,7 +120,7 @@
   `defaultPrivilegeStatements`.
 - `quoteIdent`, `qualifiedName`, `quoteLiteral`, `reloptionEntry`,
   `fdwOptionEntry` and `dollarQuote` in `package:dabase_postgresql/sql.dart`
-  (moved from the dabase app).
+  (moved from the DaBase app).
 
 ## 0.5.0 (unreleased)
 
