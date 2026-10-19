@@ -4,8 +4,8 @@
 // handling, cancellation and rollback on errors; and a dump read back by
 // SqlScriptReader gives the same statements and rows.
 
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/dump.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/dump.dart';
 import 'package:test/test.dart';
 
 import '../support/catalog_fixture.dart';
@@ -122,14 +122,14 @@ void main() {
       lock,
       lessThan(log.indexWhere((s) => s.contains('pg_get_partkeydef'))),
     );
-    const declare = 'DECLARE dbase_dump SCROLL CURSOR FOR SELECT';
+    const declare = 'DECLARE dabase_dump SCROLL CURSOR FOR SELECT';
     expect(log.where((s) => s.startsWith('DECLARE')), [
       '$declare id, name, mood FROM ONLY shop.customers',
       '$declare id, customer_id, no FROM ONLY shop.orders',
     ]);
     // 3 rows in batches of 2: 2 + 1 (a short batch ends it); 5 rows: 2 + 2 + 1.
     expect(log.where((s) => s.startsWith('FETCH')).length, 2 + 3);
-    expect(log.where((s) => s == 'CLOSE dbase_dump').length, 2);
+    expect(log.where((s) => s == 'CLOSE dabase_dump').length, 2);
     expect(result.rows, 8);
     expect(result.failedTables, isEmpty);
     expect(result.skipped.counts, {'large_objects': 2, 'event_triggers': 1});
@@ -273,7 +273,7 @@ void main() {
       write: (chunk) async => out.write(chunk),
       batch: const DumpBatchSizing(startRows: 4, minRows: 1, maxRows: 4),
     ).run();
-    expect(connection.log, contains('MOVE BACKWARD 2 IN dbase_dump'));
+    expect(connection.log, contains('MOVE BACKWARD 2 IN dabase_dump'));
     final text = out.toString();
     final copy = text.indexOf('COPY shop.orders');
     final data = text.substring(

@@ -8,7 +8,7 @@
 // (validateSQLNamePattern) - PostgreSQL License, (c) 1996-2026 PostgreSQL
 // Global Development Group. See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/sql_literal.dart';
+import 'package:dabase_postgresql/src/psql/sql_literal.dart';
 
 /// The regular expressions a pattern turns into.
 final class PatternRegex {

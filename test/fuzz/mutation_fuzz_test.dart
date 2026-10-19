@@ -9,7 +9,7 @@ library;
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dbase_postgresql/dbase_postgresql.dart';
+import 'package:dabase_postgresql/dabase_postgresql.dart';
 import 'package:test/test.dart';
 
 import '../sql/invariants_test.dart' show checkSqlInvariants;

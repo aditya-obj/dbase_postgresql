@@ -2,7 +2,7 @@
 // Purpose: The one primitive catalog code needs (run one statement with
 // `$n` parameters, get the rows back as column-name maps of server text)
 // and parsers for the server's text output of catalog columns. Moved from
-// the dbase app in 0.6.0.
+// the dabase app in 0.6.0.
 
 /// One result row: column name to the server's text value (`null` for SQL
 /// NULL).

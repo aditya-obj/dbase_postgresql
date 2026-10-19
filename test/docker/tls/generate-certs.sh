@@ -10,7 +10,7 @@ if [ -f /certs/server.crt ] && [ -f /certs/server.key ]; then
 else
   cd /certs
   openssl req -x509 -newkey rsa:2048 -nodes -days 30 \
-    -subj "/CN=dbase test CA" -keyout ca.key -out ca.crt
+    -subj "/CN=dabase test CA" -keyout ca.key -out ca.crt
   openssl req -newkey rsa:2048 -nodes -subj "/CN=localhost" \
     -keyout server.key -out server.csr
   printf 'subjectAltName=DNS:localhost,DNS:pg18-tls,IP:127.0.0.1\n' > san.ext

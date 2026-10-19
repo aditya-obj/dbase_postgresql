@@ -6,9 +6,9 @@
 // (c) 1996-2026 PostgreSQL Global Development Group. See
 // THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/sql/sql_char_classes.dart';
-import 'package:dbase_postgresql/src/sql/sql_keywords.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_char_classes.dart';
+import 'package:dabase_postgresql/src/sql/sql_keywords.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// Splits SQL text into [SqlToken]s following PostgreSQL's `scan.l`.
 ///

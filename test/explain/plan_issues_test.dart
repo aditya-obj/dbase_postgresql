@@ -3,7 +3,7 @@
 // case per PlanIssueCode, facts, ranking, the limit, the minimum impact
 // and the fast-query cutoff.
 
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 import 'package:test/test.dart';
 
 import '../support/explain_json.dart';

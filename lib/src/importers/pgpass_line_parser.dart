@@ -12,9 +12,9 @@
 // test/importers/pgpass_libpq_equivalence_test.dart checks the matcher
 // against a literal port of the C code.
 
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
-import 'package:dbase_postgresql/src/importers/pgpass_file.dart';
-import 'package:dbase_postgresql/src/importers/text_lines.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/importers/pgpass_file.dart';
+import 'package:dabase_postgresql/src/importers/text_lines.dart';
 
 typedef _Diagnostic = PgLineDiagnostic<PgPassDiagnosticCode>;
 

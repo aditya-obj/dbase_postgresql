@@ -11,7 +11,7 @@
 
 import 'dart:math' as math;
 
-import 'package:dbase_postgresql/src/explain/explain_plan.dart';
+import 'package:dabase_postgresql/src/explain/explain_plan.dart';
 
 /// Which way the planner's row estimate was wrong.
 enum EstimateDirection {

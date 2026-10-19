@@ -1,7 +1,7 @@
-THIRD-PARTY NOTICES for dbase_postgresql
+THIRD-PARTY NOTICES for dabase_postgresql
 ========================================
 
-dbase_postgresql contains material ported from the projects below. Each
+dabase_postgresql contains material ported from the projects below. Each
 ported file names its source in its header comment.
 
 ------------------------------------------------------------------------

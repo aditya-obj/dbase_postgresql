@@ -2,7 +2,7 @@
 // Purpose: Index-based view over a statement's significant tokens with
 // helpers for words, punctuation, and paren depth (internal).
 
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 const _falseValues = {'false', 'off', '0', 'no'};
 

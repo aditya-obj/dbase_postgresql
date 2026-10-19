@@ -3,8 +3,8 @@
 // `CREATE AGGREGATE` statement rebuilt from it (as pg_dump's
 // dumpAgg does, without its pre-11 branches).
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// Every `pg_aggregate` field CREATE AGGREGATE can set. Function and type
 /// names are server text (`regproc` / `format_type`), already quoted and

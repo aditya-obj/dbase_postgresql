@@ -1,19 +1,19 @@
 // File: pg_server.dart
 // Purpose: Connection helper for the integration tests. Reads the server
-// URL from DBASE_PG_URL, parses it with our own PgConnectionConfig, and
+// URL from DABASE_PG_URL, parses it with our own PgConnectionConfig, and
 // opens a connection with the `postgres` driver (a dev dependency only).
 //
-// Tests that use this skip with [skipReason] when DBASE_PG_URL is unset,
+// Tests that use this skip with [skipReason] when DABASE_PG_URL is unset,
 // so a plain `dart test -P integration` without a server reports skips
 // instead of failures. See test/docker/README.md for running servers.
 
 import 'dart:io';
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 import 'package:postgres/postgres.dart' as pg;
 
 /// The environment variable holding the test server's connection string.
-const urlVariable = 'DBASE_PG_URL';
+const urlVariable = 'DABASE_PG_URL';
 
 /// The connection string under test, or `null` when unset or blank.
 final String? testServerUrl = switch (Platform.environment[urlVariable]) {
@@ -25,7 +25,7 @@ final String? testServerUrl = switch (Platform.environment[urlVariable]) {
 Object get skipReason => testServerUrl == null
     ? '$urlVariable is not set. Start a server (see test/docker/README.md) '
           'and export e.g. '
-          '$urlVariable=postgresql://dbase:dbase@localhost:54318/dbase'
+          '$urlVariable=postgresql://dabase:dabase@localhost:54318/dabase'
           '?sslmode=disable'
     : false;
 
@@ -61,7 +61,7 @@ Future<pg.Connection> openTestConnection() async {
       isUnixSocket: host?.isUnixSocket ?? false,
     ),
     settings: pg.ConnectionSettings(
-      applicationName: 'dbase_postgresql integration tests',
+      applicationName: 'dabase_postgresql integration tests',
       sslMode: switch (config.sslMode) {
         SslMode.disable ||
         SslMode.allow ||

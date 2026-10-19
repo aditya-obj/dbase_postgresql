@@ -3,7 +3,7 @@
 // InitPlan naming on PostgreSQL 17+, self cost, estimate factors, row
 // totals, self buffers, trigger and "other" time.
 
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 import 'package:test/test.dart';
 
 import '../support/explain_json.dart';

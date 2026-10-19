@@ -2,7 +2,7 @@
 // Purpose: Streaming a plain-SQL file into statements, COPY data and
 // backslash commands, whatever the chunking, with line numbers.
 
-import 'package:dbase_postgresql/dump.dart';
+import 'package:dabase_postgresql/dump.dart';
 import 'package:test/test.dart';
 
 Future<List<ScriptItem>> read(

@@ -2,13 +2,13 @@
 // Purpose: Public entry point that classifies SQL statements and reports
 // safety findings (missing WHERE, DROP, TRUNCATE, ...).
 
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
-import 'package:dbase_postgresql/src/sql/sql_statement.dart';
-import 'package:dbase_postgresql/src/sql/sql_statement_splitter.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_analysis.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement_splitter.dart';
 
 /// Classifies SQL statements and flags risky ones before they run.
 ///

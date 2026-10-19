@@ -2,7 +2,7 @@
 // Purpose: COPY text encoding (CopyAttributeOutText rules) and decoding,
 // with the server text of every kind of value a dump carries.
 
-import 'package:dbase_postgresql/dump.dart';
+import 'package:dabase_postgresql/dump.dart';
 import 'package:test/test.dart';
 
 void main() {

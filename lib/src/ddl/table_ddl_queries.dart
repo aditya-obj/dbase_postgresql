@@ -3,7 +3,7 @@
 // server_version_num. Each takes `$1` as one OID (OidFilter.one, the
 // per-object DDL viewer) or an OID array (OidFilter.many, the bulk catalog
 // reader) and returns a `relid` column naming the object each row belongs
-// to. Each text is exactly one statement. Moved from the dbase app in
+// to. Each text is exactly one statement. Moved from the dabase app in
 // 0.6.0.
 
 /// How a recipe query matches its `$1` parameter.

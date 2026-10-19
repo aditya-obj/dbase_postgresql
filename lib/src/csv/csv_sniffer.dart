@@ -5,12 +5,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/src/csv/csv_decoder.dart';
-import 'package:dbase_postgresql/src/csv/csv_dialect.dart';
-import 'package:dbase_postgresql/src/csv/csv_parser.dart';
-import 'package:dbase_postgresql/src/csv/csv_record.dart';
-import 'package:dbase_postgresql/src/csv/csv_text_encoding.dart';
-import 'package:dbase_postgresql/src/csv/pg_text_check.dart';
+import 'package:dabase_postgresql/src/csv/csv_decoder.dart';
+import 'package:dabase_postgresql/src/csv/csv_dialect.dart';
+import 'package:dabase_postgresql/src/csv/csv_parser.dart';
+import 'package:dabase_postgresql/src/csv/csv_record.dart';
+import 'package:dabase_postgresql/src/csv/csv_text_encoding.dart';
+import 'package:dabase_postgresql/src/csv/pg_text_check.dart';
 
 /// Something the sniffer noticed that the user may want to know.
 enum CsvSniffNote {

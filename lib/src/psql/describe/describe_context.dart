@@ -3,8 +3,8 @@
 // query callback, the current database (for `db.schema.name` patterns)
 // and the NULL display for printQuery-style tables.
 
-import 'package:dbase_postgresql/src/psql/describe/list_sql.dart';
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart';
+import 'package:dabase_postgresql/src/psql/describe/list_sql.dart';
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart';
 
 /// Inputs shared by the describe commands.
 final class DescribeContext {

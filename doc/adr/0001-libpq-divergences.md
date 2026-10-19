@@ -7,13 +7,13 @@
 
 ## Context
 
-`dbase_postgresql` follows libpq's connection string semantics. That
+`dabase_postgresql` follows libpq's connection string semantics. That
 keeps a string pasted from `psql`, a cloud console or a `.env` file
 meaning the same thing here. libpq's own URI corpus (`001_uri.pl`, 63
 cases) is ported in `test/third_party/libpq_uri_corpus_test.dart` and is
 the specification.
 
-libpq is a C library that runs in a trusted process. dbase is a mobile app
+libpq is a C library that runs in a trusted process. dabase is a mobile app
 that stores credentials and writes logs and crash reports. A few libpq
 behaviours are unsafe or unhelpful there. Each divergence below is
 deliberate, and where the corpus covers it, it is flagged per case with
@@ -25,7 +25,7 @@ deliberate, and where the corpus covers it, it is flagged per case with
 
 libpq rejects unknown keywords (`invalid URI query parameter: "uzer"`).
 We keep them in `PgConnectionConfig.parameters`. This lets a newer server
-option, or one that dbase interprets itself, pass through without a
+option, or one that dabase interprets itself, pass through without a
 library release. pgx made the same choice. Corpus cases 21 and 38 diverge
 for this reason.
 
@@ -97,7 +97,7 @@ When `sslmode` is absent the effective mode is libpq's `prefer`, and
 pg-connection-string without `uselibpqcompat`. Instead,
 `securityWarnings` reports `sslModeNotSpecified` and
 `sslMayFallBackToPlaintext`, and the app decides on a policy. The owner
-still has to decide whether dbase should default to `verify-full`.
+still has to decide whether dabase should default to `verify-full`.
 
 ## Importers (v0.2.0)
 

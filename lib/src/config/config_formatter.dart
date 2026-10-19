@@ -2,10 +2,10 @@
 // Purpose: Formats a PgConnectionConfig back into a postgresql:// URI with
 // controllable secret handling (internal, not exported).
 
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/percent_codec.dart';
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/pg_host.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/percent_codec.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/pg_host.dart';
 
 /// How secrets are written by [formatConfigUri].
 enum SecretOutput {

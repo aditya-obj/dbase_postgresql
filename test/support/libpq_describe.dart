@@ -3,7 +3,7 @@
 // libpq_uri_regress tool prints a parsed URI, so corpus outputs compare
 // directly.
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 
 /// Renders [config] as `user='u' dbname='d' host='h' port='p' (inet)`.
 ///

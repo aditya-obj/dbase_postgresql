@@ -6,10 +6,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dbase_postgresql/src/csv/csv_dialect.dart';
-import 'package:dbase_postgresql/src/csv/csv_parser.dart';
-import 'package:dbase_postgresql/src/csv/csv_record.dart';
-import 'package:dbase_postgresql/src/csv/csv_text_encoding.dart';
+import 'package:dabase_postgresql/src/csv/csv_dialect.dart';
+import 'package:dabase_postgresql/src/csv/csv_parser.dart';
+import 'package:dabase_postgresql/src/csv/csv_record.dart';
+import 'package:dabase_postgresql/src/csv/csv_text_encoding.dart';
 
 /// Matches Excel's `sep=;` first line (the delimiter hint).
 final excelSepLine = RegExp(r'^sep=(.)\r?$');

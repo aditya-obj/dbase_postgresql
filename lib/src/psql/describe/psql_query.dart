@@ -3,7 +3,7 @@
 // callback and its result) and what they produce (tables to print and
 // psql's messages).
 
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
 
 /// The rows of one catalog query, as text (SQL NULL is `null`).
 final class PsqlResult {

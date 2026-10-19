@@ -12,7 +12,7 @@
 // the expectations to satisfy the parser. Generated mechanically from the
 // upstream file; `libpqStdout`/`libpqStderr` are verbatim.
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 import 'package:test/test.dart';
 
 import '../support/libpq_describe.dart';

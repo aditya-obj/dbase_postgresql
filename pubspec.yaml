@@ -1,13 +1,13 @@
-name: dbase_postgresql
+name: dabase_postgresql
 description: >-
   Pure-Dart PostgreSQL toolkit: libpq connection string parsing, .pgpass,
   service file and pgAdmin importers, a SQL lexer, a psql-style statement
   splitter, statement safety checks, an EXPLAIN (FORMAT JSON) analyzer,
   bulk catalog reading, DDL generation and a pg_dump-style SQL export.
-version: 0.6.0
+version: 0.7.0
 publish_to: none
-repository: https://github.com/aditya-obj/dbase_postgresql
-issue_tracker: https://github.com/aditya-obj/dbase_postgresql/issues
+repository: https://github.com/aditya-obj/dabase_postgresql
+issue_tracker: https://github.com/aditya-obj/dabase_postgresql/issues
 topics:
   - postgresql
   - postgres

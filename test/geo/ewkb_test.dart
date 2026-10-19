@@ -9,8 +9,8 @@
 
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/binary.dart';
-import 'package:dbase_postgresql/geo.dart';
+import 'package:dabase_postgresql/binary.dart';
+import 'package:dabase_postgresql/geo.dart';
 import 'package:test/test.dart';
 
 /// Builds WKB for tests.

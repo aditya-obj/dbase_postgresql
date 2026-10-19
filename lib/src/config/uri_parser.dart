@@ -2,10 +2,10 @@
 // Purpose: Parses postgres:// and postgresql:// URIs into raw libpq keyword
 // settings (internal, not exported).
 
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/percent_codec.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/percent_codec.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
 
 const _schemes = ['postgresql://', 'postgres://'];
 

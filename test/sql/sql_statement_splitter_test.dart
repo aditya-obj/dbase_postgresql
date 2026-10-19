@@ -2,7 +2,7 @@
 // Purpose: Unit tests for SqlStatementSplitter: top-level semicolons,
 // psql's BEGIN/CASE/END tracking, COPY FROM STDIN data, and cursor lookup.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 const _splitter = SqlStatementSplitter();

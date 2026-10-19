@@ -8,9 +8,9 @@
 // (c) 1996-2026 PostgreSQL Global Development Group. See
 // THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/print/display_width.dart';
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
-import 'package:dbase_postgresql/src/psql/print/vertical_printer.dart';
+import 'package:dabase_postgresql/src/psql/print/display_width.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/print/vertical_printer.dart';
 
 enum _Rule { top, middle, bottom }
 

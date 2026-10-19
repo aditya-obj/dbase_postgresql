@@ -2,7 +2,7 @@
 // Purpose: One statement found by SqlStatementSplitter, with its text,
 // offsets, and tokens.
 
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// A single SQL statement within a script.
 ///

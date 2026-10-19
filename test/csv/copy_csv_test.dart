@@ -5,7 +5,7 @@
 
 import 'dart:convert';
 
-import 'package:dbase_postgresql/csv.dart';
+import 'package:dabase_postgresql/csv.dart';
 import 'package:test/test.dart';
 
 String encode(List<List<String?>> records) {

@@ -2,7 +2,7 @@
 // Purpose: Unit tests for redactSecrets / containsSecrets: role passwords,
 // FDW password options, connection strings, and text that must stay as is.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 void main() {

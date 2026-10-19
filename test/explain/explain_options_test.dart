@@ -2,7 +2,7 @@
 // Purpose: Unit tests for ExplainOptions.toSql: version gating and the
 // ANALYZE-only / not-with-ANALYZE option rules.
 
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 import 'package:test/test.dart';
 
 const _all = ExplainOptions(

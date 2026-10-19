@@ -6,9 +6,9 @@
 // PostgreSQL License, (c) 1996-2026 PostgreSQL Global Development Group.
 // See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/sql/sql_lexer.dart';
-import 'package:dbase_postgresql/src/sql/sql_statement.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_lexer.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// Number of leading words psql remembers per statement (`init_idents`).
 const _initialWordLimit = 8;

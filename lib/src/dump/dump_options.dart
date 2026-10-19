@@ -2,7 +2,7 @@
 // Purpose: What a SQL dump covers and how, plus the warning codes a dump
 // reports (codes, not text, so an app can translate them).
 
-import 'package:dbase_postgresql/src/catalog/catalog_reader.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_reader.dart';
 
 /// Which sections a dump writes.
 enum DumpContent {

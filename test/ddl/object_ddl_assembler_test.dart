@@ -1,5 +1,5 @@
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/ddl.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/ddl.dart';
 import 'package:test/test.dart';
 
 import 'table_ddl_test_rows.dart';

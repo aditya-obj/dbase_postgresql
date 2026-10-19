@@ -3,9 +3,9 @@
 // composite types, range types and domains (with their constraints).
 // Base (C-language) and shell types need superuser and are not covered.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// One attribute of a composite type.
 final class TypeAttributeRow {

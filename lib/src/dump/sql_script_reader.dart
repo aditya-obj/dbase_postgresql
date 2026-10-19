@@ -11,9 +11,9 @@
 
 import 'dart:async';
 
-import 'package:dbase_postgresql/src/sql/sql_lexer.dart';
-import 'package:dbase_postgresql/src/sql/sql_statement_splitter.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_lexer.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement_splitter.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// The last pg_dump TOC comment seen before an item.
 final class ScriptTocEntry {

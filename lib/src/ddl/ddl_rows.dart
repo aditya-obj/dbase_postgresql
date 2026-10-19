@@ -2,9 +2,9 @@
 // Purpose: Parsed rows shared by several object kinds: grants, indexes,
 // triggers, rules and column comments. Each `fromRow` reads the server
 // text of one CatalogQuery row (see the *_queries.dart files for the
-// column names). Moved from the dbase app in 0.6.0.
+// column names). Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
 
 /// The `relid` column bulk queries add: the OID of the object a row
 /// belongs to.

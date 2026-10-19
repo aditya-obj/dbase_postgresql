@@ -2,7 +2,7 @@
 // Purpose: Server errors and notices formatted like psql (expected texts
 // are real psql 17 output for the same statements), and \timing lines.
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 String _error(String query, String needle, String message, {String? hint}) =>

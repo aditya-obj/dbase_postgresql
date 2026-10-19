@@ -2,7 +2,7 @@
 // Purpose: pg_cron job changes (cron.schedule, schedule_in_database,
 // unschedule, alter_job) are writes with a sideEffectFunction finding.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 const _analyzer = SqlStatementAnalyzer();

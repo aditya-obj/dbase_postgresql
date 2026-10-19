@@ -9,7 +9,7 @@
 
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/src/geo/geometry.dart';
+import 'package:dabase_postgresql/src/geo/geometry.dart';
 
 const _sridFlag = 0x20000000;
 const _zFlag = 0x80000000;

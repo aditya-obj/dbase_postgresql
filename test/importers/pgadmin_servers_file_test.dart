@@ -4,8 +4,8 @@
 
 import 'dart:io';
 
-import 'package:dbase_postgresql/connection_string.dart';
-import 'package:dbase_postgresql/importers.dart';
+import 'package:dabase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/importers.dart';
 import 'package:test/test.dart';
 
 PgAdminServersFile _fixture(String name) => PgAdminServersFile.parse(

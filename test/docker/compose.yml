@@ -1,10 +1,10 @@
 # File: test/docker/compose.yml
-# Purpose: Servers for the dbase_postgresql integration tests
+# Purpose: Servers for the dabase_postgresql integration tests
 # (`dart test -P integration`). Test-only: every password here is a
 # throwaway and nothing must be exposed beyond localhost.
 #
 #   docker compose -f test/docker/compose.yml up -d --wait
-#   DBASE_PG_URL='postgresql://dbase:dbase@localhost:54318/dbase?sslmode=disable' \
+#   DABASE_PG_URL='postgresql://dabase:dabase@localhost:54318/dabase?sslmode=disable' \
 #     dart test -P integration
 #   docker compose -f test/docker/compose.yml down -v
 #
@@ -12,9 +12,9 @@
 
 x-postgres: &postgres
   environment:
-    POSTGRES_USER: dbase
-    POSTGRES_PASSWORD: dbase
-    POSTGRES_DB: dbase
+    POSTGRES_USER: dabase
+    POSTGRES_PASSWORD: dabase
+    POSTGRES_DB: dabase
     # Remote connections use SCRAM; the socket stays trust for the image's
     # init scripts and the healthcheck.
     POSTGRES_HOST_AUTH_METHOD: scram-sha-256
@@ -23,7 +23,7 @@ x-postgres: &postgres
   healthcheck:
     # -h 127.0.0.1: the image's temporary init server listens on the
     # socket only, so this passes once the real server is up.
-    test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U dbase -d dbase"]
+    test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U dabase -d dabase"]
     interval: 2s
     timeout: 5s
     retries: 30
@@ -95,10 +95,10 @@ services:
       - -c
       - ssl_key_file=/certs/server.key
       - -c
-      - hba_file=/etc/dbase/pg_hba_tls.conf
+      - hba_file=/etc/dabase/pg_hba_tls.conf
     volumes:
       - tls-certs:/certs:ro
-      - ./tls/pg_hba_tls.conf:/etc/dbase/pg_hba_tls.conf:ro
+      - ./tls/pg_hba_tls.conf:/etc/dabase/pg_hba_tls.conf:ro
     ports: ["127.0.0.1:54328:5432"]
 
   # PgBouncer in transaction pooling mode in front of pg18.
@@ -110,8 +110,8 @@ services:
     environment:
       DB_HOST: pg18
       DB_PORT: "5432"
-      DB_USER: dbase
-      DB_PASSWORD: dbase
+      DB_USER: dabase
+      DB_PASSWORD: dabase
       AUTH_TYPE: scram-sha-256
       POOL_MODE: transaction
       LISTEN_PORT: "6432"
@@ -123,8 +123,8 @@ services:
       retries: 30
     ports: ["127.0.0.1:56432:6432"]
 
-  # OpenSSH server for SSH-tunnel tests: ssh -p 2222 dbase@localhost,
-  # password "dbase", forwarding to pg18:5432 (or pg18-tls:5432).
+  # OpenSSH server for SSH-tunnel tests: ssh -p 2222 dabase@localhost,
+  # password "dabase", forwarding to pg18:5432 (or pg18-tls:5432).
   openssh:
     image: linuxserver/openssh-server:10.3_p1-r1-ls239
     depends_on:
@@ -134,8 +134,8 @@ services:
       PUID: "1000"
       PGID: "1000"
       TZ: Etc/UTC
-      USER_NAME: dbase
-      USER_PASSWORD: dbase
+      USER_NAME: dabase
+      USER_PASSWORD: dabase
       PASSWORD_ACCESS: "true"
       # TCP forwarding is off in this image; this official LinuxServer mod
       # turns it on (downloaded at container start, needs network).

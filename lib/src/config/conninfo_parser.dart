@@ -2,9 +2,9 @@
 // Purpose: Parses libpq key=value conninfo strings into raw keyword settings
 // (internal, not exported).
 
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
 
 /// Parses `host=db.example.com port=5432 password='it\'s secret'`.
 ///

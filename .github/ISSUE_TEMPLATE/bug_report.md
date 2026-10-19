@@ -23,7 +23,7 @@ error message): do NOT file them here. See SECURITY.md.
 
 ## Versions
 
-- `dbase_postgresql` version:
+- `dabase_postgresql` version:
 - Dart SDK version (`dart --version`):
 - PostgreSQL server version (`SELECT version();`), if relevant:
 - Platform (Android, iOS, web, macOS, Linux, Windows, server):

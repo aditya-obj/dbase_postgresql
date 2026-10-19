@@ -18,11 +18,11 @@
 //
 // Everything runs inside BEGIN ... ROLLBACK, so the server is left clean
 // and the test also works through PgBouncer in transaction mode.
-// Run with `dart test -P integration` and DBASE_PG_URL set.
+// Run with `dart test -P integration` and DABASE_PG_URL set.
 @Tags(['integration'])
 library;
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:postgres/postgres.dart' as pg;
 import 'package:test/test.dart';
 
@@ -54,18 +54,18 @@ final class _Script {
 const _corpus = <_Script>[
   _Script(
     'plain statements and quoted semicolons',
-    'CREATE TABLE dbase_it_t (id int PRIMARY KEY, body text);\n'
-        "INSERT INTO dbase_it_t VALUES (1, 'a;b'), (2, E'c\\';d');\n"
-        "SELECT * FROM dbase_it_t WHERE body <> 'x;y';\n"
-        "UPDATE dbase_it_t SET body = 'z' WHERE id = 1;\n"
-        'DELETE FROM dbase_it_t WHERE id = 2',
+    'CREATE TABLE dabase_it_t (id int PRIMARY KEY, body text);\n'
+        "INSERT INTO dabase_it_t VALUES (1, 'a;b'), (2, E'c\\';d');\n"
+        "SELECT * FROM dabase_it_t WHERE body <> 'x;y';\n"
+        "UPDATE dabase_it_t SET body = 'z' WHERE id = 1;\n"
+        'DELETE FROM dabase_it_t WHERE id = 2',
     5,
   ),
   _Script(
     'dollar quotes',
-    'CREATE FUNCTION dbase_it_f() RETURNS int LANGUAGE plpgsql AS \$\$\n'
+    'CREATE FUNCTION dabase_it_f() RETURNS int LANGUAGE plpgsql AS \$\$\n'
         'BEGIN\n  RETURN 1; -- ; inside\nEND\n\$\$;\n'
-        r'SELECT $tag$ ; $$ ; $tag$ AS t, dbase_it_f();'
+        r'SELECT $tag$ ; $$ ; $tag$ AS t, dabase_it_f();'
         '\n'
         r'DO $do$ BEGIN PERFORM 1; END $do$;'
         '\n'
@@ -88,33 +88,33 @@ const _corpus = <_Script>[
   ),
   _Script(
     'quoted identifiers and string prefixes',
-    'CREATE TABLE "dbase;it" ("a;b" int);\n'
-        'INSERT INTO "dbase;it" VALUES (1);\n'
+    'CREATE TABLE "dabase;it" ("a;b" int);\n'
+        'INSERT INTO "dabase;it" VALUES (1);\n'
         r"SELECT U&'d\0061t', B'101', X'1F', N'n', E'\n;', 'it''s;';",
     3,
   ),
   _Script(
     'BEGIN ATOMIC function and procedure bodies',
-    'CREATE TABLE dbase_it_t2 (a int);\n'
-        'CREATE FUNCTION dbase_it_atomic(a int) RETURNS int LANGUAGE sql\n'
+    'CREATE TABLE dabase_it_t2 (a int);\n'
+        'CREATE FUNCTION dabase_it_atomic(a int) RETURNS int LANGUAGE sql\n'
         'BEGIN ATOMIC\n'
         '  SELECT CASE WHEN a > 0 THEN a ELSE 0 END;\n'
         'END;\n'
-        'CREATE PROCEDURE dbase_it_proc() LANGUAGE sql\n'
+        'CREATE PROCEDURE dabase_it_proc() LANGUAGE sql\n'
         'BEGIN ATOMIC\n'
-        '  INSERT INTO dbase_it_t2 VALUES (1);\n'
-        '  INSERT INTO dbase_it_t2 VALUES (CASE WHEN true THEN 2 END);\n'
+        '  INSERT INTO dabase_it_t2 VALUES (1);\n'
+        '  INSERT INTO dabase_it_t2 VALUES (CASE WHEN true THEN 2 END);\n'
         'END;\n'
-        'CALL dbase_it_proc();\n'
-        'SELECT dbase_it_atomic(5);',
+        'CALL dabase_it_proc();\n'
+        'SELECT dabase_it_atomic(5);',
     5,
     minVersion: 140000,
   ),
   _Script(
     'data-modifying CTE and savepoints',
-    'CREATE TABLE dbase_it_t3 (a int);\n'
+    'CREATE TABLE dabase_it_t3 (a int);\n'
         'SAVEPOINT s1;\n'
-        'WITH d AS (INSERT INTO dbase_it_t3 VALUES (1) RETURNING *) '
+        'WITH d AS (INSERT INTO dabase_it_t3 VALUES (1) RETURNING *) '
         'SELECT * FROM d;\n'
         'RELEASE SAVEPOINT s1',
     4,
@@ -195,9 +195,9 @@ void main() {
             final kind = analyzer.analyzeStatement(statement).kind;
             if (_preparable.contains(kind)) {
               await connection.execute(
-                'PREPARE dbase_it_p$index AS ${statement.text}',
+                'PREPARE dabase_it_p$index AS ${statement.text}',
               );
-              await connection.execute('DEALLOCATE dbase_it_p$index');
+              await connection.execute('DEALLOCATE dabase_it_p$index');
             }
             try {
               await connection.execute(

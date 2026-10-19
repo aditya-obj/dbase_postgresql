@@ -12,7 +12,7 @@
 // spaces at commas and parentheses on purpose.
 // ignore_for_file: missing_whitespace_between_adjacent_strings
 
-import 'package:dbase_postgresql/src/psql/name_pattern.dart';
+import 'package:dabase_postgresql/src/psql/name_pattern.dart';
 
 /// Which relation kinds a `\d?` list shows (the letters after `\d`).
 final class RelationKinds {

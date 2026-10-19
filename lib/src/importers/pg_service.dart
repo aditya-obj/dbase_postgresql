@@ -2,12 +2,12 @@
 // Purpose: One named section of a libpq connection service file, its
 // diagnostics, and libpq's "connection string wins" merge.
 
-import 'package:dbase_postgresql/src/config/config_builder.dart';
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart' as keywords;
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/config/config_builder.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart' as keywords;
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
 
 /// Stable identifiers for `pg_service.conf` [PgLineDiagnostic]s.
 ///

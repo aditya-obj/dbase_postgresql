@@ -17,13 +17,13 @@
 // SUBSCRIPTION with replication slots, and REINDEX or CLUSTER of a
 // partitioned table.
 //
-// Run with `dart test -P integration` and DBASE_PG_URL set. Needs a
+// Run with `dart test -P integration` and DABASE_PG_URL set. Needs a
 // superuser-like role only for the setup objects (a table, an index and a
-// partitioned table, all prefixed dbase_it_ and dropped afterwards).
+// partitioned table, all prefixed dabase_it_ and dropped afterwards).
 @Tags(['integration'])
 library;
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:postgres/postgres.dart' as pg;
 import 'package:test/test.dart';
 
@@ -41,82 +41,82 @@ _Case _c(String sql, [int minVersion = 130000]) =>
 /// Statements the server refuses inside a transaction block.
 final _refused = <_Case>[
   _c('VACUUM'),
-  _c('VACUUM dbase_it_tx'),
-  _c('VACUUM (ANALYZE) dbase_it_tx'),
-  _c('VACUUM FULL dbase_it_tx'),
-  _c('CREATE DATABASE dbase_it_db'),
-  _c('DROP DATABASE dbase_it_db'),
-  _c('DROP DATABASE IF EXISTS dbase_it_db'),
-  _c('CREATE INDEX CONCURRENTLY dbase_it_tx_c ON dbase_it_tx (a)'),
-  _c('CREATE UNIQUE INDEX CONCURRENTLY dbase_it_tx_u ON dbase_it_tx (a)'),
-  _c('DROP INDEX CONCURRENTLY dbase_it_tx_i'),
-  _c('REINDEX TABLE CONCURRENTLY dbase_it_tx'),
-  _c('REINDEX INDEX CONCURRENTLY dbase_it_tx_i'),
+  _c('VACUUM dabase_it_tx'),
+  _c('VACUUM (ANALYZE) dabase_it_tx'),
+  _c('VACUUM FULL dabase_it_tx'),
+  _c('CREATE DATABASE dabase_it_db'),
+  _c('DROP DATABASE dabase_it_db'),
+  _c('DROP DATABASE IF EXISTS dabase_it_db'),
+  _c('CREATE INDEX CONCURRENTLY dabase_it_tx_c ON dabase_it_tx (a)'),
+  _c('CREATE UNIQUE INDEX CONCURRENTLY dabase_it_tx_u ON dabase_it_tx (a)'),
+  _c('DROP INDEX CONCURRENTLY dabase_it_tx_i'),
+  _c('REINDEX TABLE CONCURRENTLY dabase_it_tx'),
+  _c('REINDEX INDEX CONCURRENTLY dabase_it_tx_i'),
   _c('REINDEX DATABASE {db}'),
   _c('REINDEX SYSTEM {db}'),
   _c('REINDEX SCHEMA public'),
   _c('REINDEX (VERBOSE) SCHEMA public'),
   _c('REINDEX (VERBOSE) DATABASE {db}'),
-  _c('REINDEX (CONCURRENTLY) TABLE dbase_it_tx', 140000),
-  _c('REINDEX (CONCURRENTLY true) INDEX dbase_it_tx_i', 140000),
+  _c('REINDEX (CONCURRENTLY) TABLE dabase_it_tx', 140000),
+  _c('REINDEX (CONCURRENTLY true) INDEX dabase_it_tx_i', 140000),
   _c("ALTER SYSTEM SET work_mem = '4MB'"),
-  _c("CREATE TABLESPACE dbase_it_ts LOCATION '/nonexistent'"),
-  _c('DROP TABLESPACE dbase_it_ts'),
-  _c('ALTER DATABASE dbase_it_db SET TABLESPACE pg_default'),
+  _c("CREATE TABLESPACE dabase_it_ts LOCATION '/nonexistent'"),
+  _c('DROP TABLESPACE dabase_it_ts'),
+  _c('ALTER DATABASE dabase_it_db SET TABLESPACE pg_default'),
   _c(
-    'ALTER TABLE dbase_it_parent DETACH PARTITION dbase_it_child '
+    'ALTER TABLE dabase_it_parent DETACH PARTITION dabase_it_child '
     'CONCURRENTLY',
     140000,
   ),
   _c('CLUSTER'),
   _c('CLUSTER VERBOSE'),
   _c('DISCARD ALL'),
-  _c("COMMIT PREPARED 'dbase_it_gid'"),
-  _c("ROLLBACK PREPARED 'dbase_it_gid'"),
+  _c("COMMIT PREPARED 'dabase_it_gid'"),
+  _c("ROLLBACK PREPARED 'dabase_it_gid'"),
 ];
 
 /// Statements the server allows inside a transaction block.
 final _allowed = <_Case>[
   _c('SELECT 1'),
-  _c('ANALYZE dbase_it_tx'),
-  _c('CREATE INDEX dbase_it_tx_n ON dbase_it_tx (a)'),
-  _c('DROP INDEX dbase_it_tx_i'),
-  _c('REINDEX TABLE dbase_it_tx'),
-  _c('REINDEX INDEX dbase_it_tx_i'),
-  _c('REINDEX (VERBOSE) TABLE dbase_it_tx'),
-  _c('REINDEX (CONCURRENTLY false) TABLE dbase_it_tx', 140000),
-  _c('CLUSTER dbase_it_tx USING dbase_it_tx_i'),
-  _c('ALTER DATABASE dbase_it_db SET work_mem = 1024'),
-  _c('REFRESH MATERIALIZED VIEW dbase_it_mv'),
+  _c('ANALYZE dabase_it_tx'),
+  _c('CREATE INDEX dabase_it_tx_n ON dabase_it_tx (a)'),
+  _c('DROP INDEX dabase_it_tx_i'),
+  _c('REINDEX TABLE dabase_it_tx'),
+  _c('REINDEX INDEX dabase_it_tx_i'),
+  _c('REINDEX (VERBOSE) TABLE dabase_it_tx'),
+  _c('REINDEX (CONCURRENTLY false) TABLE dabase_it_tx', 140000),
+  _c('CLUSTER dabase_it_tx USING dabase_it_tx_i'),
+  _c('ALTER DATABASE dabase_it_db SET work_mem = 1024'),
+  _c('REFRESH MATERIALIZED VIEW dabase_it_mv'),
   _c('DISCARD PLANS'),
   _c('DISCARD TEMP'),
   _c('DISCARD SEQUENCES'),
-  _c('ALTER TABLE dbase_it_parent DETACH PARTITION dbase_it_child'),
-  _c('CREATE TABLE dbase_it_new (a int)'),
-  _c('DROP TABLE dbase_it_tx'),
-  _c('TRUNCATE dbase_it_tx'),
-  _c("ALTER TYPE dbase_it_enum ADD VALUE 'c'"),
-  _c('LOCK TABLE dbase_it_tx'),
+  _c('ALTER TABLE dabase_it_parent DETACH PARTITION dabase_it_child'),
+  _c('CREATE TABLE dabase_it_new (a int)'),
+  _c('DROP TABLE dabase_it_tx'),
+  _c('TRUNCATE dabase_it_tx'),
+  _c("ALTER TYPE dabase_it_enum ADD VALUE 'c'"),
+  _c('LOCK TABLE dabase_it_tx'),
   _c('SAVEPOINT s'),
 ];
 
 const _createChild =
-    'CREATE TABLE dbase_it_child PARTITION OF dbase_it_parent '
+    'CREATE TABLE dabase_it_child PARTITION OF dabase_it_parent '
     'FOR VALUES FROM (0) TO (10)';
 
 const _setup = <String>[
-  'DROP TABLE IF EXISTS dbase_it_tx, dbase_it_parent CASCADE',
-  'DROP TYPE IF EXISTS dbase_it_enum',
-  'CREATE TABLE dbase_it_tx (a int)',
-  'CREATE INDEX dbase_it_tx_i ON dbase_it_tx (a)',
-  'CREATE TABLE dbase_it_parent (a int) PARTITION BY RANGE (a)',
+  'DROP TABLE IF EXISTS dabase_it_tx, dabase_it_parent CASCADE',
+  'DROP TYPE IF EXISTS dabase_it_enum',
+  'CREATE TABLE dabase_it_tx (a int)',
+  'CREATE INDEX dabase_it_tx_i ON dabase_it_tx (a)',
+  'CREATE TABLE dabase_it_parent (a int) PARTITION BY RANGE (a)',
   _createChild,
-  "CREATE TYPE dbase_it_enum AS ENUM ('a', 'b')",
+  "CREATE TYPE dabase_it_enum AS ENUM ('a', 'b')",
 ];
 
 const _teardown = [
-  'DROP TABLE IF EXISTS dbase_it_tx, dbase_it_parent CASCADE',
-  'DROP TYPE IF EXISTS dbase_it_enum',
+  'DROP TABLE IF EXISTS dabase_it_tx, dabase_it_parent CASCADE',
+  'DROP TYPE IF EXISTS dabase_it_enum',
 ];
 
 void main() {

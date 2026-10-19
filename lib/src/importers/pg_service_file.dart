@@ -2,9 +2,9 @@
 // Purpose: A parsed libpq connection service file (pg_service.conf /
 // .pg_service.conf) and libpq's user-over-system file precedence.
 
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
-import 'package:dbase_postgresql/src/importers/pg_service.dart';
-import 'package:dbase_postgresql/src/importers/service_file_parser.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/importers/pg_service.dart';
+import 'package:dabase_postgresql/src/importers/service_file_parser.dart';
 
 /// A parsed connection service file.
 ///

@@ -13,9 +13,9 @@
 //   function shop.total(shop.orders); aggregate shop.my_sum(integer)
 //   view shop.order_view on orders and total()
 
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/ddl.dart';
-import 'package:dbase_postgresql/src/catalog/catalog_sql.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/ddl.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_sql.dart';
 
 const pg17 = 170004;
 const shopOid = 16400;

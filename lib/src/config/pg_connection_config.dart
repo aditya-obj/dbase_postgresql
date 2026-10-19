@@ -3,15 +3,15 @@
 // conninfo strings, with libpq default resolution, security warnings, and
 // secret-safe formatting.
 
-import 'package:dbase_postgresql/src/config/config_builder.dart';
-import 'package:dbase_postgresql/src/config/config_formatter.dart';
-import 'package:dbase_postgresql/src/config/conninfo_parser.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/pg_host.dart';
-import 'package:dbase_postgresql/src/config/pg_security_warning.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/config/ssl_mode.dart';
-import 'package:dbase_postgresql/src/config/uri_parser.dart';
+import 'package:dabase_postgresql/src/config/config_builder.dart';
+import 'package:dabase_postgresql/src/config/config_formatter.dart';
+import 'package:dabase_postgresql/src/config/conninfo_parser.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_host.dart';
+import 'package:dabase_postgresql/src/config/pg_security_warning.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/config/ssl_mode.dart';
+import 'package:dabase_postgresql/src/config/uri_parser.dart';
 
 /// Immutable PostgreSQL connection settings.
 ///

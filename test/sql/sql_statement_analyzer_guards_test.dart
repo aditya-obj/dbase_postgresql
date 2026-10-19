@@ -3,7 +3,7 @@
 // LOCK, side-effect functions, always-true WHERE, MERGE findings, targets,
 // CASCADE, two-phase commit writes and REINDEX transaction rules.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 const _analyzer = SqlStatementAnalyzer();

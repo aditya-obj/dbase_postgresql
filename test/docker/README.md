@@ -16,17 +16,17 @@ certificate here is a throwaway. Ports are bound to `127.0.0.1` only.
 | `pgbouncer` | `edoburu/pgbouncer:v1.26.0-p0` | `56432` | PgBouncer in **transaction** pooling mode in front of `pg18`. |
 | `openssh` | `linuxserver/openssh-server` | `2222` | OpenSSH with TCP forwarding, on the same network as `pg18` and `pg18-tls`. |
 
-All servers use user `dbase`, password `dbase`, database `dbase`.
+All servers use user `dabase`, password `dabase`, database `dabase`.
 
 ## Running
 
-From `packages/dbase_postgresql`:
+From `packages/dabase_postgresql`:
 
 ```sh
 docker compose -f test/docker/compose.yml up -d --wait          # everything
 docker compose -f test/docker/compose.yml up -d --wait pg18     # just one
 
-DBASE_PG_URL='postgresql://dbase:dbase@localhost:54318/dbase?sslmode=disable' \
+DABASE_PG_URL='postgresql://dabase:dabase@localhost:54318/dabase?sslmode=disable' \
   dart test -P integration
 
 docker compose -f test/docker/compose.yml down -v               # clean up
@@ -38,8 +38,8 @@ docker compose -f test/docker/compose.yml down -v               # clean up
 
 | Variable | Meaning |
 |---|---|
-| `DBASE_PG_URL` | Connection string of the server under test (URI or `key=value`). Unset: integration tests are skipped with a message. On CI (`CI=true`) a missing URL fails the run. |
-| `PGPASSWORD` and other `PG*` | Applied through `PgConnectionConfig.resolveDefaults`, as libpq would, for keywords missing from `DBASE_PG_URL`. |
+| `DABASE_PG_URL` | Connection string of the server under test (URI or `key=value`). Unset: integration tests are skipped with a message. On CI (`CI=true`) a missing URL fails the run. |
+| `PGPASSWORD` and other `PG*` | Applied through `PgConnectionConfig.resolveDefaults`, as libpq would, for keywords missing from `DABASE_PG_URL`. |
 
 `sslmode` in the URL picks the driver's TLS mode: `disable`, `allow` and
 `prefer` (the default) connect without TLS; `require` uses TLS without
@@ -49,22 +49,22 @@ verifying the certificate; `verify-ca` and `verify-full` verify it.
 
 ```sh
 # PostgreSQL 13 .. 18
-postgresql://dbase:dbase@localhost:54313/dbase?sslmode=disable
+postgresql://dabase:dabase@localhost:54313/dabase?sslmode=disable
 # ...
-postgresql://dbase:dbase@localhost:54318/dbase?sslmode=disable
+postgresql://dabase:dabase@localhost:54318/dabase?sslmode=disable
 
 # TLS (self-signed chain; the driver does not verify it in require mode)
-postgresql://dbase:dbase@localhost:54328/dbase?sslmode=require
+postgresql://dabase:dabase@localhost:54328/dabase?sslmode=require
 
 # PgBouncer, transaction mode
-postgresql://dbase:dbase@localhost:56432/dbase?sslmode=disable
+postgresql://dabase:dabase@localhost:56432/dabase?sslmode=disable
 
 # Through the SSH server: open a tunnel, then use the local port
-ssh -p 2222 -N -L 55432:pg18:5432 dbase@localhost        # password: dbase
-postgresql://dbase:dbase@localhost:55432/dbase?sslmode=disable
+ssh -p 2222 -N -L 55432:pg18:5432 dabase@localhost        # password: dabase
+postgresql://dabase:dabase@localhost:55432/dabase?sslmode=disable
 ```
 
-The integration tests themselves only need `DBASE_PG_URL`. The TLS,
+The integration tests themselves only need `DABASE_PG_URL`. The TLS,
 PgBouncer and SSH services exist so the same servers can be used for the
 app's TLS and SSH-tunnel spikes.
 
@@ -81,5 +81,5 @@ app's TLS and SSH-tunnel spikes.
   `BEGIN ... ROLLBACK`.
 
 Every test runs in a rolled-back transaction, or cleans up objects
-prefixed `dbase_it_`, so a shared development server is left unchanged.
+prefixed `dabase_it_`, so a shared development server is left unchanged.
 Still, prefer the containers here over any shared server.

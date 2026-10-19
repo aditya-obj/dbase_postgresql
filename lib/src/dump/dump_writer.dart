@@ -4,10 +4,10 @@
 // `psql -f` restores it, TOC comments before every item, and the COPY
 // blocks of table data.
 
-import 'package:dbase_postgresql/src/catalog/schema_model.dart';
-import 'package:dbase_postgresql/src/dump/dump_options.dart';
-import 'package:dbase_postgresql/src/dump/dump_planner.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/schema_model.dart';
+import 'package:dabase_postgresql/src/dump/dump_options.dart';
+import 'package:dabase_postgresql/src/dump/dump_planner.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// What the header comment of a dump says.
 final class DumpHeader {
@@ -24,7 +24,7 @@ final class DumpHeader {
     this.tablesNotExported = const [],
   });
 
-  /// The program that wrote the dump, e.g. `dbase 1.0`.
+  /// The program that wrote the dump, e.g. `dabase 1.0`.
   final String generator;
 
   /// The source server's `server_version`.

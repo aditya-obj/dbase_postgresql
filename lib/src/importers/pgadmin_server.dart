@@ -2,7 +2,7 @@
 // Purpose: One server imported from a pgAdmin 4 servers.json export, its
 // SSH tunnel, tags, warnings and rejection errors.
 
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
 
 /// Why a pgAdmin field needs the user's attention. Stable, for
 /// localisation and UI logic.

@@ -8,14 +8,14 @@
 // (PostgreSQL 19, lines 6176-6179). libpq parses only the section it is
 // looking for; this parser reports, per section, what that lookup would do.
 
-import 'package:dbase_postgresql/src/config/config_builder.dart';
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
-import 'package:dbase_postgresql/src/importers/pg_service.dart';
-import 'package:dbase_postgresql/src/importers/text_lines.dart';
+import 'package:dabase_postgresql/src/config/config_builder.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/importers/pg_service.dart';
+import 'package:dabase_postgresql/src/importers/text_lines.dart';
 
 typedef _Code = PgServiceDiagnosticCode;
 typedef _Diagnostic = PgLineDiagnostic<PgServiceDiagnosticCode>;

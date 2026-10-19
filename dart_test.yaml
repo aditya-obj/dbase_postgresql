@@ -2,7 +2,7 @@
 # Purpose: Test tags and presets. A plain `dart test` skips slow or
 # environment-dependent tags; run them with a preset, e.g.
 #   dart test -P fuzz          (FUZZ_SEED / FUZZ_ITERATIONS to replay)
-#   dart test -P integration   (DBASE_PG_URL; see test/docker/README.md)
+#   dart test -P integration   (DABASE_PG_URL; see test/docker/README.md)
 #   dart test -P ci-integration  (the same, as run on CI)
 tags:
   integration:
@@ -26,7 +26,7 @@ presets:
     include_tags: mutation
     exclude_tags: integration || fuzz
   # CI: one server per job, GitHub annotations, no retries. Fails when
-  # DBASE_PG_URL is unset (test/integration/server_configured_test.dart).
+  # DABASE_PG_URL is unset (test/integration/server_configured_test.dart).
   ci-integration:
     include_tags: integration
     exclude_tags: fuzz || mutation

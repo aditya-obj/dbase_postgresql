@@ -7,9 +7,9 @@
 // csv_print_field) - PostgreSQL License, (c) 1996-2026 PostgreSQL Global
 // Development Group. See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/print/aligned_printer.dart';
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
-import 'package:dbase_postgresql/src/psql/print/vertical_printer.dart';
+import 'package:dabase_postgresql/src/psql/print/aligned_printer.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/print/vertical_printer.dart';
 
 /// Prints [table] the way psql would with [options], and returns the
 /// text. Like psql, aligned output ends with an empty line.

@@ -1,4 +1,4 @@
-// File: dbase_postgresql.dart
+// File: dabase_postgresql.dart
 // Purpose: Umbrella entrypoint exporting the whole stable public API.
 
 /// Pure-Dart PostgreSQL toolkit: connection string parsing, `.pgpass`,
@@ -10,17 +10,17 @@
 /// reading, DDL generation and a pg_dump-style plain-SQL export. No
 /// Flutter or `dart:io` dependency.
 ///
-/// Import `package:dbase_postgresql/connection_string.dart`,
-/// `package:dbase_postgresql/importers.dart`,
-/// `package:dbase_postgresql/sql.dart`,
-/// `package:dbase_postgresql/explain.dart`,
-/// `package:dbase_postgresql/binary.dart`,
-/// `package:dbase_postgresql/geo.dart`,
-/// `package:dbase_postgresql/csv.dart`,
-/// `package:dbase_postgresql/psql.dart`,
-/// `package:dbase_postgresql/catalog.dart`,
-/// `package:dbase_postgresql/ddl.dart` or
-/// `package:dbase_postgresql/dump.dart` to depend on one area only.
+/// Import `package:dabase_postgresql/connection_string.dart`,
+/// `package:dabase_postgresql/importers.dart`,
+/// `package:dabase_postgresql/sql.dart`,
+/// `package:dabase_postgresql/explain.dart`,
+/// `package:dabase_postgresql/binary.dart`,
+/// `package:dabase_postgresql/geo.dart`,
+/// `package:dabase_postgresql/csv.dart`,
+/// `package:dabase_postgresql/psql.dart`,
+/// `package:dabase_postgresql/catalog.dart`,
+/// `package:dabase_postgresql/ddl.dart` or
+/// `package:dabase_postgresql/dump.dart` to depend on one area only.
 library;
 
 export 'binary.dart';

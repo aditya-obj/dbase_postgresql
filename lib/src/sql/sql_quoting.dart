@@ -1,9 +1,9 @@
 // File: sql_quoting.dart
 // Purpose: Client-side identifier and literal quoting for generated SQL,
 // matching the server's quote_ident / quote_literal so assembled text reads
-// the same as what pg_get_*def prints. Moved from the dbase app in 0.6.0.
+// the same as what pg_get_*def prints. Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/sql/sql_keywords.dart';
+import 'package:dabase_postgresql/src/sql/sql_keywords.dart';
 
 final _plainIdentifier = RegExp(r'^[a-z_][a-z0-9_$]*$');
 

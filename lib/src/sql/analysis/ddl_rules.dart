@@ -2,10 +2,10 @@
 // Purpose: Analysis rules for DDL (CREATE/ALTER/DROP/GRANT...) and
 // maintenance statements (VACUUM/REINDEX/CLUSTER...) (internal).
 
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_analysis.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
 
 /// Words after `ALTER TABLE ... DROP` that do not drop a column.
 const _nonColumnDrops = {

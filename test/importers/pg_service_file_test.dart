@@ -2,8 +2,8 @@
 // Purpose: Unit tests for PgServiceFile: libpq's parseServiceFile() rules,
 // per-section diagnostics, user/system precedence and applyTo.
 
-import 'package:dbase_postgresql/connection_string.dart';
-import 'package:dbase_postgresql/importers.dart';
+import 'package:dabase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/importers.dart';
 import 'package:test/test.dart';
 
 PgServiceFile _parse(String text) => PgServiceFile.parse(text);
@@ -28,7 +28,7 @@ void main() {
         'dbname=shop\n'
         'user=alice\n'
         'sslmode=verify-full\n'
-        'application_name=dbase\n',
+        'application_name=dabase\n',
       );
       expect(service.name, 'prod');
       expect(service.line, 1);
@@ -42,7 +42,7 @@ void main() {
       expect(config.database, 'shop');
       expect(config.user, 'alice');
       expect(config.sslMode, SslMode.verifyFull);
-      expect(config.parameters, {'application_name': 'dbase'});
+      expect(config.parameters, {'application_name': 'dabase'});
     });
 
     test('names are case-sensitive and text after ] is ignored', () {

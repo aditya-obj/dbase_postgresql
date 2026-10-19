@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-`dbase_postgresql` is pre-1.0. Security fixes go into the latest minor
+`dabase_postgresql` is pre-1.0. Security fixes go into the latest minor
 release only.
 
 | Version | Supported |
@@ -56,6 +56,6 @@ In scope: anything in this package, in particular
 
 Out of scope: vulnerabilities in PostgreSQL itself, in the Dart SDK, in
 the `postgres` driver (a development dependency used only by tests), and
-in the dbase app. Report those to their own projects. The analyzer's
+in the dabase app. Report those to their own projects. The analyzer's
 documented limits (it is lexical, so a `SELECT` can still write through
 a function) are not vulnerabilities.

@@ -2,7 +2,7 @@
 // Purpose: The dump's topological sort: dependencies first, ties by the
 // comparator, cycles cut deterministically and reported.
 
-import 'package:dbase_postgresql/dump.dart';
+import 'package:dabase_postgresql/dump.dart';
 import 'package:test/test.dart';
 
 DependencyOrder<String> order(

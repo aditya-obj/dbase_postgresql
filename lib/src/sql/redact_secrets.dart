@@ -3,8 +3,8 @@
 // (query history, logs): role passwords, FDW password options and
 // passwords inside connection strings.
 
-import 'package:dbase_postgresql/src/sql/sql_statement_splitter.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement_splitter.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// What a masked string constant is replaced with.
 const redactedSecretLiteral = "'********'";

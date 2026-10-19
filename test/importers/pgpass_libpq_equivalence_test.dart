@@ -4,7 +4,7 @@
 
 import 'dart:math';
 
-import 'package:dbase_postgresql/importers.dart';
+import 'package:dabase_postgresql/importers.dart';
 import 'package:test/test.dart';
 
 import '../support/importer_corpus.dart';

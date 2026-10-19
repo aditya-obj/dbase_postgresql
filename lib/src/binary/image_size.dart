@@ -5,7 +5,7 @@
 
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/src/binary/binary_kind.dart';
+import 'package:dabase_postgresql/src/binary/binary_kind.dart';
 
 /// Width and height in pixels, as an image header declares them.
 final class ImageSize {

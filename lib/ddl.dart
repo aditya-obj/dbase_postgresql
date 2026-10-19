@@ -6,10 +6,10 @@
 
 /// Generate pg_dump-like DDL from PostgreSQL catalog rows. The recipe
 /// queries take one OID or an OID array (see [OidFilter]); the assemblers
-/// are pure and print the same text as the dbase app's object viewer.
+/// are pure and print the same text as the dabase app's object viewer.
 library;
 
-import 'package:dbase_postgresql/src/ddl/table_ddl_queries.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_queries.dart';
 
 export 'src/ddl/aggregate_ddl.dart'
     show AggregateDefinition, createAggregateStatement;

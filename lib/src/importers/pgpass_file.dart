@@ -7,11 +7,11 @@
 // 7869-8030, fetched 2026-10-17) and the libpq documentation, section
 // 32.16 "The Password File".
 
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/pg_host.dart';
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
-import 'package:dbase_postgresql/src/importers/pgpass_line_parser.dart';
-import 'package:dbase_postgresql/src/importers/text_lines.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/pg_host.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/importers/pgpass_line_parser.dart';
+import 'package:dabase_postgresql/src/importers/text_lines.dart';
 
 /// Stable identifiers for `.pgpass` [PgLineDiagnostic]s.
 enum PgPassDiagnosticCode {

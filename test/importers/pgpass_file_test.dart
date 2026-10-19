@@ -2,8 +2,8 @@
 // Purpose: Unit tests for PgPassFile: libpq's field matching, escapes,
 // wildcards, host normalisation, line handling and diagnostics.
 
-import 'package:dbase_postgresql/connection_string.dart';
-import 'package:dbase_postgresql/importers.dart';
+import 'package:dabase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/importers.dart';
 import 'package:test/test.dart';
 
 String? _pw(

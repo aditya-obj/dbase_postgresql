@@ -8,19 +8,19 @@
 // READ, READ ONLY) with an empty search_path so names come back
 // schema-qualified.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/catalog/catalog_sql.dart';
-import 'package:dbase_postgresql/src/catalog/schema_model.dart';
-import 'package:dbase_postgresql/src/ddl/aggregate_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/namespace_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_queries.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_assembler.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_queries.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/type_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/view_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_sql.dart';
+import 'package:dabase_postgresql/src/catalog/schema_model.dart';
+import 'package:dabase_postgresql/src/ddl/aggregate_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/namespace_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_queries.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_queries.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/type_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/view_ddl_assembler.dart';
 
 /// What a catalog read covers.
 final class CatalogScope {

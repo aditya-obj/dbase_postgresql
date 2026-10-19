@@ -2,7 +2,7 @@
 // Purpose: Unit tests for PgConnectionConfig parsing (URI and conninfo),
 // validation, multi-host, IPv6, sockets, and round-tripping.
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 import 'package:test/test.dart';
 
 PgConnectionConfig _p(String s) => PgConnectionConfig.parse(s);

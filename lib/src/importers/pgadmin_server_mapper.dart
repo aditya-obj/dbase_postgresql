@@ -8,12 +8,12 @@
 // read only when `ConnectionParameters` is absent; `Timeout` becomes
 // `connect_timeout`) follow that code.
 
-import 'package:dbase_postgresql/src/config/config_builder.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/importers/pgadmin_parameter_checks.dart';
-import 'package:dbase_postgresql/src/importers/pgadmin_server.dart';
+import 'package:dabase_postgresql/src/config/config_builder.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/importers/pgadmin_parameter_checks.dart';
+import 'package:dabase_postgresql/src/importers/pgadmin_server.dart';
 
 typedef _Warn = PgAdminWarningCode;
 

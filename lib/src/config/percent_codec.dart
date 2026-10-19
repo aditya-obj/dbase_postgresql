@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
 
 /// Decodes `%XX` escapes in [input] as UTF-8. Unlike form encoding, `+` is
 /// left as-is (libpq does the same).

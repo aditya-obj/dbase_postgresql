@@ -3,9 +3,9 @@
 // job changes (which count as writes) and set_config() calls that can make
 // the session read-write (internal).
 
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// Settings that control whether transactions are read-only.
 const readOnlySettings = {

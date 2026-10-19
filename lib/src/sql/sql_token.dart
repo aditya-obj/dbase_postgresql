@@ -2,7 +2,7 @@
 // Purpose: Token model produced by SqlLexer: kind, exact source text,
 // UTF-16 offsets into the lexed string, and an optional lexical diagnostic.
 
-import 'package:dbase_postgresql/src/sql/sql_keywords.dart';
+import 'package:dabase_postgresql/src/sql/sql_keywords.dart';
 
 /// The lexical category of a [SqlToken].
 ///

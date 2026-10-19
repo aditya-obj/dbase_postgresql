@@ -2,7 +2,7 @@
 // Purpose: Tests that connection-string errors, toString, and redacted
 // output never leak secrets, plus security warnings.
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 import 'package:test/test.dart';
 
 const _secret = 'hunter2';

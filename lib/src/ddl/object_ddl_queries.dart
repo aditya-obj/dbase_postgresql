@@ -2,9 +2,9 @@
 // Purpose: Queries for view, materialized view, routine, sequence and
 // index DDL. `$1` is one OID or an OID array (see OidFilter); each row has
 // a `relid` column naming its object. Each text is exactly one statement.
-// Moved from the dbase app in 0.6.0.
+// Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/ddl/table_ddl_queries.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_queries.dart';
 
 /// A view or materialized view. `pg_get_viewdef` is NULL once the view
 /// is dropped; any other relkind returns no row.

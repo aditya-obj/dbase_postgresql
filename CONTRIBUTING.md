@@ -1,4 +1,4 @@
-# Contributing to dbase_postgresql
+# Contributing to dabase_postgresql
 
 Thanks for helping. This file explains how to set up, which checks must
 pass, and the rules that keep the parsers faithful to PostgreSQL.
@@ -41,7 +41,7 @@ slow and environment-dependent ones.
 |---|---|---|
 | (untagged) | `dart test` | Fast, no network. |
 | `fuzz` | `dart test -P fuzz` | Random seed per run; `FUZZ_SEED` replays a failure, `FUZZ_ITERATIONS` changes the length. |
-| `integration` | `dart test -P integration` | Needs `DBASE_PG_URL`; see `test/docker/README.md`. `-P ci-integration` is the CI variant. |
+| `integration` | `dart test -P integration` | Needs `DABASE_PG_URL`; see `test/docker/README.md`. `-P ci-integration` is the CI variant. |
 | `mutation` | `dart test -P mutation` | Reserved. |
 | `golden` | (no preset yet) | Reserved. |
 

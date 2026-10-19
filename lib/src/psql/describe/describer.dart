@@ -7,16 +7,16 @@
 // exec_command_z) - PostgreSQL License, (c) 1996-2026 PostgreSQL Global
 // Development Group. See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/describe/describe_context.dart';
-import 'package:dbase_postgresql/src/psql/describe/function_role_sql.dart';
-import 'package:dbase_postgresql/src/psql/describe/list_sql.dart';
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart';
-import 'package:dbase_postgresql/src/psql/describe/table_details.dart';
-import 'package:dbase_postgresql/src/psql/describe/type_privilege_sql.dart';
-import 'package:dbase_postgresql/src/psql/meta_command.dart';
-import 'package:dbase_postgresql/src/psql/name_pattern.dart';
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
-import 'package:dbase_postgresql/src/psql/sql_literal.dart';
+import 'package:dabase_postgresql/src/psql/describe/describe_context.dart';
+import 'package:dabase_postgresql/src/psql/describe/function_role_sql.dart';
+import 'package:dabase_postgresql/src/psql/describe/list_sql.dart';
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart';
+import 'package:dabase_postgresql/src/psql/describe/table_details.dart';
+import 'package:dabase_postgresql/src/psql/describe/type_privilege_sql.dart';
+import 'package:dabase_postgresql/src/psql/meta_command.dart';
+import 'package:dabase_postgresql/src/psql/name_pattern.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/sql_literal.dart';
 
 /// Whether [name] (without the backslash) is a describe command this
 /// library runs.

@@ -2,9 +2,9 @@
 // Purpose: Reads pgAdmin ConnectionParameters into libpq keyword settings
 // and flags parameters a phone cannot use as-is (internal, not exported).
 
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/importers/pgadmin_server.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/importers/pgadmin_server.dart';
 
 typedef _Warn = PgAdminWarningCode;
 

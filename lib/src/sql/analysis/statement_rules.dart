@@ -2,15 +2,15 @@
 // Purpose: Dispatches a statement to the rule for its leading keyword and
 // implements the query/DML rules (internal).
 
-import 'package:dbase_postgresql/src/sql/analysis/ddl_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/dml_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/function_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
-import 'package:dbase_postgresql/src/sql/analysis/utility_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/with_clause_rule.dart';
+import 'package:dabase_postgresql/src/sql/analysis/ddl_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/dml_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/function_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_analysis.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/analysis/utility_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/with_clause_rule.dart';
 
 Set<String> _words(String spaceSeparated) =>
     Set.unmodifiable(spaceSeparated.split(' '));

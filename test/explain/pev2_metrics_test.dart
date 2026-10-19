@@ -9,7 +9,7 @@
 // plans were converted to the FORMAT JSON shape (test/explain/fixtures/).
 // PEV2 numbers nodes from 1; ours start at 0.
 
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 import 'package:test/test.dart';
 
 import '../support/explain_json.dart';

@@ -2,9 +2,9 @@
 // Purpose: Result of analysing one SQL statement: kind, write/transaction
 // flags, and safety findings.
 
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/table_lock_mode.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/table_lock_mode.dart';
 
 /// What `SqlStatementAnalyzer` concluded about a statement.
 ///

@@ -12,9 +12,9 @@
 // spaces at commas and parentheses on purpose.
 // ignore_for_file: missing_whitespace_between_adjacent_strings
 
-import 'package:dbase_postgresql/src/psql/describe/describe_context.dart';
-import 'package:dbase_postgresql/src/psql/describe/table_footers.dart';
-import 'package:dbase_postgresql/src/psql/describe/table_info.dart';
+import 'package:dabase_postgresql/src/psql/describe/describe_context.dart';
+import 'package:dabase_postgresql/src/psql/describe/table_footers.dart';
+import 'package:dabase_postgresql/src/psql/describe/table_info.dart';
 
 /// The one-line summary under an index (`primary key, btree, for table
 /// "public.t"`), or `null` when the index row is missing.

@@ -1,12 +1,12 @@
 // File: view_ddl_assembler.dart
 // Purpose: Builds view and materialized view DDL from parsed rows: the
 // viewer text, and the same statements as parts for a dump. Pure: no I/O.
-// Moved from the dbase app in 0.6.0.
+// Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_rows.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_rows.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// Everything fetched for one view or materialized view.
 final class ViewDdlSource {

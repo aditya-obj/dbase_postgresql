@@ -6,8 +6,8 @@
 // (noted as a stray quote). Empty lines are skipped. Line numbers count
 // physical lines, including line breaks inside quoted fields.
 
-import 'package:dbase_postgresql/src/csv/csv_dialect.dart';
-import 'package:dbase_postgresql/src/csv/csv_record.dart';
+import 'package:dabase_postgresql/src/csv/csv_dialect.dart';
+import 'package:dabase_postgresql/src/csv/csv_record.dart';
 
 /// A record as parsed, before numbering.
 typedef RawCsvRecord = ({

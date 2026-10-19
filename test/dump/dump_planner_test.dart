@@ -4,9 +4,9 @@
 // in a cycle moved to its own ALTER, cycles reported, data-only and
 // schema-only content, and the rendered text of each section.
 
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/ddl.dart';
-import 'package:dbase_postgresql/dump.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/ddl.dart';
+import 'package:dabase_postgresql/dump.dart';
 import 'package:test/test.dart';
 
 import '../ddl/table_ddl_test_rows.dart';
@@ -365,7 +365,7 @@ void main() {
     test('header names no host or user, and carries the preamble', () {
       final text = const DumpWriter().start(
         DumpHeader(
-          generator: 'dbase 1.0',
+          generator: 'dabase 1.0',
           serverVersion: '17.4',
           createdUtc: DateTime.utc(2026, 10, 18, 9, 5, 7),
           content: DumpContent.schemaAndData,
@@ -376,7 +376,7 @@ void main() {
           tablesNotExported: const ['s.secret'],
         ),
       );
-      expect(text, contains('-- Written by: dbase 1.0\n'));
+      expect(text, contains('-- Written by: dabase 1.0\n'));
       expect(text, contains('-- Snapshot taken: 2026-10-18 09:05:07 UTC\n'));
       expect(text, contains('-- Not included: 2 large objects\n'));
       expect(

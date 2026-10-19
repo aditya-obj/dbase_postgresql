@@ -2,12 +2,12 @@
 // Purpose: Validates raw libpq keyword settings into typed values and
 // applies libpq's environment/default resolution (internal).
 
-import 'package:dbase_postgresql/src/config/libpq_keywords.dart';
-import 'package:dbase_postgresql/src/config/pg_config_parse_exception.dart';
-import 'package:dbase_postgresql/src/config/pg_connection_config.dart';
-import 'package:dbase_postgresql/src/config/pg_host.dart';
-import 'package:dbase_postgresql/src/config/raw_setting.dart';
-import 'package:dbase_postgresql/src/config/ssl_mode.dart';
+import 'package:dabase_postgresql/src/config/libpq_keywords.dart';
+import 'package:dabase_postgresql/src/config/pg_config_parse_exception.dart';
+import 'package:dabase_postgresql/src/config/pg_connection_config.dart';
+import 'package:dabase_postgresql/src/config/pg_host.dart';
+import 'package:dabase_postgresql/src/config/raw_setting.dart';
+import 'package:dabase_postgresql/src/config/ssl_mode.dart';
 
 /// Keywords stored in typed fields rather than in `parameters`.
 const _typedKeys = {'host', 'port', 'user', 'password', 'dbname', 'sslmode'};

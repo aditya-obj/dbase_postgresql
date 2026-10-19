@@ -1,6 +1,6 @@
-# CI for the pure-Dart dbase_postgresql library.
+# CI for the pure-Dart dabase_postgresql library.
 # Actions are pinned to commit SHAs; the trailing comment names the release.
-name: dbase_postgresql CI
+name: dabase_postgresql CI
 
 on:
   push:
@@ -73,19 +73,19 @@ jobs:
       postgres:
         image: postgres:${{ matrix.pg }}
         env:
-          POSTGRES_USER: dbase
-          POSTGRES_PASSWORD: dbase
-          POSTGRES_DB: dbase
+          POSTGRES_USER: dabase
+          POSTGRES_PASSWORD: dabase
+          POSTGRES_DB: dabase
           POSTGRES_HOST_AUTH_METHOD: scram-sha-256
           POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=trust
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -h 127.0.0.1 -U dbase -d dbase"
+          --health-cmd "pg_isready -h 127.0.0.1 -U dabase -d dabase"
           --health-interval 2s
           --health-timeout 5s
           --health-retries 30
     env:
-      DBASE_PG_URL: postgresql://dbase:dbase@localhost:5432/dbase?sslmode=disable
+      DABASE_PG_URL: postgresql://dabase:dabase@localhost:5432/dabase?sslmode=disable
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
@@ -108,11 +108,11 @@ jobs:
       - run: dart pub get
       - name: PostgreSQL 18 over TLS
         env:
-          DBASE_PG_URL: postgresql://dbase:dbase@localhost:54328/dbase?sslmode=require
+          DABASE_PG_URL: postgresql://dabase:dabase@localhost:54328/dabase?sslmode=require
         run: dart test -P ci-integration
       - name: PostgreSQL 18 through PgBouncer (transaction mode)
         env:
-          DBASE_PG_URL: postgresql://dbase:dbase@localhost:56432/dbase?sslmode=disable
+          DABASE_PG_URL: postgresql://dabase:dabase@localhost:56432/dabase?sslmode=disable
         run: dart test -P ci-integration
       - name: Server logs
         if: failure()

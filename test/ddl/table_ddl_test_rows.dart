@@ -2,8 +2,8 @@
 // Purpose: Hand-written catalog rows (server text, as CatalogQuery returns
 //          them) for the table assembler tests.
 
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/ddl.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/ddl.dart';
 
 TableHeader headerRow([CatalogRow extra = const {}]) => TableHeader.fromRow({
   'oid': '16384',

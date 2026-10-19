@@ -1,32 +1,32 @@
-# dbase_postgresql
+# dabase_postgresql
 
 A pure-Dart PostgreSQL toolkit with no runtime dependencies. It doesn't
 use Flutter or `dart:io`, so it runs on Android, iOS, web, desktop and the
 server.
 
-It is the in-house library behind **dbase**, an Android-first PostgreSQL
+It is the in-house library behind **dabase**, an Android-first PostgreSQL
 client that connects from the device straight to the database. It
 contains the parts a client needs before it opens a socket:
 
 | Area | Entry point | What it does |
 |---|---|---|
-| Connection strings | `package:dbase_postgresql/connection_string.dart` | Parses `postgres://` URIs and libpq `key=value` strings with libpq semantics. Resolves `PG*` defaults on request, reports security warnings and formats output that is safe to log. |
-| Importers | `package:dbase_postgresql/importers.dart` | Reads `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` with libpq's and pgAdmin's own rules. Reports per-line diagnostics and never echoes passwords. |
-| SQL lexer | `package:dbase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. `redactSecrets` masks passwords before SQL is stored. |
+| Connection strings | `package:dabase_postgresql/connection_string.dart` | Parses `postgres://` URIs and libpq `key=value` strings with libpq semantics. Resolves `PG*` defaults on request, reports security warnings and formats output that is safe to log. |
+| Importers | `package:dabase_postgresql/importers.dart` | Reads `.pgpass`, `pg_service.conf` and pgAdmin `servers.json` with libpq's and pgAdmin's own rules. Reports per-line diagnostics and never echoes passwords. |
+| SQL lexer | `package:dabase_postgresql/sql.dart` | Lossless PostgreSQL tokenizer ported from `scan.l`. It never throws and reports lexical errors as diagnostics. `redactSecrets` masks passwords before SQL is stored. |
 | Statement splitter | same | Splits a script the way `psql` does, including `BEGIN ATOMIC` bodies and `COPY ... FROM STDIN` data. Also answers "which statement is under the cursor". |
 | Safety analyzer | same | Classifies statements and flags `UPDATE`/`DELETE` without `WHERE` (or with `WHERE true`), `DROP`, `TRUNCATE`, risky `MERGE`, `EXPLAIN ANALYZE` of writes, ways out of a read-only session, `LOCK` and side-effect functions. Names the affected tables. It fails closed. |
-| EXPLAIN analyzer | `package:dbase_postgresql/explain.dart` | Parses `EXPLAIN (FORMAT JSON)` output, computes self time and cost per node, ranks the top issues, and builds version-safe `EXPLAIN` options. |
-| Binary values | `package:dbase_postgresql/binary.dart` | Decodes `bytea` text output (hex and escape formats), detects common file formats by magic bytes and reads image sizes from headers without decoding. |
-| PostGIS geometry | `package:dbase_postgresql/geo.dart` | Decodes the hex EWKB PostGIS prints for `geometry`/`geography` (and ISO WKB) into typed geometries with SRID and Z/M, rejecting malformed input safely. |
-| CSV import | `package:dbase_postgresql/csv.dart` | Sniffs a file's encoding, delimiter and header, decodes records from a byte stream leniently, re-encodes them as canonical PostgreSQL CSV for `COPY ... FROM STDIN`, builds the `COPY` and `INSERT ... unnest` SQL, and pre-checks values against column types. |
-| psql console | `package:dbase_postgresql/psql.dart` | psql's backslash-command parser and line handling, `\d`-style name patterns, the `describe.c` queries behind `\d`, `\dt`, `\df`, `\du`, `\l` and friends (PostgreSQL 13–18), and psql's aligned, wrapped, expanded, unaligned and CSV table printer. |
-| Catalog | `package:dbase_postgresql/catalog.dart` | Reads a schema or table scope of the catalog in bulk (about 25 statements, PostgreSQL 13–18) into an immutable `SchemaModel` with `pg_depend` edges, through a `CatalogQuery` callback. |
-| DDL | `package:dbase_postgresql/ddl.dart` | pg_dump-like DDL from catalog rows: tables, views, materialized views, routines, aggregates, sequences, indexes, types, domains, schemas, extensions, grants. |
-| SQL export | `package:dbase_postgresql/dump.dart` | A pg_dump-style plain-SQL export over any connection (one snapshot, locks, dependency order, data as COPY text through a cursor) and a streaming reader for restoring plain-SQL files. |
+| EXPLAIN analyzer | `package:dabase_postgresql/explain.dart` | Parses `EXPLAIN (FORMAT JSON)` output, computes self time and cost per node, ranks the top issues, and builds version-safe `EXPLAIN` options. |
+| Binary values | `package:dabase_postgresql/binary.dart` | Decodes `bytea` text output (hex and escape formats), detects common file formats by magic bytes and reads image sizes from headers without decoding. |
+| PostGIS geometry | `package:dabase_postgresql/geo.dart` | Decodes the hex EWKB PostGIS prints for `geometry`/`geography` (and ISO WKB) into typed geometries with SRID and Z/M, rejecting malformed input safely. |
+| CSV import | `package:dabase_postgresql/csv.dart` | Sniffs a file's encoding, delimiter and header, decodes records from a byte stream leniently, re-encodes them as canonical PostgreSQL CSV for `COPY ... FROM STDIN`, builds the `COPY` and `INSERT ... unnest` SQL, and pre-checks values against column types. |
+| psql console | `package:dabase_postgresql/psql.dart` | psql's backslash-command parser and line handling, `\d`-style name patterns, the `describe.c` queries behind `\d`, `\dt`, `\df`, `\du`, `\l` and friends (PostgreSQL 13–18), and psql's aligned, wrapped, expanded, unaligned and CSV table printer. |
+| Catalog | `package:dabase_postgresql/catalog.dart` | Reads a schema or table scope of the catalog in bulk (about 25 statements, PostgreSQL 13–18) into an immutable `SchemaModel` with `pg_depend` edges, through a `CatalogQuery` callback. |
+| DDL | `package:dabase_postgresql/ddl.dart` | pg_dump-like DDL from catalog rows: tables, views, materialized views, routines, aggregates, sequences, indexes, types, domains, schemas, extensions, grants. |
+| SQL export | `package:dabase_postgresql/dump.dart` | A pg_dump-style plain-SQL export over any connection (one snapshot, locks, dependency order, data as COPY text through a cursor) and a streaming reader for restoring plain-SQL files. |
 
-`package:dbase_postgresql/dbase_postgresql.dart` exports everything.
+`package:dabase_postgresql/dabase_postgresql.dart` exports everything.
 
-> Status: 0.6.0 (unreleased), not published yet (`publish_to: none` until the
+> Status: 0.7.0 (unreleased), not published yet (`publish_to: none` until the
 > repository URL is decided). Licensed under BSD-3-Clause (see `LICENSE`).
 > Material ported from PostgreSQL, libpg_query and PEV2 keeps its own license;
 > see `THIRD_PARTY_NOTICES`.
@@ -34,7 +34,7 @@ contains the parts a client needs before it opens a socket:
 ## Connection strings
 
 ```dart
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 
 final config = PgConnectionConfig.parse(
   'postgres://alice:s3cret@db1:5432,db2:5433/shop?sslmode=verify-full',
@@ -79,7 +79,7 @@ system or the environment, never run anything, and never put a password
 in an error, a diagnostic or `toString()`.
 
 ```dart
-import 'package:dbase_postgresql/importers.dart';
+import 'package:dabase_postgresql/importers.dart';
 
 // .pgpass: libpq's matcher, first match wins.
 final pgpass = PgPassFile.parse(text);
@@ -131,7 +131,7 @@ lists where the importers deliberately differ from libpq and pgAdmin.
 ## SQL lexer
 
 ```dart
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 
 for (final token in const SqlLexer().tokenize(r"SELECT $1::int, 'a''b'")) {
   print('${token.kind.name} ${token.start}..${token.end}');
@@ -244,7 +244,7 @@ storage and display only: running it would set `********` as the password.
 ## EXPLAIN plans
 
 ```dart
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 
 const options = ExplainOptions(analyze: true); // BUFFERS, SETTINGS on
 final sql = 'EXPLAIN ${options.toSql(serverVersionNum)} $statement';
@@ -295,7 +295,7 @@ The metrics are ported from [PEV2](https://github.com/dalibo/pev2)
 ## CSV import
 
 ```dart
-import 'package:dbase_postgresql/csv.dart';
+import 'package:dabase_postgresql/csv.dart';
 
 final sniff = sniffCsv(first64k);        // encoding, delimiter, header
 if (sniff.confidence < 0.6) { /* ask the user to check */ }
@@ -353,7 +353,7 @@ send(sql, writer.takeBytes());
 ## psql console
 
 ```dart
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 
 final console = PsqlConsole();
 for (final item in console.feedLine(r'select 1 as x; \d users')) {
@@ -432,7 +432,7 @@ print('${result.rows} rows, failed: ${result.failedTables.length}');
   before its definition is read, so schema changes wait for the export.
 - **Catalog.** `CatalogReader` reads each kind of object with one
   statement (not one per object) into a `SchemaModel`; the DDL is
-  assembled by the same code as the dbase object viewer.
+  assembled by the same code as the dabase object viewer.
 - **Order.** Pre-data follows `pg_depend` (with type priority and name
   as tie-breakers); keys, foreign keys, indexes and triggers come after
   the data, so circular foreign keys need nothing special. A default
@@ -464,7 +464,7 @@ dart format --set-exit-if-changed .
 dart analyze --fatal-infos
 dart test                 # unit, invariant and third-party corpus tests
 dart test -P fuzz         # seeded mutation fuzzing (FUZZ_SEED to replay)
-dart test -P integration  # against a real server (DBASE_PG_URL)
+dart test -P integration  # against a real server (DABASE_PG_URL)
 dart run example/main.dart
 dart run tool/generate_keywords.dart path/to/kwlist.h   # refresh keywords
 ```

@@ -8,7 +8,7 @@
 // License, (c) 1996-2026 PostgreSQL Global Development Group. See
 // THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/print/unicode_width_tables.dart';
+import 'package:dabase_postgresql/src/psql/print/unicode_width_tables.dart';
 
 /// Display columns code point [rune] takes in a terminal, as psql's
 /// `ucs_wcwidth`: 0 for NUL and non-spacing marks, -1 for control

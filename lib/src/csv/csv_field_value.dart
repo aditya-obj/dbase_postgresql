@@ -2,7 +2,7 @@
 // Purpose: Turns a decoded field into the value to load: SQL NULL or text,
 // by PostgreSQL's CSV rule or the user's choice.
 
-import 'package:dbase_postgresql/src/csv/csv_record.dart';
+import 'package:dabase_postgresql/src/csv/csv_record.dart';
 
 /// What an empty field means.
 enum EmptyFieldRule {

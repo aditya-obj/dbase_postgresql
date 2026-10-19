@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # File: tool/check.sh
-# Purpose: The full local gate for dbase_postgresql. Run it before asking
+# Purpose: The full local gate for dabase_postgresql. Run it before asking
 # for review; CI runs the same steps.
 #
 #   tool/check.sh                      # from the package directory

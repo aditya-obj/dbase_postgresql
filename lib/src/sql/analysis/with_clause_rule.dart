@@ -2,12 +2,12 @@
 // Purpose: Analyses `WITH ... <main statement>`: classifies by the main
 // statement and detects data-modifying CTEs (internal).
 
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_analysis.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 const Set<StatementKind> _writingKinds = {
   StatementKind.insert,

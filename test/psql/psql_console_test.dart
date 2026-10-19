@@ -3,7 +3,7 @@
 // \echo, \?, \q, \conninfo, describe hand-off, refused and unknown
 // commands, and psql's "extra argument ignored" warnings.
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 MetaCommand _cmd(String text) => parseMetaCommand(text, 0);

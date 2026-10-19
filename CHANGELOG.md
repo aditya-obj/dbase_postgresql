@@ -1,11 +1,21 @@
 # Changelog
 
+## 0.7.0 (unreleased)
+
+### Changed
+
+- Renamed the package from `dbase_postgresql` to `dabase_postgresql`
+  (the app is now DaBase). Imports change from
+  `package:dbase_postgresql/…` to `package:dabase_postgresql/…`, and the
+  entry file is now `dabase_postgresql.dart`. No API changes. The package
+  was never published under the old name.
+
 ## 0.6.0 (unreleased)
 
 ### Added
 
-- `package:dbase_postgresql/psql.dart`, also exported from
-  `dbase_postgresql.dart`: psql's console logic, pure Dart, ported from
+- `package:dabase_postgresql/psql.dart`, also exported from
+  `dabase_postgresql.dart`: psql's console logic, pure Dart, ported from
   psql 18 (PostgreSQL License).
   - `parseMetaCommand`: backslash commands as `psqlscanslash.l` reads
     them: the name runs to whitespace or the next `\`, arguments split on
@@ -48,8 +58,8 @@
     (`ERROR:  …`, `LINE n:` with the excerpt cut to about 60 columns
     and a `^` under the position, DETAIL, HINT); `formatTiming` for
     `\timing`; `formatConnInfo` (no password); `serverVersionNumber`.
-- `package:dbase_postgresql/dump.dart`, also exported from
-  `dbase_postgresql.dart`: plain-SQL export and restore helpers, pure
+- `package:dabase_postgresql/dump.dart`, also exported from
+  `dabase_postgresql.dart`: plain-SQL export and restore helpers, pure
   Dart.
   - `SqlDumper` runs a pg_dump-like export over any `DumpConnection`:
     one `REPEATABLE READ, READ ONLY` transaction with pg_dump's settings
@@ -90,7 +100,7 @@
     statements, COPY data chunks of whole lines and backslash commands
     (`\restrict`/`\unrestrict` marked ignorable), with line numbers and
     the last TOC entry; any chunking gives the same items.
-- `package:dbase_postgresql/catalog.dart`: `CatalogQuery` / `CatalogRow`,
+- `package:dabase_postgresql/catalog.dart`: `CatalogQuery` / `CatalogRow`,
   the catalog text parsers (`pgBool`, `pgInt`, `pgDouble`,
   `pgTextArray`, `requireText`, `oidArrayLiteral`) and `CatalogReader`,
   which reads a schema or table scope in bulk (one statement per kind,
@@ -99,8 +109,8 @@
   of what a dump skips (large objects, publications, subscriptions,
   event triggers, foreign servers and tables, base types, collations,
   operators, text search configurations, extension configuration data).
-- `package:dbase_postgresql/ddl.dart`: the DDL recipe queries, row
-  parsers and assemblers of the dbase app's object viewer, moved here
+- `package:dabase_postgresql/ddl.dart`: the DDL recipe queries, row
+  parsers and assemblers of the dabase app's object viewer, moved here
   (tables, views, materialized views, routines, sequences, indexes).
   Recipe queries take one OID or an OID array (`OidFilter`) and return a
   `relid` column; `TableDdlAssembler.parts` and `ViewDdlAssembler.parts`
@@ -109,15 +119,15 @@
   `createSchemaStatement`, `createExtensionStatement`,
   `defaultPrivilegeStatements`.
 - `quoteIdent`, `qualifiedName`, `quoteLiteral`, `reloptionEntry`,
-  `fdwOptionEntry` and `dollarQuote` in `package:dbase_postgresql/sql.dart`
-  (moved from the dbase app).
+  `fdwOptionEntry` and `dollarQuote` in `package:dabase_postgresql/sql.dart`
+  (moved from the dabase app).
 
 ## 0.5.0 (unreleased)
 
 ### Added
 
-- `package:dbase_postgresql/csv.dart`, also exported from
-  `dbase_postgresql.dart`: CSV import for PostgreSQL, pure Dart.
+- `package:dabase_postgresql/csv.dart`, also exported from
+  `dabase_postgresql.dart`: CSV import for PostgreSQL, pure Dart.
   - `sniffCsv`: encoding (BOM, UTF-16 by zero bytes, UTF-8 validity, else
     Windows-1252), delimiter (`,` `;` tab `|`, Excel's `sep=` line),
     header (known column names or names above typed data), the modal
@@ -142,7 +152,7 @@
   - `checkPgText` (client-side type pre-checks) and `inferPgType` (column
     types for a new table).
 - `redactSecrets(sql)` and `containsSecrets(sql)` in
-  `package:dbase_postgresql/sql.dart`: mask secrets before SQL is stored
+  `package:dabase_postgresql/sql.dart`: mask secrets before SQL is stored
   (query history, logs). In `CREATE`/`ALTER` statements the string after
   `PASSWORD` (roles, users, groups; plaintext, SCRAM or MD5) and after a
   `password`/`sslpassword` option (`CREATE|ALTER SERVER`, `USER MAPPING
@@ -150,8 +160,8 @@
   in a libpq connection string and the password of a
   `postgres://user:password@host` URI become `********`. Lexical, best
   effort; everything else is returned unchanged.
-- `package:dbase_postgresql/binary.dart`, also exported from
-  `dbase_postgresql.dart`:
+- `package:dabase_postgresql/binary.dart`, also exported from
+  `dabase_postgresql.dart`:
   - `decodeByteaText`: `bytea` text output in hex (`\x…`) and escape
     format to bytes; `allowTruncated` accepts values cut by a client size
     cap. `bytesToHex` for the reverse.
@@ -160,8 +170,8 @@
   - `readImageSize`: an image's declared width and height from its header
     (PNG, GIF, JPEG, WebP, BMP, HEIF/AVIF) without decoding, so callers
     can refuse decompression bombs.
-- `package:dbase_postgresql/geo.dart`, also exported from
-  `dbase_postgresql.dart`: `decodeEwkbHex` / `decodeEwkb` decode PostGIS
+- `package:dabase_postgresql/geo.dart`, also exported from
+  `dabase_postgresql.dart`: `decodeEwkbHex` / `decodeEwkb` decode PostGIS
   EWKB (as `geometry_out` and `geography_out` print it) and ISO WKB into
   `Geometry` values (`GeoPoint`, `GeoLineString`, `GeoPolygon`, Multi*,
   `GeoCollection`) with SRID, Z/M ordinates and `GeoBounds`. Both byte
@@ -180,8 +190,8 @@
 
 ### Added
 
-- `package:dbase_postgresql/explain.dart`, also exported from
-  `dbase_postgresql.dart`: an `EXPLAIN (FORMAT JSON)` analyzer for
+- `package:dabase_postgresql/explain.dart`, also exported from
+  `dabase_postgresql.dart`: an `EXPLAIN (FORMAT JSON)` analyzer for
   PostgreSQL 13–18.
   - `ExplainPlan.parse` / `ExplainPlan.parseAll`: typed plans
     (`PlanNode`, `NodeActuals`, `BufferCounts`, `TriggerTiming`,
@@ -261,8 +271,8 @@
 
 ### Added
 
-- `package:dbase_postgresql/importers.dart`, also exported from
-  `dbase_postgresql.dart`.
+- `package:dabase_postgresql/importers.dart`, also exported from
+  `dabase_postgresql.dart`.
 - `PgPassFile` / `PgPassEntry`: parses libpq password files and looks up
   passwords with `passwordFromFile()`'s exact rules: first match wins,
   whole-field `*`, `\` escapes, `localhost` for an empty host or the
@@ -340,7 +350,7 @@
   dependency only; the package still has no runtime dependencies.
 - `LICENSE` (BSD-3-Clause), `SECURITY.md`, `CONTRIBUTING.md`, issue and
   pull request templates, and `tool/check.sh`.
-- Entry points: `dbase_postgresql.dart`, `connection_string.dart` and
+- Entry points: `dabase_postgresql.dart`, `connection_string.dart` and
   `sql.dart`.
 
 ### Security

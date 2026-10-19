@@ -3,7 +3,7 @@
 // backslash commands anywhere on a line, \g / \gx / \p / \r, quotes that
 // hide backslashes, and the prompt continuation state.
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 List<String> _describe(List<PsqlInputItem> items) => [

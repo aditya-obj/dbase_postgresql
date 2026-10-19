@@ -12,7 +12,7 @@
 // statements, each inside the upstream slice, with only whitespace and
 // comments outside ours.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 final class _SplitCase {

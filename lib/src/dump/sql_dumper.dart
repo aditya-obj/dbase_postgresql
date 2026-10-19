@@ -6,18 +6,18 @@
 // batches and re-encoded as COPY text, sequence values and post-data.
 // The caller supplies the connection (DumpConnection) and the output
 // (an async write callback); nothing here does I/O itself.
-// Notes: COPY TO STDOUT is not used: the dbase driver can't carry it. The
+// Notes: COPY TO STDOUT is not used: the dabase driver can't carry it. The
 // cursor reads the same snapshot and works behind a transaction pooler,
 // since everything happens inside one transaction.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/catalog/catalog_reader.dart';
-import 'package:dbase_postgresql/src/catalog/schema_model.dart';
-import 'package:dbase_postgresql/src/dump/copy_text.dart';
-import 'package:dbase_postgresql/src/dump/dump_options.dart';
-import 'package:dbase_postgresql/src/dump/dump_planner.dart';
-import 'package:dbase_postgresql/src/dump/dump_writer.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_reader.dart';
+import 'package:dabase_postgresql/src/catalog/schema_model.dart';
+import 'package:dabase_postgresql/src/dump/copy_text.dart';
+import 'package:dabase_postgresql/src/dump/dump_options.dart';
+import 'package:dabase_postgresql/src/dump/dump_planner.dart';
+import 'package:dabase_postgresql/src/dump/dump_writer.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// What a dump needs from a database connection.
 abstract interface class DumpConnection {
@@ -292,7 +292,7 @@ const dumpSettingsSql =
     "pg_catalog.set_config('TimeZone', 'UTC', true)";
 
 /// Name of the cursor a dump reads table data through.
-const dumpCursorName = 'dbase_dump';
+const dumpCursorName = 'dabase_dump';
 
 /// `LOCK TABLE ... IN ACCESS SHARE MODE` statements covering [relations],
 /// at most [perStatement] each.
@@ -319,11 +319,11 @@ String declareDumpCursorSql(TableInfo table) {
       'SELECT $columns FROM ONLY ${qualifiedName(table.schema, table.name)}';
 }
 
-/// `MOVE BACKWARD n IN dbase_dump`.
+/// `MOVE BACKWARD n IN dabase_dump`.
 String moveBackDumpCursorSql(int rows) =>
     'MOVE BACKWARD $rows IN $dumpCursorName';
 
-/// `FETCH FORWARD n FROM dbase_dump`.
+/// `FETCH FORWARD n FROM dabase_dump`.
 String fetchDumpCursorSql(int rows) =>
     'FETCH FORWARD $rows FROM $dumpCursorName';
 
@@ -334,7 +334,7 @@ final class SqlDumper {
     required this.connection,
     required this.options,
     required this.write,
-    this.generator = 'dbase_postgresql',
+    this.generator = 'dabase_postgresql',
     this.batch = const DumpBatchSizing(),
     this.onProgress,
     this.onTable,

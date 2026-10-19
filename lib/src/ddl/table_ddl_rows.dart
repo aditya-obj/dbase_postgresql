@@ -1,8 +1,8 @@
 // File: table_ddl_rows.dart
 // Purpose: Parsed rows of the table recipe queries Q-T1..Q-T7, the input
-// of TableDdlAssembler. Moved from the dbase app in 0.6.0.
+// of TableDdlAssembler. Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
 
 /// Q-T1: the relation itself.
 final class TableHeader {

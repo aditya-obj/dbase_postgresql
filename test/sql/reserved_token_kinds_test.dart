@@ -3,7 +3,7 @@
 // option. v0.1 must never emit them, even for psql-shaped input; this
 // keeps the lexer pure SQL until psqlMode is implemented.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 import '../support/sql_corpus.dart';

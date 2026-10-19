@@ -11,8 +11,8 @@
 /// statements and COPY data for a restore.
 library;
 
-import 'package:dbase_postgresql/src/dump/sql_dumper.dart';
-import 'package:dbase_postgresql/src/dump/sql_script_reader.dart';
+import 'package:dabase_postgresql/src/dump/sql_dumper.dart';
+import 'package:dabase_postgresql/src/dump/sql_script_reader.dart';
 
 export 'src/dump/copy_text.dart'
     show CopyTextEncoder, decodeCopyTextRow, encodeCopyTextRow;

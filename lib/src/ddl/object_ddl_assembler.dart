@@ -1,11 +1,11 @@
 // File: object_ddl_assembler.dart
 // Purpose: Builds function/procedure, sequence and index DDL from parsed
-// rows. Pure: no I/O. Moved from the dbase app in 0.6.0.
+// rows. Pure: no I/O. Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_rows.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_rows.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// Functions, procedures, window functions and (as a note) aggregates.
 final class RoutineDdlAssembler {

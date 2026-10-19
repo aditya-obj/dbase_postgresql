@@ -2,7 +2,7 @@
 // Purpose: Tests for the kwlist.h-generated keyword table, categories, and
 // the highlight predicate.
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -6,7 +6,7 @@
 
 import 'dart:io';
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 const _v18 = ListContext(version: 180006, currentDatabase: 'postgres');

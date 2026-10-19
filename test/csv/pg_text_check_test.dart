@@ -2,7 +2,7 @@
 // Purpose: checkPgText (client-side pre-checks by type) and inferPgType
 // (column types for a new table).
 
-import 'package:dbase_postgresql/csv.dart';
+import 'package:dabase_postgresql/csv.dart';
 import 'package:test/test.dart';
 
 void main() {

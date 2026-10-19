@@ -7,10 +7,10 @@
 // PostgreSQL License, (c) 1996-2026 PostgreSQL Global Development Group.
 // See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/meta_command.dart';
-import 'package:dbase_postgresql/src/sql/sql_lexer.dart';
-import 'package:dbase_postgresql/src/sql/sql_statement_splitter.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/psql/meta_command.dart';
+import 'package:dabase_postgresql/src/sql/sql_lexer.dart';
+import 'package:dabase_postgresql/src/sql/sql_statement_splitter.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// What a line of input asks for, in order.
 sealed class PsqlInputItem {

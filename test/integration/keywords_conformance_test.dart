@@ -2,7 +2,7 @@
 // Purpose: Differential test of our keyword table (generated from
 // kwlist.h on master) against the server's own list:
 //   SELECT word, catcode FROM pg_get_keywords()
-// Run with `dart test -P integration` and DBASE_PG_URL set.
+// Run with `dart test -P integration` and DABASE_PG_URL set.
 //
 // Our table follows master, so older servers legitimately differ. The
 // expected differences below come from diffing src/include/parser/kwlist.h
@@ -11,7 +11,7 @@
 @Tags(['integration'])
 library;
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:postgres/postgres.dart' as pg;
 import 'package:test/test.dart';
 

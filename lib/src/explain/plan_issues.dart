@@ -12,8 +12,8 @@
 
 import 'dart:math' as math;
 
-import 'package:dbase_postgresql/src/explain/explain_plan.dart';
-import 'package:dbase_postgresql/src/explain/plan_metrics.dart';
+import 'package:dabase_postgresql/src/explain/explain_plan.dart';
+import 'package:dabase_postgresql/src/explain/plan_metrics.dart';
 
 /// Stable identifiers for [PlanIssue]s. The library has no wording: the
 /// app words each issue from its code and [PlanIssue.facts].

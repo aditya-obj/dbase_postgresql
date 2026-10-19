@@ -9,12 +9,12 @@
 // (c) 1996-2026 PostgreSQL Global Development Group. See
 // THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/describe/describer.dart';
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart';
-import 'package:dbase_postgresql/src/psql/meta_command.dart';
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
-import 'package:dbase_postgresql/src/psql/psql_help.dart';
-import 'package:dbase_postgresql/src/psql/psql_input.dart';
+import 'package:dabase_postgresql/src/psql/describe/describer.dart';
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart';
+import 'package:dabase_postgresql/src/psql/meta_command.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/psql_help.dart';
+import 'package:dabase_postgresql/src/psql/psql_input.dart';
 
 /// What a backslash command needs from the caller.
 sealed class PsqlCommandResult {

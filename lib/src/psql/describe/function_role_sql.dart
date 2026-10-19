@@ -11,11 +11,11 @@
 // spaces at commas and parentheses on purpose.
 // ignore_for_file: missing_whitespace_between_adjacent_strings
 
-import 'package:dbase_postgresql/src/psql/describe/list_sql.dart';
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart';
-import 'package:dbase_postgresql/src/psql/describe/type_privilege_sql.dart';
-import 'package:dbase_postgresql/src/psql/name_pattern.dart';
-import 'package:dbase_postgresql/src/psql/print/print_table.dart';
+import 'package:dabase_postgresql/src/psql/describe/list_sql.dart';
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart';
+import 'package:dabase_postgresql/src/psql/describe/type_privilege_sql.dart';
+import 'package:dabase_postgresql/src/psql/name_pattern.dart';
+import 'package:dabase_postgresql/src/psql/print/print_table.dart';
 
 /// The `\df` kind letters psql accepts.
 const functionOptionLetters = 'anptwSx+';

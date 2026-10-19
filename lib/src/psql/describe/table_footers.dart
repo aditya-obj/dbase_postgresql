@@ -9,10 +9,10 @@
 // add_tablespace_footer) - PostgreSQL License, (c) 1996-2026 PostgreSQL
 // Global Development Group. See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/describe/describe_context.dart';
-import 'package:dbase_postgresql/src/psql/describe/relation_footers.dart';
-import 'package:dbase_postgresql/src/psql/describe/table_info.dart';
-import 'package:dbase_postgresql/src/psql/print/display_width.dart';
+import 'package:dabase_postgresql/src/psql/describe/describe_context.dart';
+import 'package:dabase_postgresql/src/psql/describe/relation_footers.dart';
+import 'package:dabase_postgresql/src/psql/describe/table_info.dart';
+import 'package:dabase_postgresql/src/psql/print/display_width.dart';
 
 /// Every footer of `\d` for relation [oid], in psql's order.
 Future<List<String>> tableFooters(

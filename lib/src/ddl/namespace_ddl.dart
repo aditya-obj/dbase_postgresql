@@ -2,10 +2,10 @@
 // Purpose: Rows and DDL for schemas, extensions and default privileges in
 // a dump.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// `CREATE SCHEMA IF NOT EXISTS name;` (`public` already exists in a new
 /// database, and IF NOT EXISTS keeps a restore into it working).

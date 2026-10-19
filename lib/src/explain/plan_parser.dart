@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:dbase_postgresql/src/explain/explain_plan.dart';
+import 'package:dabase_postgresql/src/explain/explain_plan.dart';
 
 /// Parses [json] into one [ExplainPlan] per array element. See
 /// [ExplainPlan.parseAll].

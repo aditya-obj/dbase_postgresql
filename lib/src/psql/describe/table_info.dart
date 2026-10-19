@@ -7,7 +7,7 @@
 // PostgreSQL License, (c) 1996-2026 PostgreSQL Global Development Group.
 // See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart';
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart';
 
 /// The general table info query (PostgreSQL 12+ shape).
 String tableInfoSql(String oid, {required bool verbose}) {

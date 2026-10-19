@@ -2,7 +2,7 @@
 // Purpose: Keyword lookup by PostgreSQL grammar category and a
 // category-based "highlight as keyword" predicate.
 
-import 'package:dbase_postgresql/src/sql/sql_keyword_table.dart';
+import 'package:dabase_postgresql/src/sql/sql_keyword_table.dart';
 
 /// PostgreSQL's keyword categories, as in `kwlist.h` and appendix C of the
 /// PostgreSQL manual.

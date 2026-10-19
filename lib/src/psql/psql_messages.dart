@@ -8,7 +8,7 @@
 // PostgreSQL License, (c) 1996-2026 PostgreSQL Global Development Group.
 // See THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/psql/print/display_width.dart';
+import 'package:dabase_postgresql/src/psql/print/display_width.dart';
 
 /// Formats a server error or notice like psql's default verbosity.
 ///

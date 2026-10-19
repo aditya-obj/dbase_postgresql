@@ -4,13 +4,13 @@
 // OID, with the dependency edges between them and counts of what is not
 // covered. Built by CatalogReader.
 
-import 'package:dbase_postgresql/src/ddl/aggregate_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/namespace_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_assembler.dart';
-import 'package:dbase_postgresql/src/ddl/type_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/view_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/ddl/aggregate_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/namespace_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/ddl/type_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/view_ddl_assembler.dart';
 
 /// Which catalog an [ObjectKey] OID belongs to.
 enum ObjectKind {

@@ -2,7 +2,7 @@
 // Purpose: Tests for libpq-style default resolution: PG* environment
 // variables (injected), user fallback, and dbname = user.
 
-import 'package:dbase_postgresql/connection_string.dart';
+import 'package:dabase_postgresql/connection_string.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -27,7 +27,7 @@ void main() {
         'PGUSER': 'eve',
         'PGPASSWORD': 'envpw',
         'PGSSLMODE': 'verify-full',
-        'PGAPPNAME': 'dbase',
+        'PGAPPNAME': 'dabase',
         'HOME': '/ignored',
       },
     );
@@ -37,7 +37,7 @@ void main() {
     expect(c.database, 'db');
     expect(c.sslMode, SslMode.verifyFull);
     expect(c.sslModeWasExplicit, isTrue);
-    expect(c.applicationName, 'dbase');
+    expect(c.applicationName, 'dabase');
     expect(c.parameters.containsKey('HOME'), isFalse);
   });
 

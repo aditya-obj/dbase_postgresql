@@ -9,8 +9,8 @@
 /// so there is no driver dependency and no `dart:io`.
 library;
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
-import 'package:dbase_postgresql/src/catalog/schema_model.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/schema_model.dart';
 
 export 'src/catalog/catalog_query.dart'
     show

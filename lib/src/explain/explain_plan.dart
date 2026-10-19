@@ -7,7 +7,7 @@
 // Copyright (c) 2019, Dalibo, PostgreSQL-style license. See
 // THIRD_PARTY_NOTICES.
 
-import 'package:dbase_postgresql/src/explain/plan_parser.dart';
+import 'package:dabase_postgresql/src/explain/plan_parser.dart';
 
 /// One query's plan from `EXPLAIN (FORMAT JSON)`.
 ///

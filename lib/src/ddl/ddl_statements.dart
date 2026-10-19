@@ -1,10 +1,10 @@
 // File: ddl_statements.dart
 // Purpose: Statement emitters shared by the assemblers: grants, owner,
 // comments, indexes, triggers and rules, plus the script builder that
-// joins them into the viewer text. Moved from the dbase app in 0.6.0.
+// joins them into the viewer text. Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// Collects statement groups; groups are separated by a blank line.
 final class DdlScript {

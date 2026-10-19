@@ -5,7 +5,7 @@
 
 import 'dart:math';
 
-import 'package:dbase_postgresql/sql.dart';
+import 'package:dabase_postgresql/sql.dart';
 import 'package:test/test.dart';
 
 import '../support/sql_corpus.dart';

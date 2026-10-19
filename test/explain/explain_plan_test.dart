@@ -3,7 +3,7 @@
 // fields, display names, targets, PG 17 vs 18 number formats, never
 // executed nodes, Disabled detection and malformed input.
 
-import 'package:dbase_postgresql/explain.dart';
+import 'package:dabase_postgresql/explain.dart';
 import 'package:test/test.dart';
 
 import '../support/explain_json.dart';

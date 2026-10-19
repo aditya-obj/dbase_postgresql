@@ -3,7 +3,7 @@
 // expected clauses are what psql 17 printed with -E for the same
 // patterns.
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 String _tableClause(String? pattern) => processNamePattern(

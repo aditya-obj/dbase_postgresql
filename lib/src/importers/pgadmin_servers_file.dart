@@ -4,10 +4,10 @@
 
 import 'dart:convert';
 
-import 'package:dbase_postgresql/src/importers/pg_import_diagnostic.dart';
-import 'package:dbase_postgresql/src/importers/pgadmin_server.dart';
-import 'package:dbase_postgresql/src/importers/pgadmin_server_mapper.dart';
-import 'package:dbase_postgresql/src/importers/text_lines.dart';
+import 'package:dabase_postgresql/src/importers/pg_import_diagnostic.dart';
+import 'package:dabase_postgresql/src/importers/pgadmin_server.dart';
+import 'package:dabase_postgresql/src/importers/pgadmin_server_mapper.dart';
+import 'package:dabase_postgresql/src/importers/text_lines.dart';
 
 /// A parsed pgAdmin `servers.json` file:
 /// `{"Servers": {"1": {...}, "2": {...}}}`.

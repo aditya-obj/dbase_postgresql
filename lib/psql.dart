@@ -12,7 +12,7 @@
 /// `dart:io`: catalog queries run through a [PsqlQuery] callback.
 library;
 
-import 'package:dbase_postgresql/src/psql/describe/psql_query.dart'
+import 'package:dabase_postgresql/src/psql/describe/psql_query.dart'
     show PsqlQuery;
 
 export 'src/psql/describe/describe_context.dart' show DescribeContext;

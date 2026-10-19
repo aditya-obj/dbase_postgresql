@@ -3,9 +3,9 @@
 // catalog rows, in a bounded number of round trips, and its queries are
 // version-gated for PostgreSQL 13 to 18.
 
-import 'package:dbase_postgresql/catalog.dart';
-import 'package:dbase_postgresql/ddl.dart';
-import 'package:dbase_postgresql/src/catalog/catalog_sql.dart';
+import 'package:dabase_postgresql/catalog.dart';
+import 'package:dabase_postgresql/ddl.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_sql.dart';
 import 'package:test/test.dart';
 
 import '../support/catalog_fixture.dart';
@@ -186,7 +186,7 @@ void main() {
     expect(aggregatesSql, contains('a.aggfnoid::pg_catalog.oid AS relid'));
     // A regproc relid printed as a name can't be read back.
     expect(
-      () => rowRelid(const {'relid': 'dbase_export_live.my_sum'}),
+      () => rowRelid(const {'relid': 'dabase_export_live.my_sum'}),
       throwsFormatException,
     );
   });

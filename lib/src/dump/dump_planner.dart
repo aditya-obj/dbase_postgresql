@@ -14,17 +14,17 @@
 //    data, so circular foreign keys need no special handling.
 // No ownership is written (like `pg_dump --no-owner`).
 
-import 'package:dbase_postgresql/src/catalog/schema_model.dart';
-import 'package:dbase_postgresql/src/ddl/aggregate_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/ddl/namespace_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/object_ddl_assembler.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_assembler.dart';
-import 'package:dbase_postgresql/src/ddl/type_ddl.dart';
-import 'package:dbase_postgresql/src/ddl/view_ddl_assembler.dart';
-import 'package:dbase_postgresql/src/dump/dependency_order.dart';
-import 'package:dbase_postgresql/src/dump/dump_options.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/catalog/schema_model.dart';
+import 'package:dabase_postgresql/src/ddl/aggregate_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/ddl/namespace_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/object_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/ddl/type_ddl.dart';
+import 'package:dabase_postgresql/src/ddl/view_ddl_assembler.dart';
+import 'package:dabase_postgresql/src/dump/dependency_order.dart';
+import 'package:dabase_postgresql/src/dump/dump_options.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// pg_dump's archive sections.
 enum DumpSection {

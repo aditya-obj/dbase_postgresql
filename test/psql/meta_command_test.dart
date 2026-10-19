@@ -3,7 +3,7 @@
 // rules: command names, argument splitting, quoting, escapes, `\\`
 // terminators, semicolon stripping and identifier dequoting.
 
-import 'package:dbase_postgresql/psql.dart';
+import 'package:dabase_postgresql/psql.dart';
 import 'package:test/test.dart';
 
 MetaCommand _parse(String text) => parseMetaCommand(text, 0);

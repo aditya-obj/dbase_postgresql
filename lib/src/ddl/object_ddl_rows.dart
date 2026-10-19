@@ -1,8 +1,8 @@
 // File: object_ddl_rows.dart
 // Purpose: Parsed header rows for views, materialized views, routines,
-// sequences and standalone indexes. Moved from the dbase app in 0.6.0.
+// sequences and standalone indexes. Moved from the dabase app in 0.6.0.
 
-import 'package:dbase_postgresql/src/catalog/catalog_query.dart';
+import 'package:dabase_postgresql/src/catalog/catalog_query.dart';
 
 /// A view (`v`) or materialized view (`m`).
 final class ViewHeader {

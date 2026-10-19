@@ -4,7 +4,7 @@
 
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/binary.dart';
+import 'package:dabase_postgresql/binary.dart';
 import 'package:test/test.dart';
 
 Uint8List _b(List<int> bytes) => Uint8List.fromList(bytes);

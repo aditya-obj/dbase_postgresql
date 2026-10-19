@@ -1,15 +1,15 @@
 // File: table_ddl_assembler.dart
 // Purpose: Builds table DDL from the parsed recipe rows: the CREATE TABLE
-// viewer text (emission rules and assembly order of the dbase Browse
+// viewer text (emission rules and assembly order of the dabase Browse
 // screen), and the same statements as separate parts for a dump, which
 // moves keys, foreign keys, indexes and triggers after the data. Pure: no
-// I/O, so it is unit-tested with hand-written rows. Moved from the dbase
+// I/O, so it is unit-tested with hand-written rows. Moved from the dabase
 // app in 0.6.0.
 
-import 'package:dbase_postgresql/src/ddl/ddl_rows.dart';
-import 'package:dbase_postgresql/src/ddl/ddl_statements.dart';
-import 'package:dbase_postgresql/src/ddl/table_ddl_rows.dart';
-import 'package:dbase_postgresql/src/sql/sql_quoting.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_rows.dart';
+import 'package:dabase_postgresql/src/ddl/ddl_statements.dart';
+import 'package:dabase_postgresql/src/ddl/table_ddl_rows.dart';
+import 'package:dabase_postgresql/src/sql/sql_quoting.dart';
 
 /// Everything the table recipe fetched for one table.
 final class TableDdlSource {

@@ -6,7 +6,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:dbase_postgresql/csv.dart';
+import 'package:dabase_postgresql/csv.dart';
 import 'package:test/test.dart';
 
 List<CsvRecord> decode(

@@ -1,10 +1,10 @@
 // File: main.dart
-// Purpose: Runnable tour of dbase_postgresql: parse a connection string,
+// Purpose: Runnable tour of dabase_postgresql: parse a connection string,
 // split a script, and check statements before running them.
 
 import 'dart:io';
 
-import 'package:dbase_postgresql/dbase_postgresql.dart';
+import 'package:dabase_postgresql/dabase_postgresql.dart';
 
 void main() {
   // 1. Connection strings: parse, inspect warnings, log safely.

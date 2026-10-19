@@ -11,7 +11,7 @@
 // spaces at commas and parentheses on purpose.
 // ignore_for_file: missing_whitespace_between_adjacent_strings
 
-import 'package:dbase_postgresql/src/psql/describe/list_sql.dart';
+import 'package:dabase_postgresql/src/psql/describe/list_sql.dart';
 
 const _typenameMap = {
   'decimal': 'numeric',

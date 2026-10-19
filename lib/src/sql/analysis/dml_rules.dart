@@ -2,13 +2,13 @@
 // Purpose: Analysis rules for INSERT, UPDATE, DELETE, MERGE and TRUNCATE:
 // missing or always-true WHERE, unrestricted MERGE, targets (internal).
 
-import 'package:dbase_postgresql/src/sql/analysis/function_rules.dart';
-import 'package:dbase_postgresql/src/sql/analysis/safety_finding.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_analysis.dart';
-import 'package:dbase_postgresql/src/sql/analysis/statement_kind.dart';
-import 'package:dbase_postgresql/src/sql/analysis/token_scan.dart';
-import 'package:dbase_postgresql/src/sql/sql_keywords.dart';
-import 'package:dbase_postgresql/src/sql/sql_token.dart';
+import 'package:dabase_postgresql/src/sql/analysis/function_rules.dart';
+import 'package:dabase_postgresql/src/sql/analysis/safety_finding.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_analysis.dart';
+import 'package:dabase_postgresql/src/sql/analysis/statement_kind.dart';
+import 'package:dabase_postgresql/src/sql/analysis/token_scan.dart';
+import 'package:dabase_postgresql/src/sql/sql_keywords.dart';
+import 'package:dabase_postgresql/src/sql/sql_token.dart';
 
 /// String literals PostgreSQL reads as boolean true in `WHERE 't'`.
 const _trueStrings = {'t', 'true', 'yes', 'on'};
